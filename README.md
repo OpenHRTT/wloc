@@ -4,7 +4,7 @@
 
 <h1 align="center">OpenHRTT WLoc</h1>
 
-<p>在线体验：<a href="https://wloc8.com/" target="_blank">https://wloc8.com/</a>，TG群：https://t.me/wloc88</p>
+<p>支持iOS27.0，在线体验：<a href="https://wloc8.com/" target="_blank">https://wloc8.com/</a>，TG群：https://t.me/wloc88</p>
 
 
 
