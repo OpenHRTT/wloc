@@ -12,6 +12,7 @@ xcuserdata/
 
 # CocoaPods dependencies are restored with `pod install`
 Pods/
+Podfile.lock
 
 # Locally generated TLS identities. Never publish private keys or reusable p12 files.
 app_wloc_certs/

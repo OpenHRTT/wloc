@@ -5,6 +5,7 @@
 //  Created by Alexey Demin on 2025-12-10.
 //
 
+#if canImport(UIKit)
 import UIKit
 import MetalKit
 
@@ -573,6 +574,7 @@ open class LiquidGlassSwitch: UIControl {
         }
     }
 }
+#endif
 
 public protocol AnySwitch: UIControl {
     var onTintColor: UIColor? { get set }

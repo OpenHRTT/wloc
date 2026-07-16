@@ -5,6 +5,7 @@
 //  Created by Alexey Demin on 2025-12-25.
 //
 
+#if canImport(UIKit)
 import UIKit
 import MetalKit
 
@@ -840,6 +841,7 @@ open class LiquidGlassSlider: UIControl {
         setValue(value - step, animated: true)
     }
 }
+#endif
 
 // MARK: - AnySlider Protocol
 

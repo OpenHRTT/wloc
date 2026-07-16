@@ -29,5 +29,9 @@
 	<string>$(CURRENT_PROJECT_VERSION)</string>
 	<key>NSLocalNetworkUsageDescription</key>
 	<string>用于在局域网内提供根证书下载。</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>用于在地图上定位当前位置，方便选择附近地点。</string>
+	<key>NSQuitAlwaysKeepsWindows</key>
+	<false/>
 </dict>
 </plist>

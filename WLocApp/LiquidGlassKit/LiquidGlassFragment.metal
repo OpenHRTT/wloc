@@ -51,7 +51,7 @@ struct ShaderUniforms {
 };
 
 // Constant linear sampler for texture lookups (bilinear filtering, no wrap)
-constant sampler textureSampler(
+constexpr sampler textureSampler(
     filter::linear,
     mag_filter::linear,
     min_filter::linear,

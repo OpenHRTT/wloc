@@ -5,10 +5,22 @@
 //  Created by Alexey Demin on 2025-12-05.
 //
 
+#if canImport(UIKit)
 import UIKit
+#elseif canImport(AppKit)
+import AppKit
+#endif
 import simd
 import MetalKit
 import MetalPerformanceShaders
+
+#if canImport(UIKit)
+typealias LiquidGlassPlatformColor = UIColor
+typealias LiquidGlassPlatformView = UIView
+#elseif canImport(AppKit)
+typealias LiquidGlassPlatformColor = NSColor
+typealias LiquidGlassPlatformView = NSView
+#endif
 
 struct LiquidGlass {
 
@@ -50,7 +62,7 @@ struct LiquidGlass {
     let backgroundTextureSizeCoefficient: Double
     let backgroundTextureScaleCoefficient: Double
     let backgroundTextureBlurRadius: Double
-    var tintColor: UIColor?
+    var tintColor: LiquidGlassPlatformColor?
     var shadowOverlay: Bool = false
 
     static func thumb(magnification: Double = 1) -> Self {
@@ -116,10 +128,11 @@ struct LiquidGlass {
         backgroundTextureSizeCoefficient: 1,
         backgroundTextureScaleCoefficient: 0.2,
         backgroundTextureBlurRadius: 0.3,
-        tintColor: UIColor(red: 0.9023525731, green: 0.9509486998, blue: 1, alpha: 0.8002892298),
+        tintColor: LiquidGlassPlatformColor(red: 0.9023525731, green: 0.9509486998, blue: 1, alpha: 0.8002892298),
     )
 }
 
+#if canImport(UIKit)
 final class BackdropView: UIView {
 
     override class var layerClass: AnyClass {
@@ -147,9 +160,27 @@ final class BackdropView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
 }
+#elseif canImport(AppKit)
+final class BackdropView: NSView {
+    init() {
+        super.init(frame: .zero)
+        wantsLayer = true
+        let backdropLayer = (NSClassFromString("CABackdropLayer") as? CALayer.Type)?.init() ?? CALayer()
+        layer = backdropLayer
+        layer?.setValue(false, forKey: "layerUsesCoreImageFilters")
+        layer?.setValue(true, forKey: "windowServerAware")
+        layer?.setValue(UUID().uuidString, forKey: "groupName")
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+}
+#endif
 
-final class ShadowView: UIView {
+final class ShadowView: LiquidGlassPlatformView {
 
+    #if canImport(UIKit)
     init() {
         super.init(frame: .zero)
 
@@ -157,22 +188,55 @@ final class ShadowView: UIView {
         backgroundColor = .clear
         layer.compositingFilter = "multiplyBlendMode"
     }
+    #elseif canImport(AppKit)
+    override init(frame frameRect: NSRect) {
+        super.init(frame: frameRect)
+
+        wantsLayer = true
+        layer?.backgroundColor = .clear
+        layer?.compositingFilter = "multiplyBlendMode"
+    }
+    
+    convenience init() {
+        self.init(frame: .zero)
+    }
+    #endif
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
+    #if canImport(UIKit)
     override func layoutSubviews() {
         super.layoutSubviews()
+        updateShadowPath()
+    }
+    #elseif canImport(AppKit)
+    override func layout() {
+        super.layout()
+        updateShadowPath()
+    }
+    #endif
 
+    private func updateShadowPath() {
         let shadowRadius = 3.5
-        let path = UIBezierPath(roundedRect: bounds.insetBy(dx: -1, dy: -shadowRadius / 2), cornerRadius: bounds.height / 2)
-        let innerPill = UIBezierPath(roundedRect: bounds.insetBy(dx: 0, dy: shadowRadius / 2), cornerRadius: bounds.height / 2).reversing()
-        path.append(innerPill)
-        layer.shadowPath = path.cgPath
+        let path = CGPath(
+            roundedRect: bounds.insetBy(dx: -1, dy: -shadowRadius / 2),
+            cornerWidth: bounds.height / 2,
+            cornerHeight: bounds.height / 2,
+            transform: nil
+        )
+        #if canImport(UIKit)
+        layer.shadowPath = path
         layer.shadowRadius = shadowRadius
         layer.shadowOpacity = 0.2
         layer.shadowOffset = .init(width: 0, height: shadowRadius + 2)
+        #elseif canImport(AppKit)
+        layer?.shadowPath = path
+        layer?.shadowRadius = shadowRadius
+        layer?.shadowOpacity = 0.2
+        layer?.shadowOffset = .init(width: 0, height: shadowRadius + 2)
+        #endif
     }
 }
 
@@ -251,6 +315,22 @@ final class LiquidGlassView: MTKView {
         fatalError("init(coder:) not implemented")
     }
 
+    private var backingLayer: CALayer? {
+        #if canImport(UIKit)
+        layer
+        #elseif canImport(AppKit)
+        layer
+        #endif
+    }
+
+    private var backingScale: CGFloat {
+        #if canImport(UIKit)
+        layer.contentsScale
+        #elseif canImport(AppKit)
+        window?.backingScaleFactor ?? NSScreen.main?.backingScaleFactor ?? 2
+        #endif
+    }
+
     func setupMetal() {
         guard let device else { return }
 
@@ -262,8 +342,13 @@ final class LiquidGlassView: MTKView {
         zeroCopyBridge = .init(device: device)
 
         // Make view transparent so we can see the effect
+        #if canImport(UIKit)
         isOpaque = false
         layer.isOpaque = false
+        #elseif canImport(AppKit)
+        wantsLayer = true
+        layer?.isOpaque = false
+        #endif
 
         isPaused = false // Enable to manually control drawing via `draw(_:)`
 //        enableSetNeedsDisplay = true  // Allow setNeedsDisplay() to trigger draws
@@ -272,23 +357,32 @@ final class LiquidGlassView: MTKView {
     // MARK: - Background Capture
 
     func captureBackground() {
+        #if canImport(UIKit)
         captureBackdrop()
+        #elseif canImport(AppKit)
+        captureRootView()
+        #endif
     }
 
     /// Captures the background content via root View using (presentation) Layer render.
     /// High CPU usage.
     func captureRootView() {
-        guard let rootView = findRootView() else { return }
+        guard let rootView = findRootView(),
+              let currentLayer = backingLayer?.presentation() ?? backingLayer else { return }
 
         let sizeCoefficient = liquidGlass.backgroundTextureSizeCoefficient
-        let scaleCoefficient = layer.contentsScale * liquidGlass.backgroundTextureScaleCoefficient
+        let scaleCoefficient = backingScale * liquidGlass.backgroundTextureScaleCoefficient
 
         // Determine our on-screen rect in the root view coordinate space.
         // IMPORTANT: During `UIView.animate`, the view's *model* layer jumps to the final frame
         // immediately; the in-flight position lives in the *presentation* layer. Using the
         // presentation layer makes the captured background track the view while it animates.
-        let currentLayer = layer.presentation() ?? layer
-        let frameInRoot = currentLayer.convert(currentLayer.bounds, to: rootView.layer)
+        #if canImport(UIKit)
+        let rootLayer = rootView.layer
+        #elseif canImport(AppKit)
+        guard let rootLayer = rootView.layer else { return }
+        #endif
+        let frameInRoot = currentLayer.convert(currentLayer.bounds, to: rootLayer)
 
         // Expand capture area around the MTKView center (in root view coordinates)
         let captureSize = CGSize(width: frameInRoot.width * sizeCoefficient,
@@ -309,7 +403,7 @@ final class LiquidGlassView: MTKView {
             context.translateBy(x: -captureRectInRoot.origin.x, y: -captureRectInRoot.origin.y)
 //            context.interpolationQuality = .none
 
-            let rootViewLayer = rootView.layer.presentation() ?? rootView.layer
+            let rootViewLayer = rootLayer.presentation() ?? rootLayer
             rootViewLayer.render(in: context)
         }
 
@@ -319,14 +413,16 @@ final class LiquidGlassView: MTKView {
     /// Captures the background content via CABackdropLayer using drawHierarchy.
     /// Noticeable rendering delay.
     func captureBackdrop() {
+        #if canImport(UIKit)
         guard let superview else { return }
         
         let sizeCoefficient = liquidGlass.backgroundTextureSizeCoefficient
-        let scaleCoefficient = layer.contentsScale * liquidGlass.backgroundTextureScaleCoefficient
+        let scaleCoefficient = backingScale * liquidGlass.backgroundTextureScaleCoefficient
 
         // Calculate frame using presentation layer for smooth animation tracking
-        let currentLayer = layer.presentation() ?? layer
-        let frameInSuperview = currentLayer.convert(currentLayer.bounds, to: superview.layer)
+        guard let currentLayer = backingLayer?.presentation() ?? backingLayer else { return }
+        let superviewLayer = superview.layer
+        let frameInSuperview = currentLayer.convert(currentLayer.bounds, to: superviewLayer)
         let captureSize = CGSize(width: frameInSuperview.width * sizeCoefficient,
                                  height: frameInSuperview.height * sizeCoefficient)
         let captureOrigin = CGPoint(x: frameInSuperview.midX - captureSize.width / 2,
@@ -350,6 +446,9 @@ final class LiquidGlassView: MTKView {
         }
 
         blurTexture()
+        #elseif canImport(AppKit)
+        captureRootView()
+        #endif
     }
 
     func blurTexture() {
@@ -357,21 +456,23 @@ final class LiquidGlassView: MTKView {
               let device,
               let commandBuffer = commandQueue.makeCommandBuffer(),
               var backgroundTexture else { return }
+        guard #available(iOS 9.0, macOS 10.13, *) else { return }
 
         // Apply GPU-accelerated Gaussian blur via MPS
         // Scale blur radius to pixels
-        let sigma = Float(liquidGlass.backgroundTextureBlurRadius * layer.contentsScale)
+        let sigma = Float(liquidGlass.backgroundTextureBlurRadius * backingScale)
         let blur = MPSImageGaussianBlur(device: device, sigma: sigma)
-        blur.edgeMode = .clamp
+        blur.edgeMode = MPSImageEdgeMode.clamp
 
-        blur.encode(commandBuffer: commandBuffer, inPlaceTexture: &backgroundTexture, fallbackCopyAllocator: nil)
+        let fallbackCopyAllocator: MPSCopyAllocator? = nil
+        blur.encode(commandBuffer: commandBuffer, inPlaceTexture: &backgroundTexture, fallbackCopyAllocator: fallbackCopyAllocator)
         commandBuffer.commit()
         commandBuffer.waitUntilCompleted()
     }
 
     func updateUniforms() {
         var uniforms = liquidGlass.shaderUniforms
-        let scaleFactor = layer.contentsScale
+        let scaleFactor = backingScale
 
         uniforms.resolution = .init(x: Float(bounds.width * scaleFactor),
                                     y: Float(bounds.height * scaleFactor))
@@ -410,7 +511,7 @@ final class LiquidGlassView: MTKView {
         }
 
 //        uniforms.cornerRoundnessExponent = (layer.cornerCurve == .continuous) ? 4 : 2
-        uniforms.cornerRadius = Float(layer.cornerRadius)
+        uniforms.cornerRadius = Float(backingLayer?.cornerRadius ?? 0)
 
         if let tintColor = liquidGlass.tintColor {
             uniforms.materialTint = tintColor.toSimdFloat4()
@@ -422,12 +523,22 @@ final class LiquidGlassView: MTKView {
 //        draw(bounds)
     }
 
+    #if canImport(UIKit)
     override func layoutSubviews() {
         super.layoutSubviews()
+        layoutLiquidGlass()
+    }
+    #elseif canImport(AppKit)
+    override func layout() {
+        super.layout()
+        layoutLiquidGlass()
+    }
+    #endif
 
+    private func layoutLiquidGlass() {
         updateUniforms()
 
-        let scale = layer.contentsScale * liquidGlass.backgroundTextureSizeCoefficient * liquidGlass.backgroundTextureScaleCoefficient
+        let scale = backingScale * liquidGlass.backgroundTextureSizeCoefficient * liquidGlass.backgroundTextureScaleCoefficient
         let width = Int(bounds.width * scale)
         let height = Int(bounds.height * scale)
         zeroCopyBridge.setupBuffer(width: width, height: height)
@@ -462,6 +573,7 @@ final class LiquidGlassView: MTKView {
     }
 }
 
+#if canImport(UIKit)
 extension UIColor {
     func toSimdFloat4() -> SIMD4<Float> {
         var r: CGFloat = 0, g: CGFloat = 0, b: CGFloat = 0, a: CGFloat = 0
@@ -469,12 +581,23 @@ extension UIColor {
         return .init(x: Float(r), y: Float(g), z: Float(b), w: Float(a))
     }
 }
+#elseif canImport(AppKit)
+extension NSColor {
+    func toSimdFloat4() -> SIMD4<Float> {
+        let color = usingColorSpace(.deviceRGB) ?? self
+        var r: CGFloat = 0, g: CGFloat = 0, b: CGFloat = 0, a: CGFloat = 0
+        color.getRed(&r, green: &g, blue: &b, alpha: &a)
+        return .init(x: Float(r), y: Float(g), z: Float(b), w: Float(a))
+    }
+}
+#endif
 
 // Helpers: Lerp for damping, UIColor to Half4
 //private func lerp(_ a: SIMD2<Float>, _ b: SIMD2<Float>, _ t: Float) -> SIMD2<Float> {
 //    return a * (1 - t) + b * t
 //}
 
+#if canImport(UIKit)
 extension UIView {
     /// Finds the root view in the view hierarchy.
     func findRootView() -> UIView? {
@@ -485,3 +608,15 @@ extension UIView {
         return current
     }
 }
+#elseif canImport(AppKit)
+extension NSView {
+    /// Finds the root view in the view hierarchy.
+    func findRootView() -> NSView? {
+        var current: NSView? = superview
+        while let parent = current?.superview {
+            current = parent
+        }
+        return current
+    }
+}
+#endif

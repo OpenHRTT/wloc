@@ -5,6 +5,7 @@
 //  Created by Alexey Demin on 2025-12-23.
 //
 
+#if canImport(UIKit)
 import UIKit
 
 public class LiquidGlassEffectView: UIView, AnyVisualEffectView {
@@ -15,7 +16,7 @@ public class LiquidGlassEffectView: UIView, AnyVisualEffectView {
     var liquidGlassView: LiquidGlassView? {
         didSet {
             oldValue?.removeFromSuperview()
-            if let liquidGlassView = liquidGlassView {
+            if let liquidGlassView {
                 insertSubview(liquidGlassView, belowSubview: contentView)
             }
         }
@@ -114,11 +115,6 @@ public class LiquidGlassEffect: UIVisualEffect {
 }
 
 /// A `LiquidGlassContainerEffect` renders multiple glass elements into a combined effect.
-///
-/// When using `LiquidGlassContainerEffect` with a `VisualEffectView` you can
-/// add individual glass elements to the visual effect view's contentView by nesting `VisualEffectView`'s
-/// configured with `LiquidGlassEffect`. In that configuration, the glass container will render all glass elements
-/// in one combined view, behind the visual effect view's `contentView`.
 public class LiquidGlassContainerEffect: UIVisualEffect {
 
     let isNative: Bool
@@ -152,23 +148,147 @@ public func VisualEffectView(effect: UIVisualEffect?) -> AnyVisualEffectView {
             let nativeEffect = UIGlassEffect(style: effect.style.nativeStyle)
             nativeEffect.isInteractive = effect.isInteractive
             nativeEffect.tintColor = effect.tintColor
-            // Returns the native iOS 26 Liquid Glass view
             return UIVisualEffectView(effect: nativeEffect)
         } else {
-            // Returns custom iOS 18 implementation
             return LiquidGlassEffectView(effect: effect)
         }
     } else if let effect = effect as? LiquidGlassContainerEffect {
         if #available(iOS 26.0, *), effect.isNative {
             let nativeEffect = UIGlassContainerEffect()
             nativeEffect.spacing = effect.spacing
-            // Returns the native iOS 26 Liquid Glass Container view
             return UIVisualEffectView(effect: nativeEffect)
         } else {
-            // Returns custom iOS 18 implementation
             return LiquidGlassEffectView(effect: effect)
         }
     } else {
         return UIVisualEffectView(effect: effect)
     }
 }
+
+#elseif canImport(AppKit)
+import AppKit
+
+public class LiquidGlassEffect: NSObject {
+    public enum Style {
+        case regular, clear
+
+        @available(macOS 26.0, *)
+        var nativeStyle: NSGlassEffectView.Style {
+            switch self {
+            case .regular: .regular
+            case .clear: .clear
+            }
+        }
+
+        var liquidGlass: LiquidGlass {
+            switch self {
+            case .regular: .regular
+            case .clear: .regular
+            }
+        }
+    }
+
+    let style: Style
+    let isNative: Bool
+
+    public var isInteractive = false
+    public var tintColor: NSColor?
+
+    public init(style: Style, isNative: Bool = true) {
+        self.style = style
+        self.isNative = isNative
+        super.init()
+    }
+}
+
+public class LiquidGlassContainerEffect: NSObject {
+    let isNative: Bool
+    public var spacing = 10.0
+
+    public init(isNative: Bool = true) {
+        self.isNative = isNative
+        super.init()
+    }
+}
+
+public protocol AnyVisualEffectView: NSView {
+    var contentView: NSView { get }
+}
+
+public final class LiquidGlassEffectView: NSView, AnyVisualEffectView {
+    public let contentView = NSView()
+
+    private var liquidGlassView: LiquidGlassView?
+    private var nativeGlassView: NSView?
+    private let cornerRadius: CGFloat
+
+    public init(effect: LiquidGlassEffect, cornerRadius: CGFloat = 24) {
+        self.cornerRadius = cornerRadius
+        super.init(frame: .zero)
+
+        wantsLayer = true
+        layer?.cornerRadius = cornerRadius
+        layer?.masksToBounds = true
+
+        if #available(macOS 26.0, *), effect.isNative {
+            let glassView = NSGlassEffectView()
+            glassView.style = effect.style.nativeStyle
+            glassView.cornerRadius = cornerRadius
+            glassView.tintColor = effect.tintColor
+            glassView.contentView = contentView
+            addSubview(glassView)
+            nativeGlassView = glassView
+        } else {
+            let glassView = LiquidGlassView(effect.style.liquidGlass)
+            glassView.layer?.cornerRadius = cornerRadius
+            addSubview(glassView)
+            liquidGlassView = glassView
+            addSubview(contentView)
+        }
+    }
+
+    public init(effect: LiquidGlassContainerEffect, cornerRadius: CGFloat = 24) {
+        self.cornerRadius = cornerRadius
+        super.init(frame: .zero)
+
+        wantsLayer = true
+        layer?.cornerRadius = cornerRadius
+        layer?.masksToBounds = true
+
+        if #available(macOS 26.0, *), effect.isNative {
+            let containerView = NSGlassEffectContainerView()
+            containerView.spacing = effect.spacing
+            containerView.contentView = contentView
+            addSubview(containerView)
+            nativeGlassView = containerView
+        } else {
+            let glassView = LiquidGlassView(.regular)
+            glassView.layer?.cornerRadius = cornerRadius
+            addSubview(glassView)
+            liquidGlassView = glassView
+            addSubview(contentView)
+        }
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    public override func layout() {
+        super.layout()
+
+        nativeGlassView?.frame = bounds
+        liquidGlassView?.frame = bounds
+        liquidGlassView?.layer?.cornerRadius = cornerRadius
+        contentView.frame = bounds
+    }
+}
+
+public func VisualEffectView(effect: LiquidGlassEffect) -> AnyVisualEffectView {
+    LiquidGlassEffectView(effect: effect)
+}
+
+public func VisualEffectView(effect: LiquidGlassContainerEffect) -> AnyVisualEffectView {
+    LiquidGlassEffectView(effect: effect)
+}
+#endif

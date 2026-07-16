@@ -5,6 +5,7 @@
 //  Created by Alexey Demin on 2025-12-19.
 //
 
+#if canImport(UIKit)
 import UIKit
 import MetalKit
 
@@ -368,3 +369,4 @@ public final class LiquidLensView: UIView, AnyLiquidLensView {
 }
 
 public typealias UILiquidLensView = UIView & AnyLiquidLensView
+#endif

@@ -20,6 +20,11 @@
 		16F7B6E8E6E588E26E8C290C /* WLocURLCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75E6249F27D71906CDCA640C /* WLocURLCommand.swift */; };
 		189685F78FFB82AB6CAAB8CB /* LiquidGlassFragment.metal in Sources */ = {isa = PBXBuildFile; fileRef = 64C20801036AF873D378E12F /* LiquidGlassFragment.metal */; };
 		1C9EAF8EF6F0ECDA886D7CC0 /* LiquidGlassView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 045CB05BDB0BF7827FB7A93B /* LiquidGlassView.swift */; };
+		A10000000000000000000001 /* LiquidGlassView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 045CB05BDB0BF7827FB7A93B /* LiquidGlassView.swift */; };
+		A10000000000000000000002 /* LiquidGlassEffectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC6F8F2728BE79BEE2D2A419 /* LiquidGlassEffectView.swift */; };
+		A10000000000000000000003 /* ZeroCopyBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59FA18DF2F9262D6B72F7418 /* ZeroCopyBridge.swift */; };
+		A10000000000000000000004 /* LiquidGlassFragment.metal in Sources */ = {isa = PBXBuildFile; fileRef = 64C20801036AF873D378E12F /* LiquidGlassFragment.metal */; };
+		A10000000000000000000005 /* LiquidGlassVertex.metal in Sources */ = {isa = PBXBuildFile; fileRef = 38732B259D02EA7EE53F08BB /* LiquidGlassVertex.metal */; };
 		1FE958989D92AACC04671CDE /* AppWLocMutator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44DBFE0DB77957A65032F726 /* AppWLocMutator.swift */; };
 		21FC421027345655463543CE /* AppWLocConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBAE5E6495746F73DAEA4733 /* AppWLocConfig.swift */; };
 		25C5545E0EBFB37E1C18DFCD /* AppWLocVPNManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 170D9453C2946040F3A0E027 /* AppWLocVPNManager.swift */; };
@@ -66,6 +71,7 @@
 		8C873AB74C767B3C6584CC44 /* AppWLocModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 086D0B98BDC3BC6E4313F191 /* AppWLocModels.swift */; };
 		94920E0706763239569DC1E4 /* AppWLocProxy.p12 in Resources */ = {isa = PBXBuildFile; fileRef = B11D1816DE5ECCBD6AD1B131 /* AppWLocProxy.p12 */; };
 		9729E15F7CC8A157F4AE4816 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15154B3AEF11D8A920DCA5C1 /* AppDelegate.swift */; };
+		9E4C119402B8442C81F711B0 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E4C119302B8442C81F711B0 /* main.swift */; };
 		A176916A0D6B8D2BAD9C1A3C /* AppWLocMutator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44DBFE0DB77957A65032F726 /* AppWLocMutator.swift */; };
 		A557476A60AAAEEAF35216B1 /* WLocTunnel-iOS.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 6D7E280FA03E627C6F6F19EE /* WLocTunnel-iOS.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		A9C1A0ECD0A14DA25DB18C14 /* CertificateDownloadServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85ABA53CB866EF36A55598A9 /* CertificateDownloadServer.swift */; };
@@ -180,6 +186,7 @@
 		85ABA53CB866EF36A55598A9 /* CertificateDownloadServer.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = CertificateDownloadServer.swift; sourceTree = "<group>"; };
 		8DA3FFD3DFA300EC4706F92B /* Pods_WLocTunnel_iOS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_WLocTunnel_iOS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		97B5569E1A17A1E69C2F3ED3 /* Info-iOS.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Info-iOS.plist"; sourceTree = "<group>"; };
+		9E4C119302B8442C81F711B0 /* main.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		A1C53079214FE279F94DE9C9 /* PacketTunnelProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = PacketTunnelProvider.swift; sourceTree = "<group>"; };
 		A9F9939D7325F27176EA3A51 /* AppWLocARPC.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AppWLocARPC.swift; sourceTree = "<group>"; };
 		ACA9346E3F57CB651E6FF6C9 /* LiquidGlassSwitch.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = LiquidGlassSwitch.swift; sourceTree = "<group>"; };
@@ -347,6 +354,7 @@
 		6A9998856E8E4C32B052DE06 /* WLocAppMac */ = {
 			isa = PBXGroup;
 			children = (
+				9E4C119302B8442C81F711B0 /* main.swift */,
 				15154B3AEF11D8A920DCA5C1 /* AppDelegate.swift */,
 				12D95F7773BD11BDF1CCC38D /* AppKitCompatibility.swift */,
 				B949A3D08253AAC89A9E91AB /* WLocMacMapViewController.swift */,
@@ -533,7 +541,8 @@
 				ORGANIZATIONNAME = WLocApp;
 				TargetAttributes = {
 					1B626612F40E706994400CFE = {
-						ProvisioningStyle = Automatic;
+						DevelopmentTeam = CDAW7B5WR4;
+						ProvisioningStyle = Manual;
 					};
 					575D026FF2A38F4C0B49400F = {
 						DevelopmentTeam = CDAW7B5WR4;
@@ -542,6 +551,9 @@
 					5919AA0DD8AFAC1250AC6540 = {
 						DevelopmentTeam = CDAW7B5WR4;
 						ProvisioningStyle = Manual;
+					};
+					F3768357635C9AAC6129D0D9 = {
+						DevelopmentTeam = CDAW7B5WR4;
 					};
 				};
 			};
@@ -812,8 +824,14 @@
 				F40A2BE80AC9AAB894078560 /* AppWLocModels.swift in Sources */,
 				D0E5772EDF296FDCFB239DCA /* AppWLocVPNManager.swift in Sources */,
 				6DA40ED5821536823512460F /* CertificateDownloadServer.swift in Sources */,
+				9E4C119402B8442C81F711B0 /* main.swift in Sources */,
 				9729E15F7CC8A157F4AE4816 /* AppDelegate.swift in Sources */,
 				54E469D7AC05EAFFC258F9FC /* AppKitCompatibility.swift in Sources */,
+				A10000000000000000000001 /* LiquidGlassView.swift in Sources */,
+				A10000000000000000000002 /* LiquidGlassEffectView.swift in Sources */,
+				A10000000000000000000003 /* ZeroCopyBridge.swift in Sources */,
+				A10000000000000000000004 /* LiquidGlassFragment.metal in Sources */,
+				A10000000000000000000005 /* LiquidGlassVertex.metal in Sources */,
 				872A02D28C5144B148BFB1EC /* WLocMacMapViewController.swift in Sources */,
 				84802B76300626B80052C738 /* AppWLocUtils.swift in Sources */,
 				84802B7C300626B80052C738 /* AppWLocCoordinateTool.swift in Sources */,
@@ -867,13 +885,16 @@
 				APPLICATION_EXTENSION_API_ONLY = YES;
 				CLANG_ENABLE_OBJC_WEAK = NO;
 				CODE_SIGN_ENTITLEMENTS = "Resources/Tunnel/WLocTunnel-macOS.entitlements";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Mac Developer";
 				CURRENT_PROJECT_VERSION = 1;
+				"DEVELOPMENT_TEAM[sdk=macosx*]" = CDAW7B5WR4;
 				INFOPLIST_FILE = "Resources/Tunnel/Info-macOS.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "$(APP_DISPLAY_NAME)";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @executable_path/../../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.wlocapp.mac.tunnel;
+				PRODUCT_BUNDLE_IDENTIFIER = com.hrtt.applocmac.tunnel;
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = apploc_mac_tunnel_dev;
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 5.0;
@@ -915,16 +936,20 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CLANG_ENABLE_OBJC_WEAK = NO;
 				CODE_SIGN_ENTITLEMENTS = "Resources/macOS/WLocApp-macOS.entitlements";
-				CODE_SIGN_STYLE = Automatic;
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Mac Developer";
+				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = "";
+				"DEVELOPMENT_TEAM[sdk=macosx*]" = CDAW7B5WR4;
 				INFOPLIST_FILE = Resources/macOS/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = WLoc;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.wlocapp.mac;
+				PRODUCT_BUNDLE_IDENTIFIER = com.hrtt.applocmac;
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = apploc_mac_dev;
 				SDKROOT = macosx;
 				SWIFT_VERSION = 5.0;
 			};
@@ -1026,16 +1051,20 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CLANG_ENABLE_OBJC_WEAK = NO;
 				CODE_SIGN_ENTITLEMENTS = "Resources/macOS/WLocApp-macOS.entitlements";
-				CODE_SIGN_STYLE = Automatic;
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Mac Developer";
+				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = "";
+				"DEVELOPMENT_TEAM[sdk=macosx*]" = CDAW7B5WR4;
 				INFOPLIST_FILE = Resources/macOS/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = WLoc;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.wlocapp.mac;
+				PRODUCT_BUNDLE_IDENTIFIER = com.hrtt.applocmac;
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = apploc_mac_dev;
 				SDKROOT = macosx;
 				SWIFT_VERSION = 5.0;
 			};
@@ -1075,13 +1104,16 @@
 				APPLICATION_EXTENSION_API_ONLY = YES;
 				CLANG_ENABLE_OBJC_WEAK = NO;
 				CODE_SIGN_ENTITLEMENTS = "Resources/Tunnel/WLocTunnel-macOS.entitlements";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Mac Developer";
 				CURRENT_PROJECT_VERSION = 1;
+				"DEVELOPMENT_TEAM[sdk=macosx*]" = CDAW7B5WR4;
 				INFOPLIST_FILE = "Resources/Tunnel/Info-macOS.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "$(APP_DISPLAY_NAME)";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @executable_path/../../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.wlocapp.mac.tunnel;
+				PRODUCT_BUNDLE_IDENTIFIER = com.hrtt.applocmac.tunnel;
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = apploc_mac_tunnel_dev;
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 5.0;
