@@ -6,7 +6,15 @@
 
 <p>在线体验：<a href="https://wloc8.com/" target="_blank">https://wloc8.com/</a>，TG群：https://t.me/wloc88</p>
 
-<a href="https://t.me/wloc88/8">使用教程>>></a>
+
+
+<p align="center">
+  <a href="https://t.me/wloc88/8">
+    <img src="定位教程.jpg" width="760" alt="OpenHRTT WLoc iPhone 定位使用教程">
+  </a>
+</p>
+
+<p align="center">点击图片可查看最新使用教程</p>
 
 <p align="center">
   面向 iOS 和 macOS 的实验性定位响应研究工具
@@ -112,14 +120,6 @@ com.example.wloc.tunnel
 在 Xcode 顶部选择 `WLocApp-iOS` 或 `WLocApp-macOS` Scheme，选择你的真机，然后点击 Run。
 
 ## 使用方法
-
-<p align="center">
-  <a href="https://t.me/wloc88/8">
-    <img src="定位教程.jpg" width="760" alt="OpenHRTT WLoc iPhone 定位使用教程">
-  </a>
-</p>
-
-<p align="center">点击图片可查看最新使用教程</p>
 
 ### iOS
 
