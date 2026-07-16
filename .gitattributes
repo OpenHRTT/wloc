@@ -1,0 +1,18 @@
+* text=auto eol=lf
+
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.cer binary
+*.p12 binary
+*.xcuserstate binary
+
+*.pbxproj text eol=lf
+*.plist text eol=lf
+*.entitlements text eol=lf
+*.xcscheme text eol=lf
+*.swift text eol=lf
+*.metal text eol=lf
+*.md text eol=lf
+*.sh text eol=lf

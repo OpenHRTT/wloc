@@ -1,0 +1,68 @@
+name: Bug report
+description: 报告可重现的错误
+title: "[Bug]: "
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        请不要上传私钥、.p12、Provisioning Profile、账号或真实位置数据。安全漏洞请按 SECURITY.md 私下报告。
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: 提交前检查
+      options:
+        - label: 我已搜索现有 Issue。
+          required: true
+        - label: 我没有附上任何敏感凭据或个人位置数据。
+          required: true
+  - type: textarea
+    id: description
+    attributes:
+      label: 问题描述
+      description: 实际发生了什么，你期望发生什么？
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: 复现步骤
+      placeholder: |
+        1. ...
+        2. ...
+        3. ...
+    validations:
+      required: true
+  - type: input
+    id: xcode
+    attributes:
+      label: Xcode 版本
+      placeholder: Xcode 26.6
+    validations:
+      required: true
+  - type: input
+    id: os
+    attributes:
+      label: 系统和设备
+      placeholder: iOS 18.x / iPhone ... 或 macOS ...
+    validations:
+      required: true
+  - type: dropdown
+    id: target
+    attributes:
+      label: 影响目标
+      options:
+        - iOS App
+        - iOS Tunnel
+        - macOS App
+        - macOS Tunnel
+        - Multiple targets
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: 日志
+      description: 请先删除凭据、位置和个人信息。
+      render: shell

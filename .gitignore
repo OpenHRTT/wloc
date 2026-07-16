@@ -1,0 +1,36 @@
+# macOS
+.DS_Store
+
+# Xcode user data and build products
+DerivedData/
+build/
+*.xcuserstate
+*.xccheckout
+*.xcscmblueprint
+xcuserdata/
+*.moved-aside
+
+# CocoaPods dependencies are restored with `pod install`
+Pods/
+
+# Locally generated TLS identities. Never publish private keys or reusable p12 files.
+app_wloc_certs/
+Resources/iOS/AppWLocRootCA.cer
+Resources/iOS/AppWLocProxy.p12
+Resources/macOS/AppWLocRootCA.cer
+Resources/macOS/AppWLocProxy.p12
+Resources/Tunnel/AppWLocProxy.p12
+*.key
+*.csr
+*.p12
+*.pfx
+*.mobileprovision
+
+# Local environment and editor files
+.env
+.env.*
+!.env.example
+.idea/
+.vscode/
+*.swp
+*.orig
