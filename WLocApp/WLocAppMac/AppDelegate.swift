@@ -20,6 +20,12 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             pendingURLs.removeAll()
         }
     }
+    
+    func applicationShouldTerminate(_ sender: NSApplication) -> NSApplication.TerminateReply {
+        
+        return .terminateNow
+    }
+    
 
     private func showMainWindow() {
         if let windowController {
@@ -41,12 +47,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         window.contentViewController = controller
         window.title = AppWLocConfig.displayName
         window.titleVisibility = .hidden
-        window.titlebarAppearsTransparent = true
-        window.isMovableByWindowBackground = false
         window.minSize = windowSize
         window.contentMinSize = windowSize
-        window.isReleasedWhenClosed = false
-        window.isRestorable = false
+//        window.isReleasedWhenClosed = false
+//        window.isRestorable = false
         if #available(macOS 10.12, *) {
             window.tabbingMode = .disallowed
         }
@@ -63,6 +67,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private func presentMainWindow(_ window: NSWindow) {
         window.makeKeyAndOrderFront(nil)
         window.orderFrontRegardless()
+        window.center()
         NSApp.activate(ignoringOtherApps: true)
         
         DispatchQueue.main.async { [weak self, weak window] in

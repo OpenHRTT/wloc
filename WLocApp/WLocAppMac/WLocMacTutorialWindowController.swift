@@ -39,6 +39,10 @@ final class WLocMacTutorialViewController: NSViewController {
 
         let container = NSView()
         scrollView.documentView = container
+        container.snp.makeConstraints { make in
+            make.edges.width.equalToSuperview()
+        }
+        
 
         stack.orientation = .vertical
         stack.alignment = .leading

@@ -48,18 +48,15 @@ enum AppWLocProxyError: Error, LocalizedError {
 /// 坐标时，代理会直接基于客户端请求构造一个精简 WLoc 响应；其他路径保持
 /// 原样转发，避免影响旧定位流程。
 final class AppWLocHTTPProxyServer {
-    typealias LogHandler = (String) -> Void
 
     private let port: UInt16
     private let queue = DispatchQueue(label: "com.openhrtt.wloc8.accept")
     private let workerQueue = DispatchQueue(label: "com.openhrtt.wloc8.worker", qos: .utility, attributes: .concurrent)
     private var listenFD: Int32 = -1
     private var acceptSource: DispatchSourceRead?
-    private let logHandler: LogHandler?
 
-    init(port: UInt16, logHandler: LogHandler? = nil) {
+    init(port: UInt16) {
         self.port = port
-        self.logHandler = logHandler
     }
 
     func start() throws {
@@ -105,7 +102,7 @@ final class AppWLocHTTPProxyServer {
         }
         acceptSource = source
         source.resume()
-        log("\(AppWLocConfig.displayName) 本地代理已监听 127.0.0.1:\(port)")
+        AppWLocUtils.debugLog("\(AppWLocConfig.displayName) 本地代理已监听 127.0.0.1:\(port)")
     }
 
     func stop() {
@@ -119,10 +116,11 @@ final class AppWLocHTTPProxyServer {
             let clientFD = accept(listenFD, nil, nil)
             if clientFD < 0 {
                 if errno == EAGAIN || errno == EWOULDBLOCK { return }
-                log("\(AppWLocConfig.displayName) 接收连接失败：\(errno)")
+                AppWLocUtils.debugLog("\(AppWLocConfig.displayName) 接收连接失败：\(errno)")
                 return
             }
 
+            AppWLocUtils.debugLog("\(AppWLocConfig.displayName) 本地代理收到客户端连接 fd=\(clientFD)")
             workerQueue.async { [weak self] in
                 self?.handleClient(clientFD)
             }
@@ -135,6 +133,7 @@ final class AppWLocHTTPProxyServer {
         do {
             let connectRequest = try readProxyHeader(from: clientFD)
             let target = try parseConnectTarget(connectRequest)
+            AppWLocUtils.debugLog("\(AppWLocConfig.displayName) 本地代理 CONNECT \(target.host):\(target.port)")
             guard AppWLocConfig.appWLocHosts.contains(target.host) else {
                 throw AppWLocProxyError.unsupportedHost(target.host)
             }
@@ -147,9 +146,10 @@ final class AppWLocHTTPProxyServer {
             }
 
             try writeAll(Data("HTTP/1.1 200 Connection Established\r\n\r\n".utf8), to: clientFD)
+            AppWLocUtils.debugLog("\(AppWLocConfig.displayName) 本地代理开始 TLS 握手 host=\(target.host)")
             try handleTLSRequest(clientFD: clientFD, host: target.host, identity: identity)
         } catch {
-            log("\(AppWLocConfig.displayName) 代理连接结束：\(error.localizedDescription)")
+            AppWLocUtils.debugLog("\(AppWLocConfig.displayName) 代理连接结束：\(error.localizedDescription)")
             close(clientFD)
         }
     }
@@ -181,12 +181,14 @@ final class AppWLocHTTPProxyServer {
         guard CFReadStreamOpen(cfReadStream), CFWriteStreamOpen(cfWriteStream) else {
             throw AppWLocProxyError.tlsOpenFailed
         }
+        AppWLocUtils.debugLog("\(AppWLocConfig.displayName) 本地代理 TLS 已打开 host=\(host)")
         defer {
             inputStream.close()
             outputStream.close()
         }
 
         let request = try readHTTPRequest(from: inputStream, host: host)
+        AppWLocUtils.debugLog("\(AppWLocConfig.displayName) 本地代理 HTTPS \(request.method) https://\(request.host)\(request.path)")
         let shouldLogWLoc = isWLocRequest(request)
         if shouldLogWLoc {
             logWLocRequest(request)
@@ -276,7 +278,7 @@ final class AppWLocHTTPProxyServer {
         guard isWLocRequest(request),
               let state = AppWLocStateStore.shared.load() else {
             if isWLocRequest(request) {
-                log("\(AppWLocConfig.displayName) 命中接口但未改写：锁定坐标不存在")
+                AppWLocUtils.debugLog("\(AppWLocConfig.displayName) 命中接口但未改写：锁定坐标不存在")
             }
             return nil
         }
@@ -284,11 +286,11 @@ final class AppWLocHTTPProxyServer {
         do {
             let response = try AppWLocMutator.buildResponseBody(fromRequestBody: request.body, using: state)
             if let d = try? JSONEncoder().encode(state), let str = String(data: d, encoding: .utf8) {
-                log("\(AppWLocConfig.displayName) 响应已按请求构造：\(request.host)\(request.path)，参数：\(str)")
+                AppWLocUtils.debugLog("\(AppWLocConfig.displayName) 响应已按请求构造：\(request.host)\(request.path)，参数：\(str)")
             }
             return response
         } catch {
-            log("\(AppWLocConfig.displayName) 响应构造失败，已回退上游：\(error.localizedDescription)")
+            AppWLocUtils.debugLog("\(AppWLocConfig.displayName) 响应构造失败，已回退上游：\(error.localizedDescription)")
             return nil
         }
     }
@@ -299,7 +301,7 @@ final class AppWLocHTTPProxyServer {
     }
 
     private func logWLocRequest(_ request: AppWLocHTTPRequest) {
-        log(
+        AppWLocUtils.debugLog(
             [
                 "\(AppWLocConfig.displayName) 命中接口输入",
                 "URL：\(request.method) https://\(request.host)\(request.path)",
@@ -310,7 +312,7 @@ final class AppWLocHTTPProxyServer {
     }
 
     private func logWLocUpstreamResponse(_ response: AppWLocHTTPResponse, request: AppWLocHTTPRequest) {
-        log(
+        AppWLocUtils.debugLog(
             [
                 "\(AppWLocConfig.displayName) 上游接口输出",
                 "URL：https://\(request.host)\(request.path)",
@@ -327,7 +329,7 @@ final class AppWLocHTTPProxyServer {
         originalBody: Data,
         request: AppWLocHTTPRequest
     ) {
-        log(
+        AppWLocUtils.debugLog(
             [
                 "\(AppWLocConfig.displayName) 返回客户端输出",
                 "URL：https://\(request.host)\(request.path)",
@@ -339,7 +341,7 @@ final class AppWLocHTTPProxyServer {
     }
 
     private func logWLocSyntheticResponse(_ body: Data, request: AppWLocHTTPRequest) {
-        log(
+        AppWLocUtils.debugLog(
             [
                 "\(AppWLocConfig.displayName) 返回客户端输出",
                 "URL：https://\(request.host)\(request.path)",
@@ -560,11 +562,6 @@ final class AppWLocHTTPProxyServer {
         }
     }
 
-    private func log(_ message: String) {
-        logHandler?(message)
-        print(message)
-        NSLog("%@", message)
-    }
 }
 
 private struct AppWLocHTTPRequest {

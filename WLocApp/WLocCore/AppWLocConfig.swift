@@ -43,12 +43,25 @@ enum AppWLocConfig {
     static let localProxyPort: UInt16 = 19090
     static let certificateServerPort: UInt = 18088
 
-    static let appWLocHosts: Set<String> = [
+    static let iOSWLocHosts: Set<String> = [
         "gs-loc.apple.com",
         "gs-loc-cn.apple.com"
     ]
+    static let iOSWLocPath = "/clls/wloc"
 
-    static let wlocPath = "/clls/wloc"
+    static let macOSWLocHosts: Set<String> = [
+        "gs-loc.apple.com",
+        "gs-loc-cn.apple.com"
+    ]
+    static let macOSWLocPath = "/clls/wloc"
+
+    #if os(macOS)
+    static let appWLocHosts = macOSWLocHosts
+    static let wlocPath = macOSWLocPath
+    #else
+    static let appWLocHosts = iOSWLocHosts
+    static let wlocPath = iOSWLocPath
+    #endif
     static let proxyIdentityResourceName = "AppWLocProxy"
     static let rootCertificateResourceName = "AppWLocRootCA"
     static let proxyIdentityPassword = "app-wloc"

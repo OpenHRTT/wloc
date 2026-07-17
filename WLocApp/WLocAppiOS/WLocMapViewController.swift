@@ -29,6 +29,8 @@ final class WLocMapViewController: UIViewController {
     private let favoriteButton = WLocGlassButton(title: "收藏", style: .secondary)
     private let favoritesButton = WLocGlassButton(title: "收藏夹", style: .secondary)
     private let tutorialButton = WLocGlassButton(title: "教程", style: .secondary)
+    private let telegramButton = WLocGlassButton(title: "Telegram", style: .secondary)
+    private let githubButton = WLocGlassButton(title: "GitHub", style: .secondary)
     private let locateButton = WLocGlassButton(title: "", style: .icon)
 
     private var searchResults: [AppWLocPlace] = []
@@ -127,6 +129,18 @@ final class WLocMapViewController: UIViewController {
         favoriteButton.addTarget(self, action: #selector(addFavorite), for: .touchUpInside)
         favoritesButton.addTarget(self, action: #selector(openFavorites), for: .touchUpInside)
         tutorialButton.addTarget(self, action: #selector(openTutorial), for: .touchUpInside)
+        configureExternalLinkButton(
+            telegramButton,
+            image: WLocExternalIcon.image(named: "paperplane.fill", fallback: .telegram, size: CGSize(width: 18, height: 18)),
+            accessibilityLabel: "打开 Telegram"
+        )
+        telegramButton.addTarget(self, action: #selector(openTelegram), for: .touchUpInside)
+        configureExternalLinkButton(
+            githubButton,
+            image: WLocExternalIcon.image(named: "chevron.left.forwardslash.chevron.right", fallback: .code, size: CGSize(width: 18, height: 18)),
+            accessibilityLabel: "打开 GitHub"
+        )
+        githubButton.addTarget(self, action: #selector(openGitHub), for: .touchUpInside)
         locateButton.setTitle(nil, for: .normal)
         locateButton.setImage(WLocLocationIcon.image(size: CGSize(width: 23, height: 23)), for: .normal)
         locateButton.tintColor = UIColor(red: 0.05, green: 0.16, blue: 0.28, alpha: 1)
@@ -209,7 +223,12 @@ final class WLocMapViewController: UIViewController {
         secondaryRow.spacing = 10
         secondaryRow.distribution = .fillEqually
 
-        let stack = UIStackView(arrangedSubviews: [titleLabel, detailLabel, coordinateLabel, lockButton, secondaryRow])
+        let externalLinkRow = UIStackView(arrangedSubviews: [telegramButton, githubButton])
+        externalLinkRow.axis = .horizontal
+        externalLinkRow.spacing = 10
+        externalLinkRow.distribution = .fillEqually
+
+        let stack = UIStackView(arrangedSubviews: [titleLabel, detailLabel, coordinateLabel, lockButton, secondaryRow, externalLinkRow])
         stack.axis = .vertical
         stack.spacing = 10
         bottomGlass.contentView.addSubview(stack)
@@ -222,6 +241,19 @@ final class WLocMapViewController: UIViewController {
         secondaryRow.snp.makeConstraints { make in
             make.height.equalTo(44)
         }
+        externalLinkRow.snp.makeConstraints { make in
+            make.height.equalTo(44)
+        }
+    }
+
+    private func configureExternalLinkButton(_ button: WLocGlassButton, image: UIImage, accessibilityLabel: String) {
+        button.setImage(image.withRenderingMode(.alwaysTemplate), for: .normal)
+        button.tintColor = UIColor(red: 0.08, green: 0.12, blue: 0.18, alpha: 1)
+        button.imageView?.contentMode = .scaleAspectFit
+        button.semanticContentAttribute = .forceLeftToRight
+        button.imageEdgeInsets = UIEdgeInsets(top: 0, left: -4, bottom: 0, right: 6)
+        button.titleEdgeInsets = UIEdgeInsets(top: 0, left: 4, bottom: 0, right: -4)
+        button.accessibilityLabel = accessibilityLabel
     }
 
     private func updateEmptySelection() {
@@ -544,6 +576,19 @@ final class WLocMapViewController: UIViewController {
         present(navigation, animated: true)
     }
 
+    @objc private func openTelegram() {
+        openExternalURL(WLocExternalLink.telegram)
+    }
+
+    @objc private func openGitHub() {
+        openExternalURL(WLocExternalLink.github)
+    }
+
+    private func openExternalURL(_ url: URL) {
+        view.endEditing(true)
+        UIApplication.shared.open(url, options: [:])
+    }
+
     private func setBusy(_ busy: Bool, title: String) {
         lockButton.isEnabled = !busy
         lockButton.alpha = busy ? 0.7 : 1
@@ -753,5 +798,82 @@ private enum WLocLocationIcon {
         shine.stroke()
 
         return UIGraphicsGetImageFromCurrentImageContext() ?? UIImage()
+    }
+}
+
+private enum WLocExternalLink {
+    static let telegram = URL(string: "https://t.me/wloc88")!
+    static let github = URL(string: "https://github.com/OpenHRTT/wloc")!
+}
+
+private enum WLocExternalIcon {
+    enum Fallback {
+        case telegram
+        case code
+    }
+
+    static func image(named systemName: String, fallback: Fallback, size: CGSize) -> UIImage {
+        if #available(iOS 13.0, *), let systemImage = UIImage(systemName: systemName) {
+            return systemImage
+        }
+
+        return fallbackImage(fallback, size: size)
+    }
+
+    private static func fallbackImage(_ icon: Fallback, size: CGSize) -> UIImage {
+        UIGraphicsBeginImageContextWithOptions(size, false, 0)
+        defer { UIGraphicsEndImageContext() }
+
+        let color = UIColor(red: 0.08, green: 0.12, blue: 0.18, alpha: 1)
+        color.setStroke()
+        color.setFill()
+
+        switch icon {
+        case .telegram:
+            drawTelegramIcon(in: CGRect(origin: .zero, size: size))
+        case .code:
+            drawCodeIcon(in: CGRect(origin: .zero, size: size))
+        }
+
+        return UIGraphicsGetImageFromCurrentImageContext() ?? UIImage()
+    }
+
+    private static func drawTelegramIcon(in rect: CGRect) {
+        let path = UIBezierPath()
+        path.move(to: CGPoint(x: rect.minX + rect.width * 0.08, y: rect.minY + rect.height * 0.45))
+        path.addLine(to: CGPoint(x: rect.minX + rect.width * 0.92, y: rect.minY + rect.height * 0.12))
+        path.addLine(to: CGPoint(x: rect.minX + rect.width * 0.72, y: rect.minY + rect.height * 0.9))
+        path.addLine(to: CGPoint(x: rect.minX + rect.width * 0.45, y: rect.minY + rect.height * 0.64))
+        path.addLine(to: CGPoint(x: rect.minX + rect.width * 0.3, y: rect.minY + rect.height * 0.78))
+        path.addLine(to: CGPoint(x: rect.minX + rect.width * 0.35, y: rect.minY + rect.height * 0.58))
+        path.close()
+        path.fill()
+    }
+
+    private static func drawCodeIcon(in rect: CGRect) {
+        let left = UIBezierPath()
+        left.move(to: CGPoint(x: rect.minX + rect.width * 0.38, y: rect.minY + rect.height * 0.22))
+        left.addLine(to: CGPoint(x: rect.minX + rect.width * 0.16, y: rect.minY + rect.height * 0.5))
+        left.addLine(to: CGPoint(x: rect.minX + rect.width * 0.38, y: rect.minY + rect.height * 0.78))
+        left.lineWidth = 2
+        left.lineCapStyle = .round
+        left.lineJoinStyle = .round
+        left.stroke()
+
+        let right = UIBezierPath()
+        right.move(to: CGPoint(x: rect.minX + rect.width * 0.62, y: rect.minY + rect.height * 0.22))
+        right.addLine(to: CGPoint(x: rect.minX + rect.width * 0.84, y: rect.minY + rect.height * 0.5))
+        right.addLine(to: CGPoint(x: rect.minX + rect.width * 0.62, y: rect.minY + rect.height * 0.78))
+        right.lineWidth = 2
+        right.lineCapStyle = .round
+        right.lineJoinStyle = .round
+        right.stroke()
+
+        let slash = UIBezierPath()
+        slash.move(to: CGPoint(x: rect.minX + rect.width * 0.56, y: rect.minY + rect.height * 0.18))
+        slash.addLine(to: CGPoint(x: rect.minX + rect.width * 0.44, y: rect.minY + rect.height * 0.82))
+        slash.lineWidth = 2
+        slash.lineCapStyle = .round
+        slash.stroke()
     }
 }

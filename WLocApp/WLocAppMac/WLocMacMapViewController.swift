@@ -57,7 +57,8 @@ final class WLocMacMapViewController: NSViewController {
     private let lockButton = NSButton.wlocButton("锁定位置")
     private let favoriteButton = NSButton.wlocButton("加入收藏")
     private let tutorialButton = NSButton.wlocButton("教程与证书")
-    private let selectionHintLabel = NSTextField.wlocLabel("单击地图选择位置")
+    private let telegramButton = NSButton.wlocButton("Telegram")
+    private let githubButton = NSButton.wlocButton("GitHub")
     private let selectedAnnotation = MKPointAnnotation()
 
     private let geocoder = CLGeocoder()
@@ -70,7 +71,8 @@ final class WLocMacMapViewController: NSViewController {
     private var tutorialWindow: WLocMacTutorialWindowController?
     private var mapClickGesture: NSClickGestureRecognizer?
     private weak var controlsPanel: NSView?
-    private weak var hintPanel: NSView?
+    private var shouldSelectNextLocationUpdate = false
+    private var isRefreshingLocationAfterLock = false
 
     override func loadView() {
         view = NSView()
@@ -113,11 +115,6 @@ final class WLocMacMapViewController: NSViewController {
         selectedAnnotation.coordinate = CLLocationCoordinate2D(latitude: 31.2304, longitude: 121.4737)
         selectedAnnotation.title = "地图中心"
 
-        selectionHintLabel.alignment = .center
-        selectionHintLabel.font = .systemFont(ofSize: 13, weight: .medium)
-        selectionHintLabel.textColor = .secondaryLabelColor
-        selectionHintLabel.backgroundColor = .clear
-
         locationManager.delegate = self
         locationManager.desiredAccuracy = kCLLocationAccuracyBest
 
@@ -138,10 +135,20 @@ final class WLocMacMapViewController: NSViewController {
         coordinateLabel.font = .monospacedDigitSystemFont(ofSize: 12, weight: .regular)
         coordinateLabel.textColor = .secondaryLabelColor
 
-        [lockButton, favoriteButton, tutorialButton].forEach {
+        [lockButton, favoriteButton, tutorialButton, telegramButton, githubButton].forEach {
             $0.bezelStyle = .rounded
             $0.controlSize = .regular
         }
+        configureExternalLinkButton(
+            telegramButton,
+            image: WLocMacExternalIcon.image(named: "paperplane.fill", fallback: .telegram, size: NSSize(width: 17, height: 17)),
+            toolTip: "打开 Telegram: https://t.me/wloc88"
+        )
+        configureExternalLinkButton(
+            githubButton,
+            image: WLocMacExternalIcon.image(named: "chevron.left.forwardslash.chevron.right", fallback: .code, size: NSSize(width: 17, height: 17)),
+            toolTip: "打开 GitHub: https://github.com/OpenHRTT/wloc"
+        )
         [zoomInButton, zoomOutButton, currentLocationButton].forEach(configureMapControlButton)
 
         lockButton.target = self
@@ -150,6 +157,10 @@ final class WLocMacMapViewController: NSViewController {
         favoriteButton.action = #selector(addFavorite)
         tutorialButton.target = self
         tutorialButton.action = #selector(openTutorial)
+        telegramButton.target = self
+        telegramButton.action = #selector(openTelegram)
+        githubButton.target = self
+        githubButton.action = #selector(openGitHub)
         zoomInButton.target = self
         zoomInButton.action = #selector(zoomIn)
         zoomOutButton.target = self
@@ -181,6 +192,12 @@ final class WLocMacMapViewController: NSViewController {
         button.font = .systemFont(ofSize: 18, weight: .semibold)
     }
 
+    private func configureExternalLinkButton(_ button: NSButton, image: NSImage, toolTip: String) {
+        button.image = image
+        button.imagePosition = .imageLeft
+        button.toolTip = toolTip
+    }
+
     private func layoutViews() {
         let sidebar = LiquidGlassEffectView(
             effect: LiquidGlassEffect(style: .regular, isNative: true),
@@ -190,21 +207,15 @@ final class WLocMacMapViewController: NSViewController {
             effect: LiquidGlassEffect(style: .regular, isNative: true),
             cornerRadius: 23
         )
-        let hintPanel = LiquidGlassEffectView(
-            effect: LiquidGlassEffect(style: .clear, isNative: true),
-            cornerRadius: 18
-        )
         self.controlsPanel = controlsPanel
-        self.hintPanel = hintPanel
 
         view.addSubview(mapView)
         view.addSubview(sidebar)
-        mapView.addSubview(controlsPanel)
-        mapView.addSubview(hintPanel)
+        view.addSubview(controlsPanel)
+
         controlsPanel.contentView.addSubview(zoomInButton)
         controlsPanel.contentView.addSubview(zoomOutButton)
         controlsPanel.contentView.addSubview(currentLocationButton)
-        hintPanel.contentView.addSubview(selectionHintLabel)
 
         mapView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
@@ -221,12 +232,7 @@ final class WLocMacMapViewController: NSViewController {
             make.width.equalTo(54)
             make.height.equalTo(164)
         }
-        hintPanel.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(72)
-            make.centerX.equalToSuperview()
-            make.width.greaterThanOrEqualTo(178)
-            make.height.equalTo(36)
-        }
+        
         zoomInButton.snp.makeConstraints { make in
             make.top.equalToSuperview().offset(8)
             make.centerX.equalToSuperview()
@@ -241,9 +247,6 @@ final class WLocMacMapViewController: NSViewController {
             make.top.equalTo(zoomOutButton.snp.bottom).offset(10)
             make.centerX.equalToSuperview()
             make.width.height.equalTo(zoomInButton)
-        }
-        selectionHintLabel.snp.makeConstraints { make in
-            make.edges.equalToSuperview().inset(NSEdgeInsets(top: 0, left: 16, bottom: 0, right: 16))
         }
 
         let searchScroll = NSScrollView()
@@ -274,7 +277,13 @@ final class WLocMacMapViewController: NSViewController {
         secondaryActionStack.spacing = 8
         secondaryActionStack.distribution = .fillEqually
 
-        [lockButton, favoriteButton, tutorialButton].forEach { button in
+        let externalLinkStack = NSStackView(views: [telegramButton, githubButton])
+        externalLinkStack.orientation = .horizontal
+        externalLinkStack.spacing = 10
+        externalLinkStack.distribution = .fillEqually
+        secondaryActionStack.addArrangedSubview(externalLinkStack)
+
+        [lockButton, favoriteButton, tutorialButton, telegramButton, githubButton].forEach { button in
             button.snp.makeConstraints { make in
                 make.height.equalTo(36)
             }
@@ -335,7 +344,7 @@ final class WLocMacMapViewController: NSViewController {
     private func updateSelectedPlace(_ place: AppWLocPlace) {
         selectedPlace = place
         titleLabel.stringValue = place.name
-        detailLabel.stringValue = place.detail.isEmpty ? "单击地图选择位置，或搜索一个地名" : place.detail
+        detailLabel.stringValue = place.detail
         coordinateLabel.stringValue = place.coordinateText
         favoriteButton.isEnabled = !AppWLocFavoriteStore.shared.contains(place)
         favoriteButton.title = favoriteButton.isEnabled ? "加入收藏" : "已收藏"
@@ -360,11 +369,10 @@ final class WLocMacMapViewController: NSViewController {
         }
     }
 
-    private func selectCoordinate(_ coordinate: CLLocationCoordinate2D, name: String = "已选择位置", detail: String = "") {
+    private func selectCoordinate(_ coordinate: CLLocationCoordinate2D, name: String = "查询中...", detail: String = "") {
         let place = AppWLocPlace(name: name, detail: detail, latitude: coordinate.latitude, longitude: coordinate.longitude)
         updateSelectedPlace(place)
         updateSelectedAnnotation(with: place)
-        selectionHintLabel.stringValue = "已选择地图上的位置"
 
         reverseGeocodeWorkItem?.cancel()
         let workItem = DispatchWorkItem { [weak self] in
@@ -398,7 +406,12 @@ final class WLocMacMapViewController: NSViewController {
 
     @objc private func lockCurrentPlace() {
         guard let place = selectedPlace else { return }
-        lock(place, successMessage: "锁定成功。")
+        var msg = "锁定成功。请确认已安装并始终信任证书，然后关闭系统定位服务，等待两秒后再打开。"
+        #if DEBUG
+        let logPath = AppWLocUtils.debugLogURL?.path ?? "/tmp/AppWLoc/wloc-debug.log"
+        msg += "\n\n调试日志：\(logPath)"
+        #endif
+        lock(place, successMessage:msg)
     }
 
     private func lock(_ place: AppWLocPlace, successMessage: String) {
@@ -411,6 +424,9 @@ final class WLocMacMapViewController: NSViewController {
                 switch result {
                 case .success:
                     self.lockButton.title = "锁定位置"
+                    AppWLocUtils.mainThreadAfter(2.0) { [weak self] in
+                        self?.startSystemLocationRefresh(selectResult: false)
+                    }
                     self.showAlert(title: "已锁定", message: successMessage)
                 case .failure(let error):
                     self.lockButton.title = "锁定位置"
@@ -459,6 +475,19 @@ final class WLocMacMapViewController: NSViewController {
         controller.showWindow(self)
     }
 
+    @objc private func openTelegram() {
+        openExternalURL(WLocMacExternalLink.telegram)
+    }
+
+    @objc private func openGitHub() {
+        openExternalURL(WLocMacExternalLink.github)
+    }
+
+    private func openExternalURL(_ url: URL) {
+        view.window?.makeFirstResponder(nil)
+        NSWorkspace.shared.open(url)
+    }
+
     @objc private func performSearch() {
         let query = searchField.stringValue.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !query.isEmpty else { return }
@@ -473,9 +502,9 @@ final class WLocMacMapViewController: NSViewController {
             }
             self.searchResults = response?.mapItems.prefix(12).map { AppWLocPlace(mapItem: $0) } ?? []
             self.searchTable.reloadData()
-            if let first = self.searchResults.first {
-                self.moveMap(to: first)
-            }
+//            if let first = self.searchResults.first {
+//                self.moveMap(to: first)
+//            }
         }
     }
 
@@ -502,16 +531,14 @@ final class WLocMacMapViewController: NSViewController {
     }
 
     private func shouldSelectMapPoint(for recognizer: NSGestureRecognizer) -> Bool {
-        let point = recognizer.location(in: mapView)
+        guard let superview = mapView.superview else { return true }
+        let point = recognizer.location(in: superview)
         guard let hitView = mapView.hitTest(point) else { return true }
 
         if hitView is NSControl {
             return false
         }
         if let controlsPanel, hitView.isDescendant(of: controlsPanel) {
-            return false
-        }
-        if let hintPanel, hitView.isDescendant(of: hintPanel) {
             return false
         }
 
@@ -535,19 +562,81 @@ final class WLocMacMapViewController: NSViewController {
             return
         }
 
+        startSystemLocationRefresh(selectResult: true)
+    }
+
+    private func startSystemLocationRefresh(selectResult: Bool) {
+        shouldSelectNextLocationUpdate = selectResult
+        isRefreshingLocationAfterLock = !selectResult
+        mapView.showsUserLocation = true
+
         let status = CLLocationManager.authorizationStatus()
+        AppWLocUtils.debugLog(
+            "\(AppWLocConfig.displayName) macOS 准备刷新系统定位 selectResult=\(selectResult)，status=\(authorizationStatusDescription(status))"
+        )
         switch status {
         case .notDetermined:
-            mapView.showsUserLocation = true
             if #available(macOS 10.15, *) {
                 locationManager.requestWhenInUseAuthorization()
             }
+            AppWLocUtils.debugLog("\(AppWLocConfig.displayName) macOS 请求定位权限并启动定位刷新")
             locationManager.startUpdatingLocation()
         case .authorizedAlways, .authorizedWhenInUse:
-            mapView.showsUserLocation = true
+            AppWLocUtils.debugLog("\(AppWLocConfig.displayName) macOS 启动定位刷新 selectResult=\(selectResult)")
             locationManager.startUpdatingLocation()
         default:
-            showAlert(title: "无法定位", message: "请在系统设置中允许 \(AppWLocConfig.displayName) 使用定位服务。")
+            AppWLocUtils.debugLog(
+                "\(AppWLocConfig.displayName) macOS 定位当前不可用，等待用户重新开启定位服务 status=\(authorizationStatusDescription(status))"
+            )
+            if selectResult {
+                shouldSelectNextLocationUpdate = false
+                isRefreshingLocationAfterLock = false
+                showAlert(title: "无法定位", message: "请在系统设置中允许 \(AppWLocConfig.displayName) 使用定位服务。")
+            }
+        }
+    }
+
+    private func handleLocationAuthorizationChange(_ status: CLAuthorizationStatus) {
+        let hasLockedState = AppWLocStateStore.shared.load() != nil
+        AppWLocUtils.debugLog(
+            "\(AppWLocConfig.displayName) macOS 定位授权变化 status=\(authorizationStatusDescription(status))，afterLock=\(isRefreshingLocationAfterLock)，selectNext=\(shouldSelectNextLocationUpdate)，locked=\(hasLockedState)"
+        )
+        guard isRefreshingLocationAfterLock || shouldSelectNextLocationUpdate || hasLockedState else { return }
+
+        switch status {
+        case .authorizedAlways, .authorizedWhenInUse:
+            if hasLockedState && !isRefreshingLocationAfterLock && !shouldSelectNextLocationUpdate {
+                AppWLocUtils.debugLog("\(AppWLocConfig.displayName) macOS 检测到已锁定坐标，定位服务恢复后补发定位刷新")
+                isRefreshingLocationAfterLock = true
+            }
+            AppWLocUtils.debugLog("\(AppWLocConfig.displayName) macOS 定位已恢复，补发定位刷新")
+            mapView.showsUserLocation = true
+            locationManager.startUpdatingLocation()
+        case .denied, .restricted:
+            AppWLocUtils.debugLog("\(AppWLocConfig.displayName) macOS 定位仍不可用，保持等待")
+        case .notDetermined:
+            if #available(macOS 10.15, *) {
+                locationManager.requestWhenInUseAuthorization()
+            }
+        @unknown default:
+            AppWLocUtils.debugLog("\(AppWLocConfig.displayName) macOS 未知定位授权状态")
+        }
+    }
+
+    private func authorizationStatusDescription(_ status: CLAuthorizationStatus) -> String {
+        switch status {
+        case .notDetermined:
+            return "notDetermined"
+        case .restricted:
+            return "restricted"
+        case .denied:
+            return "denied"
+        case .authorizedAlways:
+            return "authorizedAlways"
+        case .authorizedWhenInUse:
+            return "authorizedWhenInUse"
+        @unknown default:
+            return "unknown(\(status.rawValue))"
         }
     }
 
@@ -621,20 +710,118 @@ extension WLocMacMapViewController: NSTableViewDataSource, NSTableViewDelegate {
 }
 
 extension WLocMacMapViewController: MKMapViewDelegate {
-    func mapView(_ mapView: MKMapView, regionDidChangeAnimated animated: Bool) {
-        selectionHintLabel.stringValue = "单击地图选择位置"
-    }
+    
 }
 
 extension WLocMacMapViewController: CLLocationManagerDelegate {
+    func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
+        handleLocationAuthorizationChange(status)
+    }
+
+    @available(macOS 11.0, *)
+    func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
+        handleLocationAuthorizationChange(manager.authorizationStatus)
+    }
+
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         guard let location = locations.last else { return }
         manager.stopUpdatingLocation()
-        centerMap(on: location.coordinate, meters: 1200)
+        AppWLocUtils.debugLog(
+            "\(AppWLocConfig.displayName) macOS 收到定位更新 lat=\(location.coordinate.latitude), lng=\(location.coordinate.longitude)"
+        )
+        let shouldSelect = shouldSelectNextLocationUpdate
+        shouldSelectNextLocationUpdate = false
+        isRefreshingLocationAfterLock = false
+        if shouldSelect {
+            centerMap(on: location.coordinate, meters: 1200)
+        }
     }
 
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
         manager.stopUpdatingLocation()
-        showAlert(title: "定位失败", message: error.localizedDescription)
+        AppWLocUtils.debugLog("\(AppWLocConfig.displayName) macOS 定位刷新失败：\(error.localizedDescription)")
+        let shouldShowError = shouldSelectNextLocationUpdate || !isRefreshingLocationAfterLock
+        shouldSelectNextLocationUpdate = false
+        isRefreshingLocationAfterLock = false
+        if shouldShowError {
+            showAlert(title: "定位失败", message: error.localizedDescription)
+        }
+    }
+}
+
+private enum WLocMacExternalLink {
+    static let telegram = URL(string: "https://t.me/wloc88")!
+    static let github = URL(string: "https://github.com/OpenHRTT/wloc")!
+}
+
+private enum WLocMacExternalIcon {
+    enum Fallback {
+        case telegram
+        case code
+    }
+
+    static func image(named systemName: String, fallback: Fallback, size: NSSize) -> NSImage {
+        if #available(macOS 11.0, *), let systemImage = NSImage(systemSymbolName: systemName, accessibilityDescription: nil) {
+            systemImage.size = size
+            return systemImage
+        }
+
+        return fallbackImage(fallback, size: size)
+    }
+
+    private static func fallbackImage(_ icon: Fallback, size: NSSize) -> NSImage {
+        let image = NSImage(size: size)
+        image.lockFocus()
+        NSColor.labelColor.set()
+
+        let rect = NSRect(origin: .zero, size: size)
+        switch icon {
+        case .telegram:
+            drawTelegramIcon(in: rect)
+        case .code:
+            drawCodeIcon(in: rect)
+        }
+
+        image.unlockFocus()
+        return image
+    }
+
+    private static func drawTelegramIcon(in rect: NSRect) {
+        let path = NSBezierPath()
+        path.move(to: NSPoint(x: rect.minX + rect.width * 0.08, y: rect.minY + rect.height * 0.55))
+        path.line(to: NSPoint(x: rect.minX + rect.width * 0.92, y: rect.minY + rect.height * 0.88))
+        path.line(to: NSPoint(x: rect.minX + rect.width * 0.72, y: rect.minY + rect.height * 0.1))
+        path.line(to: NSPoint(x: rect.minX + rect.width * 0.45, y: rect.minY + rect.height * 0.36))
+        path.line(to: NSPoint(x: rect.minX + rect.width * 0.3, y: rect.minY + rect.height * 0.22))
+        path.line(to: NSPoint(x: rect.minX + rect.width * 0.35, y: rect.minY + rect.height * 0.42))
+        path.close()
+        path.fill()
+    }
+
+    private static func drawCodeIcon(in rect: NSRect) {
+        let left = NSBezierPath()
+        left.move(to: NSPoint(x: rect.minX + rect.width * 0.38, y: rect.minY + rect.height * 0.78))
+        left.line(to: NSPoint(x: rect.minX + rect.width * 0.16, y: rect.minY + rect.height * 0.5))
+        left.line(to: NSPoint(x: rect.minX + rect.width * 0.38, y: rect.minY + rect.height * 0.22))
+        left.lineWidth = 2
+        left.lineCapStyle = .round
+        left.lineJoinStyle = .round
+        left.stroke()
+
+        let right = NSBezierPath()
+        right.move(to: NSPoint(x: rect.minX + rect.width * 0.62, y: rect.minY + rect.height * 0.78))
+        right.line(to: NSPoint(x: rect.minX + rect.width * 0.84, y: rect.minY + rect.height * 0.5))
+        right.line(to: NSPoint(x: rect.minX + rect.width * 0.62, y: rect.minY + rect.height * 0.22))
+        right.lineWidth = 2
+        right.lineCapStyle = .round
+        right.lineJoinStyle = .round
+        right.stroke()
+
+        let slash = NSBezierPath()
+        slash.move(to: NSPoint(x: rect.minX + rect.width * 0.56, y: rect.minY + rect.height * 0.82))
+        slash.line(to: NSPoint(x: rect.minX + rect.width * 0.44, y: rect.minY + rect.height * 0.18))
+        slash.lineWidth = 2
+        slash.lineCapStyle = .round
+        slash.stroke()
     }
 }

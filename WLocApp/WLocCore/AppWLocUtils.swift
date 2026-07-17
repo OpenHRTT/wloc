@@ -9,6 +9,7 @@
 import Foundation
 
 class AppWLocUtils {
+    private static let debugLogQueue = DispatchQueue(label: "com.openhrtt.wloc.debug-log")
     
     static func mainThread(_ block:(()-> Void)?){
         if Thread.isMainThread {
@@ -42,6 +43,47 @@ class AppWLocUtils {
                 block?()
             })
         }
+    }
+
+    static func debugLog(_ message: String) {
+        let line = "[\(Date())] \(message)\n"
+        NSLog("%@", message)
+
+        #if DEBUG
+        debugLogQueue.async {
+            guard let url = debugLogURL else { return }
+            do {
+                try FileManager.default.createDirectory(
+                    at: url.deletingLastPathComponent(),
+                    withIntermediateDirectories: true
+                )
+                guard let data = line.data(using: .utf8) else { return }
+                if !FileManager.default.fileExists(atPath: url.path) {
+                    FileManager.default.createFile(atPath: url.path, contents: nil)
+                }
+                let handle = try FileHandle(forWritingTo: url)
+                defer { handle.closeFile() }
+                handle.seekToEndOfFile()
+                handle.write(data)
+            } catch {
+                NSLog("%@ debug log write failed: %@", AppWLocConfig.displayName, error.localizedDescription)
+            }
+        }
+        #endif
+    }
+
+    static var debugLogURL: URL? {
+        if let container = FileManager.default.containerURL(
+            forSecurityApplicationGroupIdentifier: AppWLocConfig.appGroupIdentifier
+        ) {
+            return container
+                .appendingPathComponent("AppWLoc", isDirectory: true)
+                .appendingPathComponent("wloc-debug.log", isDirectory: false)
+        }
+
+        return URL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true)
+            .appendingPathComponent("AppWLoc", isDirectory: true)
+            .appendingPathComponent("wloc-debug.log", isDirectory: false)
     }
     
 }

@@ -73,6 +73,7 @@
 		9729E15F7CC8A157F4AE4816 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15154B3AEF11D8A920DCA5C1 /* AppDelegate.swift */; };
 		9E4C119402B8442C81F711B0 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E4C119302B8442C81F711B0 /* main.swift */; };
 		A176916A0D6B8D2BAD9C1A3C /* AppWLocMutator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44DBFE0DB77957A65032F726 /* AppWLocMutator.swift */; };
+		A20000000000000000000001 /* SwiftProtobuf.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = A20000000000000000000002 /* SwiftProtobuf.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		A557476A60AAAEEAF35216B1 /* WLocTunnel-iOS.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 6D7E280FA03E627C6F6F19EE /* WLocTunnel-iOS.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		A9C1A0ECD0A14DA25DB18C14 /* CertificateDownloadServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85ABA53CB866EF36A55598A9 /* CertificateDownloadServer.swift */; };
 		B12A81B9EC1CA371168B9DF7 /* AppWLocConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBAE5E6495746F73DAEA4733 /* AppWLocConfig.swift */; };
@@ -133,6 +134,17 @@
 			name = "Embed App Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		A20000000000000000000003 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				A20000000000000000000001 /* SwiftProtobuf.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		A2B1BFF3CEC812C02DDAB5D8 /* Embed App Extensions */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -188,6 +200,7 @@
 		97B5569E1A17A1E69C2F3ED3 /* Info-iOS.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Info-iOS.plist"; sourceTree = "<group>"; };
 		9E4C119302B8442C81F711B0 /* main.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		A1C53079214FE279F94DE9C9 /* PacketTunnelProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = PacketTunnelProvider.swift; sourceTree = "<group>"; };
+		A20000000000000000000002 /* SwiftProtobuf.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = SwiftProtobuf.framework; path = "SwiftProtobuf-macOS/SwiftProtobuf.framework"; sourceTree = BUILT_PRODUCTS_DIR; };
 		A9F9939D7325F27176EA3A51 /* AppWLocARPC.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AppWLocARPC.swift; sourceTree = "<group>"; };
 		ACA9346E3F57CB651E6FF6C9 /* LiquidGlassSwitch.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = LiquidGlassSwitch.swift; sourceTree = "<group>"; };
 		AFC22EF13FF8AAECA1B6CD4C /* BSSIDApp.pb.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = BSSIDApp.pb.swift; sourceTree = "<group>"; };
@@ -265,6 +278,7 @@
 				17B9EA8A66066F95AEA5E2F8 /* Pods_WLocApp_macOS.framework */,
 				8DA3FFD3DFA300EC4706F92B /* Pods_WLocTunnel_iOS.framework */,
 				4E590D41AE08F8E900B76A60 /* Pods_WLocTunnel_macOS.framework */,
+				A20000000000000000000002 /* SwiftProtobuf.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -519,6 +533,7 @@
 				838FF0EB33B4B149D3D7A029 /* [CP] Check Pods Manifest.lock */,
 				89B22B9B53751A4537C39479 /* Sources */,
 				0770CEB65019672245F10E8C /* Frameworks */,
+				A20000000000000000000003 /* Embed Frameworks */,
 				D2A988969C8F7722D2086D1C /* Resources */,
 			);
 			buildRules = (

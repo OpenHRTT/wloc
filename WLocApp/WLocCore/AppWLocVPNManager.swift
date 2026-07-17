@@ -32,11 +32,15 @@ final class AppWLocVPNManager {
     func lock(to place: AppWLocPlace, completion: @escaping (Result<Void, Error>) -> Void) {
         do {
             let responseCoordinate = AppWLocCoordinateTool.wlocResponseCoordinate(fromAppleMapCoordinate: place.coordinate)
+            AppWLocUtils.debugLog(
+                "\(AppWLocConfig.displayName) 准备锁定位置 apple=(\(place.latitude), \(place.longitude)) response=(\(responseCoordinate.latitude), \(responseCoordinate.longitude))"
+            )
             try AppWLocStateStore.shared.lock(
                 latitude: responseCoordinate.latitude,
                 longitude: responseCoordinate.longitude
             )
         } catch {
+            AppWLocUtils.debugLog("\(AppWLocConfig.displayName) 锁定坐标保存失败：\(error.localizedDescription)")
             completion(.failure(error))
             return
         }
@@ -49,6 +53,7 @@ final class AppWLocVPNManager {
     }
 
     func stop(clearState: Bool = false, completion: ((Error?) -> Void)? = nil) {
+        AppWLocUtils.debugLog("\(AppWLocConfig.displayName) VPN stop clearState=\(clearState)")
         if clearState {
             AppWLocStateStore.shared.clear()
         }
@@ -77,9 +82,13 @@ final class AppWLocVPNManager {
     }
 
     func start(completion: @escaping (Result<Void, Error>) -> Void) {
+        AppWLocUtils.debugLog(
+            "\(AppWLocConfig.displayName) VPN start provider=\(providerBundleIdentifier)，log=\(AppWLocUtils.debugLogURL?.path ?? "unavailable")"
+        )
         loadOrCreateManager { result in
             switch result {
             case .failure(let error):
+                AppWLocUtils.debugLog("\(AppWLocConfig.displayName) VPN load/create failed：\(error.localizedDescription)")
                 completion(.failure(error))
             case .success(let manager):
                 self.startLoadedManager(manager, completion: completion)
@@ -120,6 +129,7 @@ final class AppWLocVPNManager {
     private func loadOrCreateManager(completion: @escaping (Result<NETunnelProviderManager, Error>) -> Void) {
         NETunnelProviderManager.loadAllFromPreferences { managers, error in
             if let error {
+                AppWLocUtils.debugLog("\(AppWLocConfig.displayName) VPN load preferences failed：\(error.localizedDescription)")
                 completion(.failure(error))
                 return
             }
@@ -140,11 +150,13 @@ final class AppWLocVPNManager {
             manager.isOnDemandEnabled = false
             manager.saveToPreferences { saveError in
                 if let saveError {
+                    AppWLocUtils.debugLog("\(AppWLocConfig.displayName) VPN save preferences failed：\(saveError.localizedDescription)")
                     completion(.failure(saveError))
                     return
                 }
                 manager.loadFromPreferences { loadError in
                     if let loadError {
+                        AppWLocUtils.debugLog("\(AppWLocConfig.displayName) VPN reload preferences failed：\(loadError.localizedDescription)")
                         completion(.failure(loadError))
                         return
                     }
@@ -165,12 +177,14 @@ final class AppWLocVPNManager {
         manager.isOnDemandEnabled = false
         manager.saveToPreferences { saveError in
             if let saveError {
+                AppWLocUtils.debugLog("\(AppWLocConfig.displayName) VPN save before start failed：\(saveError.localizedDescription)")
                 completion(.failure(saveError))
                 return
             }
 
             manager.loadFromPreferences { loadError in
                 if let loadError {
+                    AppWLocUtils.debugLog("\(AppWLocConfig.displayName) VPN reload before start failed：\(loadError.localizedDescription)")
                     completion(.failure(loadError))
                     return
                 }
@@ -185,16 +199,20 @@ final class AppWLocVPNManager {
         completion: @escaping (Result<Void, Error>) -> Void
     ) {
         do {
+            AppWLocUtils.debugLog("\(AppWLocConfig.displayName) VPN current status before start=\(manager.connection.status.rawValue)")
             switch manager.connection.status {
             case .connected, .connecting, .reasserting:
+                AppWLocUtils.debugLog("\(AppWLocConfig.displayName) VPN already active status=\(manager.connection.status.rawValue)")
                 completion(.success(()))
                 return
             default:
                 break
             }
             try manager.connection.startVPNTunnel()
+            AppWLocUtils.debugLog("\(AppWLocConfig.displayName) VPN startVPNTunnel called")
             completion(.success(()))
         } catch {
+            AppWLocUtils.debugLog("\(AppWLocConfig.displayName) VPN startVPNTunnel failed：\(error.localizedDescription)")
             completion(.failure(error))
         }
     }

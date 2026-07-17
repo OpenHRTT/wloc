@@ -62,7 +62,7 @@ final class AppWLocStateStore {
         defaults.set(data, forKey: key)
         defaults.synchronize()
 
-        print("锁定位置 lat：\(state.latitude)，lng：\(state.longitude)， alt：\(state.altitude)")
+        AppWLocUtils.debugLog("锁定位置 lat：\(state.latitude)，lng：\(state.longitude)， alt：\(state.altitude)")
     }
 
     func lock(
