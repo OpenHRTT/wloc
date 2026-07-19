@@ -9,7 +9,7 @@
 
 
 <p align="center">
-  <a href="https://t.me/wloc88/8">
+  <a href="https://t.me/wloc88/132" target="_blank">
     <img src="定位教程.jpg" width="760" alt="OpenHRTT WLoc iPhone 定位使用教程">
   </a>
 </p>

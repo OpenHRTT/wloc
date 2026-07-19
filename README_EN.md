@@ -6,7 +6,7 @@
 
 <p>Online access: <a href="https://wloc8.com/">https://wloc8.com/</a>. Telegram group: https://t.me/wloc88</p>
 
-<a href="https://t.me/wloc88/8">Usage tutorial &gt;&gt;&gt;</a>
+<a href="https://t.me/wloc88/132">Usage tutorial &gt;&gt;&gt;</a>
 
 <p align="center">
   An experimental location-response research tool for iOS and macOS
