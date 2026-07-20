@@ -56,7 +56,7 @@ final class WLocMacTutorialViewController: NSViewController {
         addTitle("一、安装证书")
         addStep("1. 点击下方按钮启动本机证书下载服务。")
         addStep("2. App 会打开浏览器，下载 \(AppWLocConfig.displayName) 根证书文件。")
-        addStep("3. 将证书安装到系统钥匙串，并在钥匙串访问里设置将HRTTOpen Root CA改为始终信任。")
+        addStep("3. 将证书安装到系统钥匙串，并在钥匙串访问里将 WLoc8.com Root CA 设置为“始终信任”。")
 
         let button = NSButton.wlocButton("下载证书")
         button.target = self

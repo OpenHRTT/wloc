@@ -31,8 +31,8 @@ final class WLocTutorialViewController: UIViewController {
         addTitle("一、安装证书")
         addStep("1. 点击下方按钮启动本机证书下载服务。")
         addStep("2. App 会跳转 Safari，通过Safari浏览器下载 \(AppWLocConfig.displayName) 根证书文件。")
-        addStep("3. 到 设置 -> 通用 -> VPN与设备管理 -> 安装 HRTTOpen Root CA。")
-        addStep("4. 到 设置 -> 通用 -> 关于本机 -> 证书信任设置，信任 HRTTOpen Root CA。")
+        addStep("3. 到 设置 -> 通用 -> VPN与设备管理 -> 安装 WLoc8.com Root CA。")
+        addStep("4. 到 设置 -> 通用 -> 关于本机 -> 证书信任设置，信任 WLoc8.com Root CA。")
 
         let button = UIButton(type: .system)
         button.setTitle("下载证书", for: .normal)

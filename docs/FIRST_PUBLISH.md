@@ -42,7 +42,7 @@ git commit -m "Initial open source release"
 ## 3. 在 GitHub 创建空仓库
 
 1. 登录 GitHub，点击右上角 `+` -> `New repository`。
-2. Repository name 建议使用 `WLocApp` 或 `OpenHRTT-WLoc`。
+2. Repository name 建议使用 `WLocApp` 或 `WLoc8`。
 3. Description 可填：`Experimental iOS/macOS location response research tool built with Swift and Network Extension.`
 4. 选择 `Public`。
 5. **不要**勾选自动创建 README、`.gitignore` 或 License，因为本地已经有这些文件。

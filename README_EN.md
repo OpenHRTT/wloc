@@ -1,8 +1,8 @@
 <p align="center">
-  <img src="Resources/Assets.xcassets/AppIcon.appiconset/1024.png" width="112" alt="OpenHRTT WLoc icon">
+  <img src="Resources/Assets.xcassets/AppIcon.appiconset/1024.png" width="112" alt="WLoc8.com icon">
 </p>
 
-<h1 align="center">OpenHRTT WLoc</h1>
+<h1 align="center">WLoc8.com</h1>
 
 <p>Online access: <a href="https://wloc8.com/">https://wloc8.com/</a>. Telegram group: https://t.me/wloc88</p>
 
@@ -20,7 +20,7 @@
 
 ## About
 
-OpenHRTT WLoc is a fully open-source experimental iOS/macOS project written in Swift. Users can search for or select a coordinate on a map. The app stores the selected location in a shared App Group and uses a Packet Tunnel together with a narrowly scoped local HTTPS proxy to process location responses on the device.
+WLoc8.com is a fully open-source experimental iOS/macOS project written in Swift. Users can search for or select a coordinate on a map. The app stores the selected location in a shared App Group and uses a Packet Tunnel together with a narrowly scoped local HTTPS proxy to process location responses on the device.
 
 The project currently includes:
 
@@ -60,7 +60,7 @@ The project declares minimum deployment targets of iOS 12.0 and macOS 10.11, but
 ### 1. Get the code and install dependencies
 
 ```bash
-git clone https://github.com/OpenHRTT/wloc.git
+git clone <repository-url>
 cd wloc
 pod install
 ```
@@ -76,7 +76,7 @@ chmod +x generate_apple_wloc_p12.sh
 ./generate_apple_wloc_p12.sh
 ```
 
-The script generates the certificates and automatically copies them into the App and Extension resource directories. The default `.p12` password is `app-wloc`, matching `AppWLocConfig.proxyIdentityPassword`. If you change the password in the script, update the app configuration as well.
+The script generates the certificates and automatically copies them into the App and Extension resource directories. The default `.p12` password is `1`, matching `AppWLocConfig.proxyIdentityPassword`. If you change the password in the script, update the app configuration as well.
 
 > [!IMPORTANT]
 > `app_wloc_certs/`, `*.key`, `*.p12`, and the generated certificate files under `Resources` are excluded by `.gitignore`. Never force-add them with `git add -f`.
@@ -115,7 +115,7 @@ At the top of Xcode, select the `WLocApp-iOS` or `WLocApp-macOS` scheme, choose 
 
 <p align="center">
   <a href="https://t.me/wloc88/8">
-    <img src="定位教程.jpg" width="760" alt="OpenHRTT WLoc iPhone location tutorial">
+    <img src="定位教程.jpg" width="760" alt="WLoc8.com iPhone location tutorial">
   </a>
 </p>
 

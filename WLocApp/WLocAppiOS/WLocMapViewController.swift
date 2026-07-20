@@ -30,7 +30,7 @@ final class WLocMapViewController: UIViewController {
     private let favoritesButton = WLocGlassButton(title: "收藏夹", style: .secondary)
     private let tutorialButton = WLocGlassButton(title: "教程", style: .secondary)
     private let telegramButton = WLocGlassButton(title: "Telegram", style: .secondary)
-    private let githubButton = WLocGlassButton(title: "GitHub", style: .secondary)
+    private let websiteButton = WLocGlassButton(title: "WLoc8.com", style: .secondary)
     private let locateButton = WLocGlassButton(title: "", style: .icon)
 
     private var searchResults: [AppWLocPlace] = []
@@ -136,11 +136,11 @@ final class WLocMapViewController: UIViewController {
         )
         telegramButton.addTarget(self, action: #selector(openTelegram), for: .touchUpInside)
         configureExternalLinkButton(
-            githubButton,
+            websiteButton,
             image: WLocExternalIcon.image(named: "chevron.left.forwardslash.chevron.right", fallback: .code, size: CGSize(width: 18, height: 18)),
-            accessibilityLabel: "打开 GitHub"
+            accessibilityLabel: "打开 WLoc8.com 官网"
         )
-        githubButton.addTarget(self, action: #selector(openGitHub), for: .touchUpInside)
+        websiteButton.addTarget(self, action: #selector(openWebsite), for: .touchUpInside)
         locateButton.setTitle(nil, for: .normal)
         locateButton.setImage(WLocLocationIcon.image(size: CGSize(width: 23, height: 23)), for: .normal)
         locateButton.tintColor = UIColor(red: 0.05, green: 0.16, blue: 0.28, alpha: 1)
@@ -223,7 +223,7 @@ final class WLocMapViewController: UIViewController {
         secondaryRow.spacing = 10
         secondaryRow.distribution = .fillEqually
 
-        let externalLinkRow = UIStackView(arrangedSubviews: [telegramButton, githubButton])
+        let externalLinkRow = UIStackView(arrangedSubviews: [telegramButton, websiteButton])
         externalLinkRow.axis = .horizontal
         externalLinkRow.spacing = 10
         externalLinkRow.distribution = .fillEqually
@@ -580,8 +580,8 @@ final class WLocMapViewController: UIViewController {
         openExternalURL(WLocExternalLink.telegram)
     }
 
-    @objc private func openGitHub() {
-        openExternalURL(WLocExternalLink.github)
+    @objc private func openWebsite() {
+        openExternalURL(WLocExternalLink.website)
     }
 
     private func openExternalURL(_ url: URL) {
@@ -803,7 +803,7 @@ private enum WLocLocationIcon {
 
 private enum WLocExternalLink {
     static let telegram = URL(string: "https://t.me/wloc88")!
-    static let github = URL(string: "https://github.com/OpenHRTT/wloc")!
+    static let website = URL(string: "https://wloc8.com/")!
 }
 
 private enum WLocExternalIcon {

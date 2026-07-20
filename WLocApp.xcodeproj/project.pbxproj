@@ -930,7 +930,7 @@
 				DEVELOPMENT_TEAM = "";
 				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = CDAW7B5WR4;
 				INFOPLIST_FILE = Resources/iOS/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = WLoc;
+				INFOPLIST_KEY_CFBundleDisplayName = "WLoc8.com";
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				MARKETING_VERSION = 1.0;
@@ -958,7 +958,7 @@
 				DEVELOPMENT_TEAM = "";
 				"DEVELOPMENT_TEAM[sdk=macosx*]" = CDAW7B5WR4;
 				INFOPLIST_FILE = Resources/macOS/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = WLoc;
+				INFOPLIST_KEY_CFBundleDisplayName = "WLoc8.com";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				MARKETING_VERSION = 1.0;
@@ -974,7 +974,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				APP_DISPLAY_NAME = "OpenHRTT WLoc";
+				APP_DISPLAY_NAME = "WLoc8.com";
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
@@ -1073,7 +1073,7 @@
 				DEVELOPMENT_TEAM = "";
 				"DEVELOPMENT_TEAM[sdk=macosx*]" = CDAW7B5WR4;
 				INFOPLIST_FILE = Resources/macOS/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = WLoc;
+				INFOPLIST_KEY_CFBundleDisplayName = "WLoc8.com";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				MARKETING_VERSION = 1.0;
@@ -1139,7 +1139,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				APP_DISPLAY_NAME = "OpenHRTT WLoc";
+				APP_DISPLAY_NAME = "WLoc8.com";
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
@@ -1203,7 +1203,7 @@
 				DEVELOPMENT_TEAM = "";
 				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = CDAW7B5WR4;
 				INFOPLIST_FILE = Resources/iOS/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = WLoc;
+				INFOPLIST_KEY_CFBundleDisplayName = "WLoc8.com";
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				MARKETING_VERSION = 1.0;

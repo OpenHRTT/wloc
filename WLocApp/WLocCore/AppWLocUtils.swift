@@ -2,14 +2,14 @@
 //  AppWLocUtils.swift
 //  WLocApp-iOS
 //
-//  Copyright (c) 2026 OpenHRTT WLoc contributors.
+//  Copyright (c) 2026 WLoc8.com contributors.
 //  Licensed under the MIT License. See LICENSE in the project root.
 //
 
 import Foundation
 
 class AppWLocUtils {
-    private static let debugLogQueue = DispatchQueue(label: "com.openhrtt.wloc.debug-log")
+    private static let debugLogQueue = DispatchQueue(label: "com.wloc8.debug-log")
     
     static func mainThread(_ block:(()-> Void)?){
         if Thread.isMainThread {

@@ -58,7 +58,7 @@ final class WLocMacMapViewController: NSViewController {
     private let favoriteButton = NSButton.wlocButton("加入收藏")
     private let tutorialButton = NSButton.wlocButton("教程与证书")
     private let telegramButton = NSButton.wlocButton("Telegram")
-    private let githubButton = NSButton.wlocButton("GitHub")
+    private let websiteButton = NSButton.wlocButton("WLoc8.com")
     private let selectedAnnotation = MKPointAnnotation()
 
     private let geocoder = CLGeocoder()
@@ -135,7 +135,7 @@ final class WLocMacMapViewController: NSViewController {
         coordinateLabel.font = .monospacedDigitSystemFont(ofSize: 12, weight: .regular)
         coordinateLabel.textColor = .secondaryLabelColor
 
-        [lockButton, favoriteButton, tutorialButton, telegramButton, githubButton].forEach {
+        [lockButton, favoriteButton, tutorialButton, telegramButton, websiteButton].forEach {
             $0.bezelStyle = .rounded
             $0.controlSize = .regular
         }
@@ -145,9 +145,9 @@ final class WLocMacMapViewController: NSViewController {
             toolTip: "打开 Telegram: https://t.me/wloc88"
         )
         configureExternalLinkButton(
-            githubButton,
+            websiteButton,
             image: WLocMacExternalIcon.image(named: "chevron.left.forwardslash.chevron.right", fallback: .code, size: NSSize(width: 17, height: 17)),
-            toolTip: "打开 GitHub: https://github.com/OpenHRTT/wloc"
+            toolTip: "打开 WLoc8.com 官网: https://wloc8.com/"
         )
         [zoomInButton, zoomOutButton, currentLocationButton].forEach(configureMapControlButton)
 
@@ -159,8 +159,8 @@ final class WLocMacMapViewController: NSViewController {
         tutorialButton.action = #selector(openTutorial)
         telegramButton.target = self
         telegramButton.action = #selector(openTelegram)
-        githubButton.target = self
-        githubButton.action = #selector(openGitHub)
+        websiteButton.target = self
+        websiteButton.action = #selector(openWebsite)
         zoomInButton.target = self
         zoomInButton.action = #selector(zoomIn)
         zoomOutButton.target = self
@@ -277,13 +277,13 @@ final class WLocMacMapViewController: NSViewController {
         secondaryActionStack.spacing = 8
         secondaryActionStack.distribution = .fillEqually
 
-        let externalLinkStack = NSStackView(views: [telegramButton, githubButton])
+        let externalLinkStack = NSStackView(views: [telegramButton, websiteButton])
         externalLinkStack.orientation = .horizontal
         externalLinkStack.spacing = 10
         externalLinkStack.distribution = .fillEqually
         secondaryActionStack.addArrangedSubview(externalLinkStack)
 
-        [lockButton, favoriteButton, tutorialButton, telegramButton, githubButton].forEach { button in
+        [lockButton, favoriteButton, tutorialButton, telegramButton, websiteButton].forEach { button in
             button.snp.makeConstraints { make in
                 make.height.equalTo(36)
             }
@@ -479,8 +479,8 @@ final class WLocMacMapViewController: NSViewController {
         openExternalURL(WLocMacExternalLink.telegram)
     }
 
-    @objc private func openGitHub() {
-        openExternalURL(WLocMacExternalLink.github)
+    @objc private func openWebsite() {
+        openExternalURL(WLocMacExternalLink.website)
     }
 
     private func openExternalURL(_ url: URL) {
@@ -751,7 +751,7 @@ extension WLocMacMapViewController: CLLocationManagerDelegate {
 
 private enum WLocMacExternalLink {
     static let telegram = URL(string: "https://t.me/wloc88")!
-    static let github = URL(string: "https://github.com/OpenHRTT/wloc")!
+    static let website = URL(string: "https://wloc8.com/")!
 }
 
 private enum WLocMacExternalIcon {

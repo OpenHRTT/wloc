@@ -9,18 +9,9 @@ set -euo pipefail
 # 3. 服务端私钥：只用于生成 p12，p12 已经包含该私钥；运行时不需要单独导入 .key 文件。
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-APP_DISPLAY_NAME="$(perl -ne 'if (/APP_DISPLAY_NAME = (.+);/) { $v=$1; $v =~ s/;\s*$//; $v =~ s/^"//; $v =~ s/"$//; print $v; exit }' "$SCRIPT_DIR/WLocApp.xcodeproj/project.pbxproj")"
-if [[ -z "$APP_DISPLAY_NAME" ]]; then
-  APP_DISPLAY_NAME="$(/usr/libexec/PlistBuddy -c 'Print :CFBundleDisplayName' "$SCRIPT_DIR/Resources/iOS/Info.plist" 2>/dev/null || true)"
-fi
-if [[ "$APP_DISPLAY_NAME" == *'$('* ]]; then
-  APP_DISPLAY_NAME="$(perl -ne 'if (/INFOPLIST_KEY_CFBundleDisplayName = (.+);/) { $v=$1; $v =~ s/;\s*$//; $v =~ s/^"//; $v =~ s/"$//; print $v; exit }' "$SCRIPT_DIR/WLocApp.xcodeproj/project.pbxproj")"
-fi
-if [[ -z "$APP_DISPLAY_NAME" ]]; then
-  APP_DISPLAY_NAME="OpenHRTT WLoc"
-fi
+CERTIFICATE_BRAND="WLoc8.com"
 OUTPUT_DIR="$SCRIPT_DIR/app_wloc_certs"
-P12_PASSWORD="app-wloc"
+P12_PASSWORD="1"
 FORCE_WRITE=1
 COPY_APP_RESOURCES=1
 
@@ -121,8 +112,8 @@ req_extensions = server_req
 
 [ dn ]
 C = CN
-O = NB Pro Local Test
-OU = $APP_DISPLAY_NAME Proxy
+O = $CERTIFICATE_BRAND
+OU = $CERTIFICATE_BRAND Proxy
 CN = gs-loc.apple.com
 
 [ root_ca ]
@@ -145,7 +136,7 @@ DNS.1 = gs-loc.apple.com
 DNS.2 = gs-loc-cn.apple.com
 EOF
 
-echo "开始生成 $APP_DISPLAY_NAME 证书..."
+echo "开始生成 $CERTIFICATE_BRAND 证书..."
 echo "输出目录：$OUTPUT_DIR"
 
 # 生成根证书。根证书只用于本机测试环境，私钥请不要外发。
@@ -158,7 +149,7 @@ run_quiet "生成根证书" openssl req \
   -sha256 \
   -days 3650 \
   -out "$ROOT_CERT_PEM" \
-  -subj "/C=CN/O=OpenHRTT/OU=$APP_DISPLAY_NAME Proxy/CN=OpenHRTT Root CA" \
+  -subj "/C=CN/O=$CERTIFICATE_BRAND/OU=$CERTIFICATE_BRAND Proxy/CN=$CERTIFICATE_BRAND Root CA" \
   -extensions root_ca \
   -config "$OPENSSL_CONF"
 
@@ -194,6 +185,8 @@ run_quiet "生成 p12" openssl pkcs12 \
   -in "$SERVER_CERT" \
   -certfile "$ROOT_CERT_PEM" \
   -out "$SERVER_P12" \
+  -name "$CERTIFICATE_BRAND Proxy" \
+  -caname "$CERTIFICATE_BRAND Root CA" \
   -keypbe PBE-SHA1-3DES \
   -certpbe PBE-SHA1-3DES \
   -macalg sha1 \
@@ -224,11 +217,11 @@ if [[ "$COPY_APP_RESOURCES" -eq 1 ]]; then
 fi
 echo ""
 echo "手机端操作："
-echo "  1. 把 $APP_DISPLAY_NAME 根证书安装到 iPhone。"
+echo "  1. 把 $CERTIFICATE_BRAND 根证书安装到 iPhone。"
 echo "  2. 到“设置 -> 通用 -> 关于本机 -> 证书信任设置”里完全信任该根证书。"
 echo "  3. p12 会随扩展内置，用户不需要手动导入。"
 echo "macOS 端操作："
-echo "  1. 下载 $APP_DISPLAY_NAME 根证书文件后安装到系统钥匙串。"
+echo "  1. 下载 $CERTIFICATE_BRAND 根证书文件后安装到系统钥匙串。"
 echo "  2. 在钥匙串访问里把该根证书设置为始终信任。"
 echo ""
 echo "注意：根证书私钥和服务端中间私钥都只用于生成证书，请不要提交、上传或外发。"

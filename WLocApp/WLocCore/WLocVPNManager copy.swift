@@ -26,7 +26,7 @@ final class WLocVPNManager {
 
     init(providerBundleIdentifier: String, localizedDescription: String? = nil) {
         self.providerBundleIdentifier = providerBundleIdentifier
-        self.localizedDescription = localizedDescription ?? "OpenHRTT WLoc"
+        self.localizedDescription = localizedDescription ?? "WLoc8.com"
     }
 
     func lock(to place: WLocPlace, completion: @escaping (Result<Void, Error>) -> Void) {

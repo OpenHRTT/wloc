@@ -94,6 +94,44 @@ final class AppWLocCertificateStore {
         throw AppWLocCertificateError.identityNotFound
     }
 
+    #if os(macOS)
+    func loadProxyTLSCertificateChain() throws -> [Any] {
+        let items: [[String: Any]]
+        if let url = identityFileURL,
+           FileManager.default.fileExists(atPath: url.path),
+           let password = defaults.string(forKey: passwordKey) {
+            items = try importItems(from: Data(contentsOf: url), password: password)
+        } else if let data = bundledProxyIdentityData() {
+            items = try importItems(from: data, password: bundledIdentityPassword)
+        } else {
+            throw AppWLocCertificateError.identityNotFound
+        }
+
+        guard let firstItem = items.first,
+              let rawIdentity = firstItem[kSecImportItemIdentity as String] else {
+            throw AppWLocCertificateError.invalidPKCS12
+        }
+
+        let identity = rawIdentity as! SecIdentity
+        var tlsCertificates: [Any] = [identity]
+        if let certificateChain = firstItem[kSecImportItemCertChain as String] as? [SecCertificate] {
+            var leafCertificate: SecCertificate?
+            _ = SecIdentityCopyCertificate(identity, &leafCertificate)
+
+            for certificate in certificateChain {
+                // macOS 的 locationd 不会自行补齐代理返回的签发链；TLS 数组首项必须是
+                // 带私钥的 identity，后面只追加其余证书，不能把叶子证书重复放进去。
+                if let leafCertificate,
+                   CFEqual(certificate, leafCertificate) {
+                    continue
+                }
+                tlsCertificates.append(certificate)
+            }
+        }
+        return tlsCertificates
+    }
+    #endif
+
     func loadRootCertificateData() throws -> Data {
         if let url = identityFileURL,
            FileManager.default.fileExists(atPath: url.path),

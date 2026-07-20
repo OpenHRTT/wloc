@@ -1,8 +1,8 @@
 <p align="center">
-  <img src="Resources/Assets.xcassets/AppIcon.appiconset/1024.png" width="112" alt="OpenHRTT WLoc icon">
+  <img src="Resources/Assets.xcassets/AppIcon.appiconset/1024.png" width="112" alt="WLoc8.com icon">
 </p>
 
-<h1 align="center">OpenHRTT WLoc</h1>
+<h1 align="center">WLoc8.com</h1>
 
 <p>支持iOS27.0，在线体验：<a href="https://wloc8.com/" target="_blank">https://wloc8.com/</a>，TG群：https://t.me/wloc88</p>
 
@@ -10,7 +10,7 @@
 
 <p align="center">
   <a href="https://t.me/wloc88/132" target="_blank">
-    <img src="定位教程.jpg" width="760" alt="OpenHRTT WLoc iPhone 定位使用教程">
+    <img src="定位教程.jpg" width="760" alt="WLoc8.com iPhone 定位使用教程">
   </a>
 </p>
 
@@ -28,7 +28,7 @@
 
 ## 项目介绍
 
-OpenHRTT WLoc 是一个 完全开源使用 Swift 编写的 iOS/macOS 实验性工具。用户可以在地图上搜索或选择坐标，应用通过 Packet Tunnel 和只匹配指定 Apple 定位服务域名的本地 HTTPS 代理，在设备内部处理定位响应数据。
+WLoc8.com 是一个完全开源、使用 Swift 编写的 iOS/macOS 实验性工具。用户可以在地图上搜索或选择坐标，应用通过 Packet Tunnel 和只匹配指定 Apple 定位服务域名的本地 HTTPS 代理，在设备内部处理定位响应数据。
 
 项目目前包含：
 
@@ -68,7 +68,7 @@ flowchart LR
 ### 1. 获取代码并安装依赖
 
 ```bash
-git clone https://github.com/OpenHRTT/wloc.git
+git clone <仓库地址>
 cd wloc
 pod install
 ```
@@ -84,7 +84,7 @@ chmod +x generate_apple_wloc_p12.sh
 ./generate_apple_wloc_p12.sh
 ```
 
-脚本会生成证书并自动同步到 App/Extension 资源目录。默认 `.p12` 密码为 `app-wloc`，与 `AppWLocConfig.proxyIdentityPassword` 一致。如果你修改脚本密码，也必须同步修改应用配置。
+脚本会生成证书并自动同步到 App/Extension 资源目录。默认 `.p12` 密码为 `1`，与 `AppWLocConfig.proxyIdentityPassword` 一致。如果你修改脚本密码，也必须同步修改应用配置。
 
 > [!IMPORTANT]
 > `app_wloc_certs/`、`*.key`、`*.p12` 和生成到 `Resources` 中的证书文件已被 `.gitignore` 排除。不要使用 `git add -f` 强制提交它们。

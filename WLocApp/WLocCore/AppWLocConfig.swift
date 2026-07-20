@@ -9,11 +9,11 @@ enum AppWLocConfig {
 //                return value
 //            }
 //        }
-        return "OpenHRTT WLoc"
+        return "WLoc8.com"
     }
 
     static var rootCertificateDownloadFileName: String {
-        return "OpenHRTT-WLoc-RootCA.cer"
+        return "WLoc8.com-RootCA.cer"
 //        let allowed = CharacterSet.alphanumerics.union(CharacterSet(charactersIn: "-_."))
 //        let slugScalars = displayName.unicodeScalars.map { scalar -> String in
 //            allowed.contains(scalar) ? String(scalar) : "-"
@@ -21,7 +21,7 @@ enum AppWLocConfig {
 //        let slug = slugScalars.joined()
 //            .split(separator: "-", omittingEmptySubsequences: true)
 //            .joined(separator: "-")
-//        return "\((slug.isEmpty ? "OpenHRTT-WLoc" : slug))-RootCA.cer"
+//        return "\((slug.isEmpty ? "WLoc8" : slug))-RootCA.cer"
     }
 
     static let appGroupIdentifier = "group.com.wlocapp.shared"
@@ -64,5 +64,5 @@ enum AppWLocConfig {
     #endif
     static let proxyIdentityResourceName = "AppWLocProxy"
     static let rootCertificateResourceName = "AppWLocRootCA"
-    static let proxyIdentityPassword = "app-wloc"
+    static let proxyIdentityPassword = "1"
 }
