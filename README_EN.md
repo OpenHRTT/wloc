@@ -1,3 +1,6 @@
+<h1>现急需Mac系统做兼容性测试，如你有Mac电脑，请联系：<br />开发者：https://t.me/wloc8
+  <br /> 群 组：https://t.me/wloc88</h1>
+
 <p align="center">
   <img src="Resources/Assets.xcassets/AppIcon.appiconset/1024.png" width="112" alt="OpenHRTT WLoc icon">
 </p>
@@ -21,15 +24,6 @@
 ## About
 
 OpenHRTT WLoc is a fully open-source experimental iOS/macOS project written in Swift. Users can search for or select a coordinate on a map. The app stores the selected location in a shared App Group and uses a Packet Tunnel together with a narrowly scoped local HTTPS proxy to process location responses on the device.
-
-The project currently includes:
-
-- iOS and macOS app targets.
-- iOS and macOS Packet Tunnel extensions.
-- Map search, coordinate selection, favorites, and quick restoration.
-- WGS84, GCJ-02, BD-09, and Apple Map coordinate conversion.
-- `wlocapp://` deep-link import.
-- A local root-certificate download service.
 
 ## How it works
 
