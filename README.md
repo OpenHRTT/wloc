@@ -111,32 +111,8 @@ com.example.wloc.tunnel
 
 在 Signing & Capabilities 中确认 App Groups 和 Network Extensions 已正确启用。
 
-### 4. 构建和运行
 
-在 Xcode 顶部选择 `WLocApp-iOS` 或 `WLocApp-macOS` Scheme，选择你的真机，然后点击 Run。
-
-## 使用方法
-
-### iOS
-
-1. 打开 App，进入“教程”页并点击“下载证书”。
-2. 在 Safari 中下载根证书。
-3. 前往“设置 -> 通用 -> VPN 与设备管理”安装证书。
-4. 前往“设置 -> 通用 -> 关于本机 -> 证书信任设置”，手动完全信任该根证书。
-5. 回到地图页，搜索地点或点击地图选择位置。
-6. 点击“锁定位置”，允许系统添加 VPN 配置。
-7. 按 App 内提示刷新系统定位服务。
-8. 退出 App 后会尝试断开 VPN 并清除锁定状态。
-
-### macOS
-
-1. 在 App 教程中下载根证书。
-2. 将证书导入“钥匙串访问”，并仅在测试期间设置为“始终信任”。
-3. 在地图中选择位置并点击“锁定位置”。
-4. 允许系统创建 VPN/Network Extension 配置。
-5. 测试完成后断开 VPN，并在不再需要时删除根证书。
-
-## 外部链接
+## 外部链接（待开发）
 
 应用支持通过 `wlocapp://` 导入位置。载荷是 URL 编码后的 JSON：
 
@@ -160,38 +136,8 @@ wlocapp://<percent-encoded-json>
 wlocapp://?payload=<percent-encoded-json>
 ```
 
-## 项目结构
-
-```text
-WLocApp/
-├── Resources/                 # Info.plist、entitlements、图标和本地生成资源
-├── WLocApp/
-│   ├── LiquidGlassKit/         # iOS Metal 玻璃效果（第三方版权）
-│   ├── WLocCore/              # 共享状态、代理、坐标转换、VPN 管理
-│   ├── WLocAppShared/         # 证书下载和 URL Scheme
-│   ├── WLocAppiOS/            # iOS 界面
-│   └── WLocAppMac/            # macOS 界面
-├── WLocApp.xcodeproj/
-├── WLocApp.xcworkspace/
-├── Podfile
-└── generate_apple_wloc_p12.sh
-```
-
-Xcode 工程当前引用的主代码位于 `WLocApp/` 子目录。仓库根目录下同名的历史源码目录不在当前 Target 中，请不要在两处同时修改。
-
-## 安全和隐私
-
-- 每个开发者必须使用自己生成的独立根证书，禁止分享根证书私钥或 `.p12`。
-- 不再使用时，请从系统中删除 VPN 配置和受信任的根证书。
-- 代理只应处理明确列入 `AppWLocConfig.appWLocHosts` 的域名。
-- 不要在 Issue、日志或截图中发布私钥、证书、开发者凭据或个人位置数据。
-- 发现安全问题时，请按 [SECURITY.md](SECURITY.md) 私下报告。
 
 ## 常见问题
-
-**Xcode 提示找不到 SnapKit/SwiftProtobuf/GCDWebServer？**
-
-运行 `pod install`，然后关闭 `.xcodeproj`，改为打开 `WLocApp.xcworkspace`。
 
 **构建时提示找不到 `AppWLocProxy.p12` 或 `AppWLocRootCA.cer`？**
 

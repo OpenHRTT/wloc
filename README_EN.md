@@ -101,40 +101,8 @@ The project also uses an App Group. Replace `group.com.wlocapp.shared` consisten
 
 Under Signing & Capabilities, confirm that App Groups and Network Extensions are correctly enabled.
 
-### 4. Build and run
 
-At the top of Xcode, select the `WLocApp-iOS` or `WLocApp-macOS` scheme, choose your physical device, and click Run.
-
-## Usage
-
-<p align="center">
-  <a href="https://t.me/wloc88/8">
-    <img src="定位教程.jpg" width="760" alt="OpenHRTT WLoc iPhone location tutorial">
-  </a>
-</p>
-
-<p align="center">Click the image to view the latest usage tutorial</p>
-
-### iOS
-
-1. Open the app, go to the Tutorial page, and tap Download Certificate.
-2. Download the root certificate in Safari.
-3. Go to Settings → General → VPN & Device Management and install the certificate.
-4. Go to Settings → General → About → Certificate Trust Settings and manually enable full trust for the root certificate.
-5. Return to the map, search for a place or tap the map to select a location.
-6. Tap Lock Location and allow the system to add the VPN configuration.
-7. Refresh system Location Services as instructed by the app.
-8. When the app exits, it attempts to disconnect the VPN and clear the locked state.
-
-### macOS
-
-1. Download the root certificate from the app's Tutorial page.
-2. Import the certificate into Keychain Access and set it to Always Trust only while testing.
-3. Select a location on the map and click Lock Location.
-4. Allow the system to create the VPN/Network Extension configuration.
-5. Disconnect the VPN after testing and remove the root certificate when it is no longer needed.
-
-## External links
+## External links （TODO）
 
 The app supports importing locations through `wlocapp://`. The payload is URL-encoded JSON:
 
@@ -158,38 +126,7 @@ wlocapp://<percent-encoded-json>
 wlocapp://?payload=<percent-encoded-json>
 ```
 
-## Project structure
-
-```text
-WLocApp/
-├── Resources/                 # Info.plist, entitlements, icons, and locally generated resources
-├── WLocApp/
-│   ├── LiquidGlassKit/        # Third-party iOS Metal glass effects
-│   ├── WLocCore/              # Shared state, proxy, coordinate conversion, and VPN management
-│   ├── WLocAppShared/         # Certificate download and URL Scheme support
-│   ├── WLocAppiOS/            # iOS interface
-│   └── WLocAppMac/            # macOS interface
-├── WLocApp.xcodeproj/
-├── WLocApp.xcworkspace/
-├── Podfile
-└── generate_apple_wloc_p12.sh
-```
-
-The source code referenced by the current Xcode project is under the `WLocApp/` subdirectory. A legacy source directory with the same name at the repository root is not included in the current targets; do not edit both locations simultaneously.
-
-## Security and privacy
-
-- Every developer must use independently generated root certificates. Never share a root-certificate private key or `.p12` file.
-- Remove the VPN configuration and trusted root certificate from the system when they are no longer needed.
-- The proxy should process only the hosts explicitly listed in `AppWLocConfig.appWLocHosts`.
-- Do not post private keys, certificates, developer credentials, or personal location data in Issues, logs, or screenshots.
-- Report security issues privately according to [SECURITY.md](SECURITY.md).
-
 ## FAQ
-
-**Xcode cannot find SnapKit, SwiftProtobuf, or GCDWebServer. What should I do?**
-
-Run `pod install`, close the `.xcodeproj`, and open `WLocApp.xcworkspace` instead.
 
 **The build cannot find `AppWLocProxy.p12` or `AppWLocRootCA.cer`. What should I do?**
 
