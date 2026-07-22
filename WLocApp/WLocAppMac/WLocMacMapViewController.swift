@@ -834,7 +834,7 @@ final class WLocMacMapViewController: NSViewController {
         NSCursor.arrow.set()
 
         if let location = mapView.userLocation.location ?? locationManager.location {
-            centerMap(on: location.coordinate, meters: 1200)
+            centerMap(on: location.coordinate, meters: 0)
             return
         }
 
@@ -917,10 +917,14 @@ final class WLocMacMapViewController: NSViewController {
     }
 
     private func centerMap(on coordinate: CLLocationCoordinate2D, meters: CLLocationDistance) {
-        mapView.setRegion(
-            MKCoordinateRegion(center: coordinate, latitudinalMeters: meters, longitudinalMeters: meters),
-            animated: true
-        )
+        if meters <= 0 {
+            mapView.setCenter(coordinate, animated: false)
+        } else {
+            mapView.setRegion(
+                MKCoordinateRegion(center: coordinate, latitudinalMeters: meters, longitudinalMeters: meters),
+                animated: true
+            )
+        }
         selectCoordinate(coordinate, name: "当前位置", detail: "来自系统定位")
     }
 
