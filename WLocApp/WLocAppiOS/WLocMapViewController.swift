@@ -31,6 +31,8 @@ final class WLocMapViewController: UIViewController {
     private let tutorialButton = WLocGlassButton(title: "教程", style: .secondary)
     private let telegramButton = WLocGlassButton(title: "Telegram", style: .secondary)
     private let websiteButton = WLocGlassButton(title: "WLoc8.com", style: .secondary)
+    private let versionLabel = UILabel()
+    private let updateButton = WLocGlassButton(title: "检查更新", style: .secondary)
     private let locateButton = WLocGlassButton(title: "", style: .icon)
 
     private var searchResults: [AppWLocPlace] = []
@@ -42,6 +44,7 @@ final class WLocMapViewController: UIViewController {
     private var pendingManualLocationRequest = false
     private var shouldCenterOnUserLocation = false
     private var lastUserCoordinate: CLLocationCoordinate2D?
+    private var availableUpdate: AppWLocAvailableUpdate?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -53,6 +56,7 @@ final class WLocMapViewController: UIViewController {
         configureLocation()
         layoutViews()
         updateEmptySelection()
+        checkForUpdates(userInitiated: false)
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -141,6 +145,12 @@ final class WLocMapViewController: UIViewController {
             accessibilityLabel: "打开 WLoc8.com 官网"
         )
         websiteButton.addTarget(self, action: #selector(openWebsite), for: .touchUpInside)
+
+        versionLabel.text = "\(AppWLocConfig.displayName) · 版本 \(AppWLocConfig.currentVersion)"
+        versionLabel.font = .systemFont(ofSize: 12, weight: .medium)
+        versionLabel.textColor = UIColor(red: 0.34, green: 0.39, blue: 0.47, alpha: 1)
+        updateButton.titleLabel?.font = .systemFont(ofSize: 12, weight: .semibold)
+        updateButton.addTarget(self, action: #selector(updateButtonTapped), for: .touchUpInside)
         locateButton.setTitle(nil, for: .normal)
         locateButton.setImage(WLocLocationIcon.image(size: CGSize(width: 23, height: 23)), for: .normal)
         locateButton.tintColor = UIColor(red: 0.05, green: 0.16, blue: 0.28, alpha: 1)
@@ -228,7 +238,13 @@ final class WLocMapViewController: UIViewController {
         externalLinkRow.spacing = 10
         externalLinkRow.distribution = .fillEqually
 
-        let stack = UIStackView(arrangedSubviews: [titleLabel, detailLabel, coordinateLabel, lockButton, secondaryRow, externalLinkRow])
+        let versionSpacer = UIView()
+        let versionRow = UIStackView(arrangedSubviews: [versionLabel, versionSpacer, updateButton])
+        versionRow.axis = .horizontal
+        versionRow.spacing = 8
+        versionRow.alignment = .center
+
+        let stack = UIStackView(arrangedSubviews: [titleLabel, detailLabel, coordinateLabel, lockButton, secondaryRow, externalLinkRow, versionRow])
         stack.axis = .vertical
         stack.spacing = 10
         bottomGlass.contentView.addSubview(stack)
@@ -243,6 +259,13 @@ final class WLocMapViewController: UIViewController {
         }
         externalLinkRow.snp.makeConstraints { make in
             make.height.equalTo(44)
+        }
+        versionRow.snp.makeConstraints { make in
+            make.height.equalTo(32)
+        }
+        updateButton.snp.makeConstraints { make in
+            make.width.greaterThanOrEqualTo(82)
+            make.height.equalTo(30)
         }
     }
 
@@ -380,9 +403,7 @@ final class WLocMapViewController: UIViewController {
             guard let self = self else { return }
             self.geocoder.reverseGeocodeLocation(CLLocation(latitude: coordinate.latitude, longitude: coordinate.longitude)) { placemarks, _ in
                 guard let placemark = placemarks?.first else { return }
-                let detail = [placemark.name, placemark.locality, placemark.administrativeArea, placemark.country]
-                    .compactMap { $0 }
-                    .joined(separator: " ")
+                let detail = AppWLocPlace.detailedAddress(from: placemark)
                 let name = placemark.name ?? fallbackName
                 let place = AppWLocPlace(name: name, detail: detail, latitude: coordinate.latitude, longitude: coordinate.longitude)
                 self.updateSelectedPlace(place)
@@ -527,31 +548,28 @@ final class WLocMapViewController: UIViewController {
             return
         }
 
-        let address = place.detail.isEmpty ? "暂无反查地址" : place.detail
+        let address = place.detail.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !address.isEmpty else {
+            showMessage("地址尚未获取", "请等待详细地址显示后再加入收藏。")
+            return
+        }
         let alert = UIAlertController(
             title: "加入收藏",
-            message: "地址：\(address)\n坐标：\(place.coordinateText)",
+            message: "地点：\(place.name)\n地址：\(address)\n坐标：\(place.coordinateText)",
             preferredStyle: .alert
         )
         alert.addTextField { textField in
-            textField.placeholder = "位置别名"
-            textField.text = place.name == "自定义位置" ? "" : place.name
+            textField.placeholder = "自定义别名（可选）"
+            textField.text = ""
             textField.returnKeyType = .done
         }
         alert.addAction(UIAlertAction(title: "取消", style: .cancel))
         alert.addAction(UIAlertAction(title: "保存", style: .default) { [weak self, weak alert] _ in
             guard let self = self else { return }
             let alias = alert?.textFields?.first?.text?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
-            let favorite = AppWLocPlace(
-                name: alias.isEmpty ? (place.name.isEmpty ? "自定义位置" : place.name) : alias,
-                detail: address,
-                latitude: place.latitude,
-                longitude: place.longitude
-            )
+            let favorite = AppWLocFavorite(place: place, alias: alias)
             AppWLocFavoriteStore.shared.add(favorite)
-            self.updateSelectedPlace(favorite)
-            self.selectedAnnotation?.title = favorite.name
-            self.selectedAnnotation?.subtitle = favorite.detail
+            self.updateSelectedPlace(place)
         })
         present(alert, animated: true)
     }
@@ -582,6 +600,44 @@ final class WLocMapViewController: UIViewController {
 
     @objc private func openWebsite() {
         openExternalURL(WLocExternalLink.website)
+    }
+
+    @objc private func updateButtonTapped() {
+        if let availableUpdate {
+            openExternalURL(availableUpdate.downloadURL)
+        } else {
+            checkForUpdates(userInitiated: true)
+        }
+    }
+
+    private func checkForUpdates(userInitiated: Bool) {
+        if userInitiated {
+            updateButton.isEnabled = false
+            updateButton.setTitle("检查中…", for: .normal)
+        }
+        AppWLocUpdateChecker.shared.check(platform: .iOS) { [weak self] result in
+            guard let self = self else { return }
+            self.updateButton.isEnabled = true
+            switch result {
+            case .updateAvailable(let update):
+                self.availableUpdate = update
+                self.updateButton.setTitle("更新 v\(update.version)", for: .normal)
+                self.updateButton.accessibilityLabel = "下载 WLoc8.com v\(update.version)"
+            case .upToDate(let latestVersion):
+                self.availableUpdate = nil
+                self.updateButton.setTitle("检查更新", for: .normal)
+                if userInitiated {
+                    self.showMessage("已是最新版本", "当前版本：\(AppWLocConfig.currentVersion)\n最新版本：\(latestVersion)")
+                }
+            case .failure(let error):
+                self.updateButton.setTitle("检查更新", for: .normal)
+                if userInitiated {
+                    self.showMessage("检查更新失败", error.localizedDescription)
+                } else {
+                    AppWLocUtils.debugLog("\(AppWLocConfig.displayName) iOS 自动检查更新失败：\(error.localizedDescription)")
+                }
+            }
+        }
     }
 
     private func openExternalURL(_ url: URL) {

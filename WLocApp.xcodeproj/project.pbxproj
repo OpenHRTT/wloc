@@ -20,11 +20,6 @@
 		16F7B6E8E6E588E26E8C290C /* WLocURLCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75E6249F27D71906CDCA640C /* WLocURLCommand.swift */; };
 		189685F78FFB82AB6CAAB8CB /* LiquidGlassFragment.metal in Sources */ = {isa = PBXBuildFile; fileRef = 64C20801036AF873D378E12F /* LiquidGlassFragment.metal */; };
 		1C9EAF8EF6F0ECDA886D7CC0 /* LiquidGlassView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 045CB05BDB0BF7827FB7A93B /* LiquidGlassView.swift */; };
-		A10000000000000000000001 /* LiquidGlassView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 045CB05BDB0BF7827FB7A93B /* LiquidGlassView.swift */; };
-		A10000000000000000000002 /* LiquidGlassEffectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC6F8F2728BE79BEE2D2A419 /* LiquidGlassEffectView.swift */; };
-		A10000000000000000000003 /* ZeroCopyBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59FA18DF2F9262D6B72F7418 /* ZeroCopyBridge.swift */; };
-		A10000000000000000000004 /* LiquidGlassFragment.metal in Sources */ = {isa = PBXBuildFile; fileRef = 64C20801036AF873D378E12F /* LiquidGlassFragment.metal */; };
-		A10000000000000000000005 /* LiquidGlassVertex.metal in Sources */ = {isa = PBXBuildFile; fileRef = 38732B259D02EA7EE53F08BB /* LiquidGlassVertex.metal */; };
 		1FE958989D92AACC04671CDE /* AppWLocMutator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44DBFE0DB77957A65032F726 /* AppWLocMutator.swift */; };
 		21FC421027345655463543CE /* AppWLocConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBAE5E6495746F73DAEA4733 /* AppWLocConfig.swift */; };
 		25C5545E0EBFB37E1C18DFCD /* AppWLocVPNManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 170D9453C2946040F3A0E027 /* AppWLocVPNManager.swift */; };
@@ -72,6 +67,11 @@
 		94920E0706763239569DC1E4 /* AppWLocProxy.p12 in Resources */ = {isa = PBXBuildFile; fileRef = B11D1816DE5ECCBD6AD1B131 /* AppWLocProxy.p12 */; };
 		9729E15F7CC8A157F4AE4816 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15154B3AEF11D8A920DCA5C1 /* AppDelegate.swift */; };
 		9E4C119402B8442C81F711B0 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E4C119302B8442C81F711B0 /* main.swift */; };
+		A10000000000000000000001 /* LiquidGlassView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 045CB05BDB0BF7827FB7A93B /* LiquidGlassView.swift */; };
+		A10000000000000000000002 /* LiquidGlassEffectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC6F8F2728BE79BEE2D2A419 /* LiquidGlassEffectView.swift */; };
+		A10000000000000000000003 /* ZeroCopyBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59FA18DF2F9262D6B72F7418 /* ZeroCopyBridge.swift */; };
+		A10000000000000000000004 /* LiquidGlassFragment.metal in Sources */ = {isa = PBXBuildFile; fileRef = 64C20801036AF873D378E12F /* LiquidGlassFragment.metal */; };
+		A10000000000000000000005 /* LiquidGlassVertex.metal in Sources */ = {isa = PBXBuildFile; fileRef = 38732B259D02EA7EE53F08BB /* LiquidGlassVertex.metal */; };
 		A176916A0D6B8D2BAD9C1A3C /* AppWLocMutator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44DBFE0DB77957A65032F726 /* AppWLocMutator.swift */; };
 		A20000000000000000000001 /* SwiftProtobuf.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = A20000000000000000000002 /* SwiftProtobuf.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		A557476A60AAAEEAF35216B1 /* WLocTunnel-iOS.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 6D7E280FA03E627C6F6F19EE /* WLocTunnel-iOS.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
@@ -906,7 +906,7 @@
 				INFOPLIST_FILE = "Resources/Tunnel/Info-macOS.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "$(APP_DISPLAY_NAME)";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @executable_path/../../Frameworks";
-				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				MACOSX_DEPLOYMENT_TARGET = 10.12;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.hrtt.applocmac.tunnel;
 				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = apploc_mac_tunnel_dev;
@@ -930,7 +930,7 @@
 				DEVELOPMENT_TEAM = "";
 				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = CDAW7B5WR4;
 				INFOPLIST_FILE = Resources/iOS/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = "WLoc8.com";
+				INFOPLIST_KEY_CFBundleDisplayName = WLoc8.com;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				MARKETING_VERSION = 1.0;
@@ -958,9 +958,9 @@
 				DEVELOPMENT_TEAM = "";
 				"DEVELOPMENT_TEAM[sdk=macosx*]" = CDAW7B5WR4;
 				INFOPLIST_FILE = Resources/macOS/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = "WLoc8.com";
+				INFOPLIST_KEY_CFBundleDisplayName = WLoc8.com;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
-				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				MACOSX_DEPLOYMENT_TARGET = 10.12;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.hrtt.applocmac;
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -974,7 +974,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				APP_DISPLAY_NAME = "WLoc8.com";
+				APP_DISPLAY_NAME = WLoc8.com;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
@@ -1073,9 +1073,9 @@
 				DEVELOPMENT_TEAM = "";
 				"DEVELOPMENT_TEAM[sdk=macosx*]" = CDAW7B5WR4;
 				INFOPLIST_FILE = Resources/macOS/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = "WLoc8.com";
+				INFOPLIST_KEY_CFBundleDisplayName = WLoc8.com;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
-				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				MACOSX_DEPLOYMENT_TARGET = 10.12;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.hrtt.applocmac;
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -1125,7 +1125,7 @@
 				INFOPLIST_FILE = "Resources/Tunnel/Info-macOS.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "$(APP_DISPLAY_NAME)";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @executable_path/../../Frameworks";
-				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				MACOSX_DEPLOYMENT_TARGET = 10.12;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.hrtt.applocmac.tunnel;
 				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = apploc_mac_tunnel_dev;
@@ -1139,7 +1139,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				APP_DISPLAY_NAME = "WLoc8.com";
+				APP_DISPLAY_NAME = WLoc8.com;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
@@ -1203,7 +1203,7 @@
 				DEVELOPMENT_TEAM = "";
 				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = CDAW7B5WR4;
 				INFOPLIST_FILE = Resources/iOS/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = "WLoc8.com";
+				INFOPLIST_KEY_CFBundleDisplayName = WLoc8.com;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				MARKETING_VERSION = 1.0;

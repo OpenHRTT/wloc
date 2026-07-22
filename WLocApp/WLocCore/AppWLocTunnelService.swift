@@ -44,7 +44,6 @@ final class AppWLocTunnelService {
             port: Int(AppWLocConfig.localProxyPort)
         )
         proxy.matchDomains = Array(AppWLocConfig.appWLocHosts)
-//        proxy.excludeSimpleHostnames = true
         settings.proxySettings = proxy
         AppWLocUtils.debugLog(
             "\(AppWLocConfig.displayName) PacketTunnel proxy settings hosts=\(Array(AppWLocConfig.appWLocHosts).joined(separator: ",")) proxy=\(AppWLocConfig.localProxyHost):\(AppWLocConfig.localProxyPort)"

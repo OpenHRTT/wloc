@@ -2,19 +2,20 @@ import UIKit
 
 final class WLocFavoritesViewController: UITableViewController {
     var onSelect: ((AppWLocPlace) -> Void)?
-    private var places: [AppWLocPlace] = []
+    private var favorites: [AppWLocFavorite] = []
 
     override func viewDidLoad() {
         super.viewDidLoad()
         title = "收藏夹"
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "favorite")
+        tableView.rowHeight = 96
         reload()
     }
 
     private func reload() {
-        places = AppWLocFavoriteStore.shared.all()
+        favorites = AppWLocFavoriteStore.shared.all()
         tableView.reloadData()
-        if places.isEmpty {
+        if favorites.isEmpty {
             let label = UILabel()
             label.text = "还没有收藏地点"
             label.textColor = .darkGray
@@ -26,21 +27,27 @@ final class WLocFavoritesViewController: UITableViewController {
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        places.count
+        favorites.count
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "favorite", for: indexPath)
-        let place = places[indexPath.row]
-        cell.textLabel?.numberOfLines = 3
+        let favorite = favorites[indexPath.row]
+        cell.textLabel?.numberOfLines = 4
+        cell.textLabel?.font = .systemFont(ofSize: 13)
         cell.selectionStyle = .none
-        cell.textLabel?.text = "\(place.name)\n\(place.detail)\n\(place.coordinateText)"
+        cell.textLabel?.text = [
+            "别名：\(favorite.displayAlias)",
+            "地点：\(favorite.title)",
+            "地址：\(favorite.displayDetail)",
+            "坐标：\(favorite.coordinateText)"
+        ].joined(separator: "\n")
         cell.accessoryType = .disclosureIndicator
         return cell
     }
 
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        onSelect?(places[indexPath.row])
+        onSelect?(favorites[indexPath.row].place)
     }
 
     override func tableView(
@@ -49,7 +56,7 @@ final class WLocFavoritesViewController: UITableViewController {
         forRowAt indexPath: IndexPath
     ) {
         guard editingStyle == .delete else { return }
-        AppWLocFavoriteStore.shared.remove(id: places[indexPath.row].id)
+        AppWLocFavoriteStore.shared.remove(id: favorites[indexPath.row].id)
         reload()
     }
 }

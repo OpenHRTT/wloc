@@ -39,7 +39,79 @@ private final class WLocArrowCursorMapView: MKMapView {
     }
 }
 
+private final class WLocMacLinkButton: NSButton {
+    private let baseColor: NSColor
+    private var trackingAreaToken: NSTrackingArea?
+    private var isPointerInside = false
+
+    init(title: String, color: NSColor) {
+        baseColor = color
+        super.init(frame: .zero)
+        self.title = title
+        isBordered = false
+        setButtonType(.momentaryChange)
+        wantsLayer = true
+        layer?.cornerRadius = 10
+        font = .systemFont(ofSize: 13, weight: .semibold)
+        alignment = .center
+        imageScaling = .scaleProportionallyDown
+        imagePosition = .imageLeading
+        imageHugsTitle = true
+        updateAppearance()
+    }
+
+    required init?(coder: NSCoder) {
+        nil
+    }
+
+    override func updateTrackingAreas() {
+        super.updateTrackingAreas()
+        if let trackingAreaToken {
+            removeTrackingArea(trackingAreaToken)
+        }
+        let area = NSTrackingArea(
+            rect: bounds,
+            options: [.activeInKeyWindow, .inVisibleRect, .mouseEnteredAndExited],
+            owner: self,
+            userInfo: nil
+        )
+        addTrackingArea(area)
+        trackingAreaToken = area
+    }
+
+    override func mouseEntered(with event: NSEvent) {
+        isPointerInside = true
+        updateAppearance()
+    }
+
+    override func mouseExited(with event: NSEvent) {
+        isPointerInside = false
+        updateAppearance()
+    }
+
+    private func updateAppearance() {
+        let alpha: CGFloat = isPointerInside ? 0.92 : 0.78
+        layer?.backgroundColor = baseColor.withAlphaComponent(alpha).cgColor
+        attributedTitle = NSAttributedString(
+            string: title,
+            attributes: [
+                .foregroundColor: NSColor.white,
+                .font: NSFont.systemFont(ofSize: 13, weight: .semibold)
+            ]
+        )
+        if #available(macOS 10.14, *) {
+            contentTintColor = .white
+        }
+    }
+}
+
 final class WLocMacMapViewController: NSViewController {
+    private enum SelectedCopyField: Int {
+        case name = 1
+        case detail
+        case coordinate
+    }
+
     private lazy var vpnManager = AppWLocVPNManager(
         providerBundleIdentifier: AppWLocConfig.tunnelProviderBundleIdentifier
     )
@@ -48,6 +120,9 @@ final class WLocMacMapViewController: NSViewController {
     private let searchField = NSSearchField()
     private let searchTable = NSTableView()
     private let favoritesTable = NSTableView()
+    private let searchResultsPanel = NSVisualEffectView()
+    private let searchResultsTitleLabel = NSTextField.wlocLabel("搜索结果")
+    private let searchResultsScroll = NSScrollView()
     private let zoomInButton = NSButton.wlocButton("+")
     private let zoomOutButton = NSButton.wlocButton("−")
     private let currentLocationButton = NSButton.wlocButton("⌖")
@@ -57,22 +132,39 @@ final class WLocMacMapViewController: NSViewController {
     private let lockButton = NSButton.wlocButton("锁定位置")
     private let favoriteButton = NSButton.wlocButton("加入收藏")
     private let tutorialButton = NSButton.wlocButton("教程与证书")
-    private let telegramButton = NSButton.wlocButton("Telegram")
-    private let websiteButton = NSButton.wlocButton("WLoc8.com")
+    private let telegramButton = WLocMacLinkButton(
+        title: "Telegram",
+        color: NSColor(calibratedRed: 0.13, green: 0.60, blue: 0.86, alpha: 1)
+    )
+    private let githubButton = WLocMacLinkButton(
+        title: "GitHub",
+        color: NSColor(calibratedRed: 0.12, green: 0.14, blue: 0.18, alpha: 1)
+    )
+    private let appNameLabel = NSTextField.wlocLabel(AppWLocConfig.displayName)
+    private let versionLabel = NSTextField.wlocLabel("版本 \(AppWLocConfig.currentVersion)")
+    private let updateButton = NSButton.wlocButton("")
     private let selectedAnnotation = MKPointAnnotation()
 
     private let geocoder = CLGeocoder()
     private let locationManager = CLLocationManager()
     private var searchResults: [AppWLocPlace] = []
-    private var favorites: [AppWLocPlace] = []
+    private var favorites: [AppWLocFavorite] = []
     private var selectedPlace: AppWLocPlace?
     private var hasSelectedAnnotation = false
     private var reverseGeocodeWorkItem: DispatchWorkItem?
     private var tutorialWindow: WLocMacTutorialWindowController?
     private var mapClickGesture: NSClickGestureRecognizer?
     private weak var controlsPanel: NSView?
+    private var outsideSearchClickMonitor: Any?
+    private var availableUpdate: AppWLocAvailableUpdate?
     private var shouldSelectNextLocationUpdate = false
     private var isRefreshingLocationAfterLock = false
+
+    deinit {
+        if let outsideSearchClickMonitor {
+            NSEvent.removeMonitor(outsideSearchClickMonitor)
+        }
+    }
 
     override func loadView() {
         view = NSView()
@@ -88,6 +180,7 @@ final class WLocMacMapViewController: NSViewController {
         let initialPlace = AppWLocPlace(name: "上海", detail: "单击地图可选择新的位置", latitude: 31.2304, longitude: 121.4737)
         updateSelectedPlace(initialPlace)
         updateSelectedAnnotation(with: initialPlace)
+        checkForUpdates(userInitiated: false)
     }
 
     private func configureViews() {
@@ -98,9 +191,7 @@ final class WLocMacMapViewController: NSViewController {
         let clickGesture = NSClickGestureRecognizer(target: self, action: #selector(selectMapPoint(_:)))
         clickGesture.numberOfClicksRequired = 1
         clickGesture.delegate = self
-        if #available(macOS 10.12, *) {
-            clickGesture.delaysPrimaryMouseButtonEvents = false
-        }
+        clickGesture.delaysPrimaryMouseButtonEvents = false
         mapClickGesture = clickGesture
         mapView.addGestureRecognizer(clickGesture)
         mapView.setRegion(
@@ -126,6 +217,43 @@ final class WLocMacMapViewController: NSViewController {
 
         configureTable(searchTable)
         configureTable(favoritesTable)
+        favoritesTable.rowHeight = 82
+
+        searchResultsPanel.material = .popover
+        searchResultsPanel.blendingMode = .withinWindow
+        searchResultsPanel.state = .active
+        searchResultsPanel.isHidden = true
+        searchResultsPanel.wantsLayer = true
+        searchResultsPanel.layer?.masksToBounds = false
+        searchResultsPanel.layer?.shadowColor = NSColor.black.cgColor
+        searchResultsPanel.layer?.shadowOpacity = 0.2
+        searchResultsPanel.layer?.shadowRadius = 16
+        searchResultsPanel.layer?.shadowOffset = NSSize(width: 0, height: -5)
+
+        searchResultsPanel.layer?.cornerRadius = 20
+        searchResultsPanel.clipsToBounds = true
+
+        searchResultsTitleLabel.font = .systemFont(ofSize: 13, weight: .semibold)
+        searchResultsTitleLabel.textColor = .secondaryLabelColor
+        searchResultsScroll.documentView = searchTable
+        searchResultsScroll.hasVerticalScroller = true
+        searchResultsScroll.borderType = .noBorder
+        searchResultsScroll.drawsBackground = false
+
+        appNameLabel.font = .systemFont(ofSize: 18, weight: .bold)
+        versionLabel.font = .systemFont(ofSize: 11, weight: .medium)
+        versionLabel.textColor = .secondaryLabelColor
+        updateButton.isHidden = true
+        updateButton.isBordered = false
+        updateButton.font = .systemFont(ofSize: 11, weight: .semibold)
+        updateButton.wantsLayer = true
+        updateButton.layer?.cornerRadius = 9
+        updateButton.layer?.backgroundColor = NSColor(calibratedRed: 0.05, green: 0.45, blue: 0.96, alpha: 0.12).cgColor
+        if #available(macOS 10.14, *) {
+            updateButton.contentTintColor = NSColor(calibratedRed: 0.05, green: 0.45, blue: 0.96, alpha: 1)
+        }
+        updateButton.target = self
+        updateButton.action = #selector(openAvailableUpdate)
 
         titleLabel.font = .systemFont(ofSize: 22, weight: .semibold)
         detailLabel.font = .systemFont(ofSize: 13)
@@ -134,22 +262,33 @@ final class WLocMacMapViewController: NSViewController {
         detailLabel.cell?.wraps = true
         coordinateLabel.font = .monospacedDigitSystemFont(ofSize: 12, weight: .regular)
         coordinateLabel.textColor = .secondaryLabelColor
+        configureCopyMenu(for: titleLabel, field: .name)
+        configureCopyMenu(for: detailLabel, field: .detail)
+        configureCopyMenu(for: coordinateLabel, field: .coordinate)
 
-        [lockButton, favoriteButton, tutorialButton, telegramButton, websiteButton].forEach {
+        let favoriteMenu = NSMenu(title: "收藏操作")
+        favoriteMenu.delegate = self
+        let deleteItem = NSMenuItem(title: "删除收藏", action: #selector(deleteFavoriteFromContextMenu), keyEquivalent: "")
+        deleteItem.target = self
+        favoriteMenu.addItem(deleteItem)
+        favoritesTable.menu = favoriteMenu
+
+        [lockButton, favoriteButton, tutorialButton, telegramButton, githubButton].forEach {
             $0.bezelStyle = .rounded
             $0.controlSize = .regular
         }
-        configureExternalLinkButton(
-            telegramButton,
-            image: WLocMacExternalIcon.image(named: "paperplane.fill", fallback: .telegram, size: NSSize(width: 17, height: 17)),
-            toolTip: "打开 Telegram: https://t.me/wloc88"
-        )
-        configureExternalLinkButton(
-            websiteButton,
-            image: WLocMacExternalIcon.image(named: "chevron.left.forwardslash.chevron.right", fallback: .code, size: NSSize(width: 17, height: 17)),
-            toolTip: "打开 WLoc8.com 官网: https://wloc8.com/"
-        )
-        [zoomInButton, zoomOutButton, currentLocationButton].forEach(configureMapControlButton)
+        telegramButton.image = WLocMacExternalIcon.image(named: "paperplane.fill", fallback: .telegram, size: NSSize(width: 17, height: 17))
+        telegramButton.toolTip = "打开 Telegram: https://t.me/wloc88"
+        githubButton.image = WLocMacExternalIcon.image(named: "chevron.left.forwardslash.chevron.right", fallback: .code, size: NSSize(width: 17, height: 17))
+        githubButton.toolTip = "打开 WLoc8.com GitHub 项目"
+        [zoomInButton, zoomOutButton, currentLocationButton].forEach { button in
+            if #available(macOS 26.0, *) {
+                button.bezelStyle = .glass
+            } else {
+                button.bezelStyle = .texturedRounded
+            }
+            button.font = .systemFont(ofSize: 18, weight: .semibold)
+        }
 
         lockButton.target = self
         lockButton.action = #selector(lockCurrentPlace)
@@ -159,14 +298,20 @@ final class WLocMacMapViewController: NSViewController {
         tutorialButton.action = #selector(openTutorial)
         telegramButton.target = self
         telegramButton.action = #selector(openTelegram)
-        websiteButton.target = self
-        websiteButton.action = #selector(openWebsite)
+        githubButton.target = self
+        githubButton.action = #selector(openGitHub)
         zoomInButton.target = self
         zoomInButton.action = #selector(zoomIn)
         zoomOutButton.target = self
         zoomOutButton.action = #selector(zoomOut)
         currentLocationButton.target = self
         currentLocationButton.action = #selector(centerOnCurrentLocation)
+
+        // 搜索列表是浮层；监听窗口内点击，可在用户点击浮层之外时自然收起。
+        outsideSearchClickMonitor = NSEvent.addLocalMonitorForEvents(matching: [.leftMouseDown, .rightMouseDown]) { [weak self] event in
+            self?.dismissSearchResultsIfNeeded(for: event)
+            return event
+        }
     }
 
     private func configureTable(_ table: NSTableView) {
@@ -183,21 +328,6 @@ final class WLocMacMapViewController: NSViewController {
         table.backgroundColor = .clear
     }
 
-    private func configureMapControlButton(_ button: NSButton) {
-        if #available(macOS 26.0, *) {
-            button.bezelStyle = .glass
-        } else {
-            button.bezelStyle = .texturedRounded
-        }
-        button.font = .systemFont(ofSize: 18, weight: .semibold)
-    }
-
-    private func configureExternalLinkButton(_ button: NSButton, image: NSImage, toolTip: String) {
-        button.image = image
-        button.imagePosition = .imageLeft
-        button.toolTip = toolTip
-    }
-
     private func layoutViews() {
         let sidebar = LiquidGlassEffectView(
             effect: LiquidGlassEffect(style: .regular, isNative: true),
@@ -205,13 +335,17 @@ final class WLocMacMapViewController: NSViewController {
         )
         let controlsPanel = LiquidGlassEffectView(
             effect: LiquidGlassEffect(style: .regular, isNative: true),
-            cornerRadius: 23
+            cornerRadius: 8
         )
         self.controlsPanel = controlsPanel
 
         view.addSubview(mapView)
         view.addSubview(sidebar)
         view.addSubview(controlsPanel)
+        view.addSubview(searchResultsPanel, positioned: .above, relativeTo: nil)
+
+        searchResultsPanel.addSubview(searchResultsTitleLabel)
+        searchResultsPanel.addSubview(searchResultsScroll)
 
         controlsPanel.contentView.addSubview(zoomInButton)
         controlsPanel.contentView.addSubview(zoomOutButton)
@@ -249,15 +383,6 @@ final class WLocMacMapViewController: NSViewController {
             make.width.height.equalTo(zoomInButton)
         }
 
-        let searchScroll = NSScrollView()
-        searchScroll.documentView = searchTable
-        searchScroll.hasVerticalScroller = true
-        searchScroll.borderType = .noBorder
-
-        let resultTitle = NSTextField.wlocLabel("搜索结果")
-        resultTitle.font = .systemFont(ofSize: 13, weight: .semibold)
-        resultTitle.textColor = .secondaryLabelColor
-
         let favoriteTitle = NSTextField.wlocLabel("收藏地点")
         favoriteTitle.font = .systemFont(ofSize: 13, weight: .semibold)
         favoriteTitle.textColor = .secondaryLabelColor
@@ -274,30 +399,45 @@ final class WLocMacMapViewController: NSViewController {
 
         let secondaryActionStack = NSStackView(views: [tutorialButton])
         secondaryActionStack.orientation = .vertical
-        secondaryActionStack.spacing = 8
+        secondaryActionStack.spacing = 15
         secondaryActionStack.distribution = .fillEqually
 
-        let externalLinkStack = NSStackView(views: [telegramButton, websiteButton])
+        let externalLinkStack = NSStackView(views: [telegramButton, githubButton])
         externalLinkStack.orientation = .horizontal
         externalLinkStack.spacing = 10
         externalLinkStack.distribution = .fillEqually
         secondaryActionStack.addArrangedSubview(externalLinkStack)
 
-        [lockButton, favoriteButton, tutorialButton, telegramButton, websiteButton].forEach { button in
+        externalLinkStack.snp.makeConstraints { make in
+            make.width.equalTo(secondaryActionStack).offset(-36)
+        }
+
+        [lockButton, favoriteButton, tutorialButton, telegramButton, githubButton].forEach { button in
             button.snp.makeConstraints { make in
                 make.height.equalTo(36)
             }
         }
 
-        [searchField, titleLabel, detailLabel, coordinateLabel, resultTitle, searchScroll, actionStack, secondaryActionStack, favoriteTitle, favoritesScroll].forEach {
+        [appNameLabel, versionLabel, updateButton, searchField, titleLabel, detailLabel, coordinateLabel, actionStack, secondaryActionStack, favoriteTitle, favoritesScroll].forEach {
             sidebar.contentView.addSubview($0)
         }
 
-        actionStack.orientation = .horizontal
-        actionStack.distribution = .fillEqually
-
-        searchField.snp.makeConstraints { make in
+        appNameLabel.snp.makeConstraints { make in
             make.top.equalToSuperview().offset(20)
+            make.leading.equalToSuperview().inset(18)
+        }
+        versionLabel.snp.makeConstraints { make in
+            make.leading.equalTo(appNameLabel)
+            make.top.equalTo(appNameLabel.snp.bottom).offset(2)
+        }
+        updateButton.snp.makeConstraints { make in
+            make.centerY.equalTo(versionLabel)
+            make.leading.equalTo(versionLabel.snp.trailing).offset(6)
+            make.trailing.lessThanOrEqualToSuperview().inset(18)
+            make.height.equalTo(22)
+        }
+        searchField.snp.makeConstraints { make in
+            make.top.equalTo(versionLabel.snp.bottom).offset(12)
             make.leading.trailing.equalToSuperview().inset(18)
             make.height.equalTo(36)
         }
@@ -319,25 +459,30 @@ final class WLocMacMapViewController: NSViewController {
         }
         secondaryActionStack.snp.makeConstraints { make in
             make.top.equalTo(actionStack.snp.bottom).offset(10)
-            make.leading.trailing.equalTo(searchField)
-        }
-        resultTitle.snp.makeConstraints { make in
-            make.top.equalTo(secondaryActionStack.snp.bottom).offset(20)
-            make.leading.trailing.equalTo(searchField)
-        }
-        searchScroll.snp.makeConstraints { make in
-            make.top.equalTo(resultTitle.snp.bottom).offset(8)
-            make.leading.trailing.equalTo(searchField)
-            make.height.equalTo(210)
+            make.leading.trailing.equalToSuperview()
         }
         favoriteTitle.snp.makeConstraints { make in
-            make.top.equalTo(searchScroll.snp.bottom).offset(20)
+            make.top.equalTo(secondaryActionStack.snp.bottom).offset(20)
             make.leading.trailing.equalTo(searchField)
         }
         favoritesScroll.snp.makeConstraints { make in
             make.top.equalTo(favoriteTitle.snp.bottom).offset(8)
             make.leading.trailing.equalTo(searchField)
             make.bottom.equalToSuperview().inset(16)
+        }
+
+        searchResultsPanel.snp.makeConstraints { make in
+            make.top.equalTo(searchField.snp.bottom).offset(8)
+            make.leading.trailing.equalTo(searchField)
+            make.height.equalTo(270)
+        }
+        searchResultsTitleLabel.snp.makeConstraints { make in
+            make.top.equalToSuperview().offset(12)
+            make.leading.trailing.equalToSuperview().inset(14)
+        }
+        searchResultsScroll.snp.makeConstraints { make in
+            make.top.equalTo(searchResultsTitleLabel.snp.bottom).offset(8)
+            make.leading.trailing.bottom.equalToSuperview().inset(8)
         }
     }
 
@@ -350,11 +495,34 @@ final class WLocMacMapViewController: NSViewController {
         favoriteButton.title = favoriteButton.isEnabled ? "加入收藏" : "已收藏"
     }
 
+    private func configureCopyMenu(for label: NSTextField, field: SelectedCopyField) {
+        label.isSelectable = true
+        let menu = NSMenu(title: "复制")
+        let item = NSMenuItem(title: "复制", action: #selector(copySelectedPlaceField(_:)), keyEquivalent: "")
+        item.target = self
+        item.tag = field.rawValue
+        menu.addItem(item)
+        label.menu = menu
+    }
+
+    @objc private func copySelectedPlaceField(_ sender: NSMenuItem) {
+        guard let place = selectedPlace,
+              let field = SelectedCopyField(rawValue: sender.tag) else { return }
+        let value: String
+        switch field {
+        case .name:
+            value = place.name
+        case .detail:
+            value = place.detail
+        case .coordinate:
+            value = place.coordinateText
+        }
+        NSPasteboard.general.clearContents()
+        NSPasteboard.general.setString(value, forType: .string)
+    }
+
     private func moveMap(to place: AppWLocPlace) {
-        mapView.setRegion(
-            MKCoordinateRegion(center: place.coordinate, latitudinalMeters: 800, longitudinalMeters: 800),
-            animated: true
-        )
+        mapView.setCenter(place.coordinate, animated: false)
         updateSelectedPlace(place)
         updateSelectedAnnotation(with: place)
     }
@@ -380,9 +548,7 @@ final class WLocMacMapViewController: NSViewController {
             self.geocoder.cancelGeocode()
             self.geocoder.reverseGeocodeLocation(CLLocation(latitude: coordinate.latitude, longitude: coordinate.longitude)) { placemarks, _ in
                 guard let placemark = placemarks?.first else { return }
-                let detail = [placemark.locality, placemark.administrativeArea, placemark.country]
-                    .compactMap { $0 }
-                    .joined(separator: " ")
+                let detail = AppWLocPlace.detailedAddress(from: placemark)
                 let resolvedPlace = AppWLocPlace(
                     name: placemark.name ?? name,
                     detail: detail,
@@ -406,7 +572,7 @@ final class WLocMacMapViewController: NSViewController {
 
     @objc private func lockCurrentPlace() {
         guard let place = selectedPlace else { return }
-        var msg = "锁定成功。请确认已安装并始终信任证书，然后关闭系统定位服务，等待两秒后再打开。"
+        var msg = "锁定成功。请确认已通过“钥匙串访问”→“系统”→“文件”→“导入项目…”导入根证书并设为“始终信任”，然后关闭系统定位服务，等待两秒后再打开。"
         #if DEBUG
         let logPath = AppWLocUtils.debugLogURL?.path ?? "/tmp/AppWLoc/wloc-debug.log"
         msg += "\n\n调试日志：\(logPath)"
@@ -464,12 +630,36 @@ final class WLocMacMapViewController: NSViewController {
 
     @objc private func addFavorite() {
         guard let place = selectedPlace else { return }
-        AppWLocFavoriteStore.shared.add(place)
-        updateSelectedPlace(place)
-        reloadFavorites()
+        let savedDetail = place.detail.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !savedDetail.isEmpty,
+              place.name != "查询中...",
+              savedDetail != "单击地图可选择新的位置" else {
+            showAlert(title: "地址尚未获取", message: "请等待详细地址显示后再加入收藏。")
+            return
+        }
+        let alert = NSAlert()
+        alert.messageText = "加入收藏"
+        alert.informativeText = "地点：\(place.name)\n地址：\(savedDetail)\n坐标：\(place.coordinateText)"
+        alert.addButton(withTitle: "保存")
+        alert.addButton(withTitle: "取消")
+
+        let aliasField = NSTextField(frame: NSRect(x: 0, y: 0, width: 320, height: 26))
+        aliasField.placeholderString = "输入自定义别名（可选）"
+        aliasField.stringValue = ""
+        alert.accessoryView = aliasField
+
+        guard let window = view.window else { return }
+        alert.beginSheetModal(for: window) { [weak self] response in
+            guard response == .alertFirstButtonReturn, let self else { return }
+            let alias = aliasField.stringValue.trimmingCharacters(in: .whitespacesAndNewlines)
+            let favorite = AppWLocFavorite(place: place, alias: alias)
+            AppWLocFavoriteStore.shared.add(favorite)
+            self.updateSelectedPlace(place)
+            self.reloadFavorites()
+        }
     }
 
-    @objc private func openTutorial() {
+    @objc func openTutorial() {
         let controller = WLocMacTutorialWindowController()
         tutorialWindow = controller
         controller.showWindow(self)
@@ -479,8 +669,8 @@ final class WLocMacMapViewController: NSViewController {
         openExternalURL(WLocMacExternalLink.telegram)
     }
 
-    @objc private func openWebsite() {
-        openExternalURL(WLocMacExternalLink.website)
+    @objc private func openGitHub() {
+        openExternalURL(WLocMacExternalLink.github)
     }
 
     private func openExternalURL(_ url: URL) {
@@ -490,22 +680,107 @@ final class WLocMacMapViewController: NSViewController {
 
     @objc private func performSearch() {
         let query = searchField.stringValue.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard !query.isEmpty else { return }
+        guard !query.isEmpty else {
+            hideSearchResults()
+            return
+        }
+        searchResultsTitleLabel.stringValue = "搜索中…"
+        searchResults.removeAll()
+        searchTable.reloadData()
+        searchResultsPanel.isHidden = false
         let request = MKLocalSearch.Request()
         request.naturalLanguageQuery = query
         request.region = mapView.region
         MKLocalSearch(request: request).start { [weak self] response, error in
             guard let self else { return }
             if let error {
+                self.hideSearchResults()
                 self.showAlert(title: "搜索失败", message: error.localizedDescription)
                 return
             }
             self.searchResults = response?.mapItems.prefix(12).map { AppWLocPlace(mapItem: $0) } ?? []
+            self.searchResultsTitleLabel.stringValue = self.searchResults.isEmpty ? "没有找到结果" : "搜索结果"
             self.searchTable.reloadData()
-//            if let first = self.searchResults.first {
-//                self.moveMap(to: first)
-//            }
         }
+    }
+
+    private func hideSearchResults() {
+        searchResultsPanel.isHidden = true
+        searchTable.deselectAll(nil)
+    }
+
+    private func dismissSearchResultsIfNeeded(for event: NSEvent) {
+        guard !searchResultsPanel.isHidden, event.window === view.window else { return }
+        let point = view.convert(event.locationInWindow, from: nil)
+        guard let hitView = view.hitTest(point) else {
+            hideSearchResults()
+            return
+        }
+        if hitView.isDescendant(of: searchResultsPanel) || hitView.isDescendant(of: searchField) {
+            return
+        }
+        hideSearchResults()
+    }
+
+    @objc private func deleteFavoriteFromContextMenu() {
+        let row = favoritesTable.clickedRow
+        guard favorites.indices.contains(row) else { return }
+        let favorite = favorites[row]
+        let alert = NSAlert()
+        let favoriteName = favorite.alias.isEmpty ? favorite.title : favorite.alias
+        alert.messageText = "删除“\(favoriteName)”？"
+        alert.informativeText = "删除后无法撤销。"
+        alert.addButton(withTitle: "删除")
+        alert.addButton(withTitle: "取消")
+        guard let window = view.window else { return }
+        alert.beginSheetModal(for: window) { [weak self] response in
+            guard response == .alertFirstButtonReturn, let self else { return }
+            AppWLocFavoriteStore.shared.remove(id: favorite.id)
+            self.reloadFavorites()
+            if let selectedPlace = self.selectedPlace {
+                self.updateSelectedPlace(selectedPlace)
+            }
+        }
+    }
+
+    func checkForUpdates(userInitiated: Bool) {
+        if userInitiated {
+            versionLabel.stringValue = "正在检查更新…"
+        }
+        AppWLocUpdateChecker.shared.check(platform: .macOS) { [weak self] result in
+            guard let self else { return }
+            self.versionLabel.stringValue = "版本 \(AppWLocConfig.currentVersion)"
+            switch result {
+            case .updateAvailable(let update):
+                self.availableUpdate = update
+                self.updateButton.attributedTitle = NSAttributedString(
+                    string: "更新 v\(update.version)",
+                    attributes: [
+                        .foregroundColor: NSColor(calibratedRed: 0.05, green: 0.45, blue: 0.96, alpha: 1),
+                        .font: NSFont.systemFont(ofSize: 11, weight: .semibold)
+                    ]
+                )
+                self.updateButton.toolTip = "下载 WLoc8.com v\(update.version)"
+                self.updateButton.isHidden = false
+            case .upToDate(let latestVersion):
+                self.availableUpdate = nil
+                self.updateButton.isHidden = true
+                if userInitiated {
+                    self.showAlert(title: "已是最新版本", message: "当前版本：\(AppWLocConfig.currentVersion)\n最新版本：\(latestVersion)")
+                }
+            case .failure(let error):
+                if userInitiated {
+                    self.showAlert(title: "检查更新失败", message: error.localizedDescription)
+                } else {
+                    AppWLocUtils.debugLog("\(AppWLocConfig.displayName) macOS 自动检查更新失败：\(error.localizedDescription)")
+                }
+            }
+        }
+    }
+
+    @objc private func openAvailableUpdate() {
+        guard let availableUpdate else { return }
+        openExternalURL(availableUpdate.downloadURL)
     }
 
     @objc private func zoomIn() {
@@ -523,6 +798,7 @@ final class WLocMacMapViewController: NSViewController {
     @objc private func selectMapPoint(_ recognizer: NSClickGestureRecognizer) {
         guard recognizer.state == .ended else { return }
         guard shouldSelectMapPoint(for: recognizer) else { return }
+        hideSearchResults()
         view.window?.makeFirstResponder(nil)
         NSCursor.arrow.set()
         let point = recognizer.location(in: mapView)
@@ -659,11 +935,22 @@ final class WLocMacMapViewController: NSViewController {
 
 extension WLocMacMapViewController: NSSearchFieldDelegate {
     func control(_ control: NSControl, textView: NSTextView, doCommandBy commandSelector: Selector) -> Bool {
-        guard commandSelector == #selector(NSResponder.insertNewline(_:)) else {
-            return false
+        if commandSelector == #selector(NSResponder.insertNewline(_:)) {
+            performSearch()
+            return true
         }
-        performSearch()
-        return true
+        if commandSelector == #selector(NSResponder.cancelOperation(_:)) {
+            hideSearchResults()
+            return true
+        }
+        return false
+    }
+}
+
+extension WLocMacMapViewController: NSMenuDelegate {
+    func menuNeedsUpdate(_ menu: NSMenu) {
+        guard menu === favoritesTable.menu else { return }
+        menu.items.first?.isEnabled = favorites.indices.contains(favoritesTable.clickedRow)
     }
 }
 
@@ -686,14 +973,21 @@ extension WLocMacMapViewController: NSTableViewDataSource, NSTableViewDelegate {
         let textField = tableView.makeView(withIdentifier: identifier, owner: self) as? NSTextField ?? NSTextField.wlocLabel("")
         textField.identifier = identifier
         textField.lineBreakMode = .byTruncatingTail
-        textField.maximumNumberOfLines = 2
-        textField.font = .systemFont(ofSize: 13)
         if tableView == searchTable {
+            textField.maximumNumberOfLines = 2
+            textField.font = .systemFont(ofSize: 13)
             let item = searchResults[row]
             textField.stringValue = item.detail.isEmpty ? item.name : "\(item.name)\n\(item.detail)"
         } else {
-            let place = favorites[row]
-            textField.stringValue = "\(place.name)\n\(place.coordinateText)"
+            textField.maximumNumberOfLines = 4
+            textField.font = .systemFont(ofSize: 12)
+            let favorite = favorites[row]
+            textField.stringValue = [
+                "别名：\(favorite.displayAlias)",
+                "地点：\(favorite.title)",
+                "地址：\(favorite.displayDetail)",
+                "坐标：\(favorite.coordinateText)"
+            ].joined(separator: "\n")
         }
         return textField
     }
@@ -701,11 +995,12 @@ extension WLocMacMapViewController: NSTableViewDataSource, NSTableViewDelegate {
     func tableViewSelectionDidChange(_ notification: Notification) {
         guard let tableView = notification.object as? NSTableView, tableView.selectedRow >= 0 else { return }
         if tableView == favoritesTable {
-            moveMap(to: favorites[tableView.selectedRow])
+            moveMap(to: favorites[tableView.selectedRow].place)
             return
         }
 
         moveMap(to: searchResults[tableView.selectedRow])
+        hideSearchResults()
     }
 }
 
@@ -751,7 +1046,7 @@ extension WLocMacMapViewController: CLLocationManagerDelegate {
 
 private enum WLocMacExternalLink {
     static let telegram = URL(string: "https://t.me/wloc88")!
-    static let website = URL(string: "https://wloc8.com/")!
+    static let github = AppWLocConfig.githubRepositoryURL
 }
 
 private enum WLocMacExternalIcon {

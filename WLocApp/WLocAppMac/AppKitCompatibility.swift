@@ -13,6 +13,7 @@ extension NSTextField {
 
     static func wlocWrappingLabel(_ text: String) -> NSTextField {
         let field = wlocLabel(text)
+        field.lineBreakMode = .byWordWrapping
         field.cell?.wraps = true
         field.cell?.isScrollable = false
         field.maximumNumberOfLines = 0

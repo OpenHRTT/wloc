@@ -26,7 +26,7 @@ final class AppWLocVPNManager {
 
     init(providerBundleIdentifier: String, localizedDescription: String? = nil) {
         self.providerBundleIdentifier = providerBundleIdentifier
-        self.localizedDescription = localizedDescription ?? "WLoc8.com"
+        self.localizedDescription = "WLoc8.com iOS端"
     }
 
     func lock(to place: AppWLocPlace, completion: @escaping (Result<Void, Error>) -> Void) {
@@ -46,9 +46,6 @@ final class AppWLocVPNManager {
         }
 
         #if os(macOS)
-        // 仅用于回退曾发布过的 macOS 透明代理配置。透明代理和 Packet Tunnel
-        // 使用了同一个 Provider Bundle ID；若不先删除旧配置，系统可能继续按
-        // app-proxy 类型查找扩展，导致恢复后的 VPN 配置无法正常安装或启动。
         removeLegacyMacTransparentProxy { cleanupError in
             if let cleanupError {
                 AppWLocUtils.debugLog(

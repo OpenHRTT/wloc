@@ -4,6 +4,7 @@
 # Xcode user data and build products
 DerivedData/
 build/
+dist/
 *.xcuserstate
 *.xccheckout
 *.xcscmblueprint
