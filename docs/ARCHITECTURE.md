@@ -6,14 +6,16 @@
 | --- | --- |
 | `WLocApp-iOS` | UIKit 地图、搜索、收藏、证书下载和 VPN 控制 |
 | `WLocTunnel-iOS` | iOS Packet Tunnel Extension 和本地 HTTPS 代理 |
-| `WLocApp-macOS` | AppKit 地图、收藏、证书下载和 VPN 控制 |
-| `WLocTunnel-macOS` | macOS Packet Tunnel Extension 和本地 HTTPS 代理 |
+| `WLocApp-macOS` | AppKit 地图、PAC 控制和应用内本地 HTTPS 代理 |
+| `WLocPrivilegedHelper` | 以 root 身份执行受限的 `networksetup` PAC 修改 |
 
 ## 主要模块
 
 - `AppWLocConfig`：域名、端口、App Group、证书资源和 Tunnel Identifier。
-- `AppWLocStateStore`：通过 App Group `UserDefaults` 在主 App 和 Extension 之间共享锁定坐标。
-- `AppWLocVPNManager`：创建、加载、启动和停止 `NETunnelProviderManager`。
+- `AppWLocStateStore`：iOS 通过 App Group 共享状态；macOS 使用主应用自己的 `UserDefaults`。
+- `AppWLocVPNManager`：iOS 创建、加载、启动和停止 `NETunnelProviderManager`。
+- `AppWLocPACManager`：macOS 启动本地代理和 PAC，通过安全 XPC 请求 Helper 修改并恢复系统 PAC。
+- `AppWLocPrivilegedHelperProtocol`：定义 XPC 数据结构、Mach Service 名称和双向代码签名要求。
 - `PacketTunnelProvider`：设置虚拟网络、DNS 匹配和 HTTPS 代理。
 - `AppWLocHTTPProxyServer`：接受目标请求、建立 TLS，转发并处理响应。
 - `AppWLocMutator`：解析目标载荷，替换定位字段，保留未知 Protobuf 字段。
@@ -25,19 +27,15 @@
 ```mermaid
 sequenceDiagram
     participant UI as App UI
-    participant Store as App Group Store
-    participant VPN as NETunnelProviderManager
-    participant Ext as PacketTunnelProvider
+    participant Route as iOS Tunnel / macOS PAC
     participant Proxy as Local HTTPS Proxy
     participant Host as Target Host
 
-    UI->>Store: Save selected coordinate
-    UI->>VPN: Start tunnel
-    VPN->>Ext: Launch extension
-    Ext->>Proxy: Start local proxy
+    UI->>Route: Save coordinate and enable route
+    Route->>Proxy: Send matching host requests
     Proxy->>Host: Forward matching request
     Host-->>Proxy: Return location payload
-    Proxy->>Store: Read locked coordinate
+    Proxy->>Proxy: Read locked coordinate
     Proxy-->>UI: Return mutated response through the client request path
 ```
 
@@ -45,7 +43,8 @@ sequenceDiagram
 
 - 根证书和代理身份由每个开发者本地生成，不进入 Git。
 - 代理匹配域名受 `AppWLocConfig.appWLocHosts` 限制。
-- Tunnel 排除默认路由，不用作通用全局 VPN。
-- 锁定坐标保存在本地 App Group，当前没有远程服务器依赖。
+- iOS Tunnel 排除默认路由；macOS PAC 对非目标域名返回 `DIRECT`。
+- 锁定坐标只保存在本地；macOS 不再包含 Network/System Extension。
+- macOS Helper 只接受签名匹配的主应用连接，主应用也验证 Helper 签名；XPC 只暴露 PAC 设置接口，不接受 shell 命令。
 
 任何放宽域名匹配、扩大路由范围、导出证书或引入远程控制的变更，都应被视为高风险安全变更。

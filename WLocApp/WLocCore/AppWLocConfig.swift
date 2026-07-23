@@ -4,24 +4,27 @@ enum AppWLocConfig {
     static let displayName = "WLoc8.com"
     static let rootCertificateDownloadFileName = "WLoc8.com-RootCA.cer"
 
+    #if os(iOS)
     static let appGroupIdentifier = "group.com.wlocapp.shared"
-
-    static let defaultsSuiteName = appGroupIdentifier
+    static let defaultsSuiteName: String? = appGroupIdentifier
     static var tunnelProviderBundleIdentifier: String {
         if let bundleIdentifier = Bundle.main.bundleIdentifier,
            !bundleIdentifier.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
             return "\(bundleIdentifier).tunnel"
         }
-        #if os(macOS)
-        return "com.wlocapp.mac.tunnel"
-        #else
         return "com.hrtt.apploc.tunnel"
-        #endif
     }
+    #else
+    static let defaultsSuiteName: String? = nil
+    #endif
 
     static let localProxyHost = "127.0.0.1"
     static let localProxyPort: UInt16 = 19090
     static let certificateServerPort: UInt = 18088
+    #if os(macOS)
+    static let pacServerPort: UInt = 18089
+    static let pacURL = URL(string: "http://127.0.0.1:\(pacServerPort)/wloc.pac")!
+    #endif
 
     static let iOSWLocHosts: Set<String> = [
         "gs-loc.apple.com",

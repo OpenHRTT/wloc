@@ -44,6 +44,13 @@ open WLocApp.xcworkspace
 - 查看主 App 和 Packet Tunnel Extension 的设备日志。
 - 确认 App Group 两端一致，否则 Extension 无法读取锁定坐标。
 
+## macOS 提示 Privileged Helper 未启用
+
+- 将完整的 `WLoc8.com.app` 放到 `/Applications`，不要只复制内部可执行文件。
+- 首次锁定后，在“系统设置 > 通用 > 登录项与扩展”中允许 WLoc8.com 后台项目，再回到 App 重试。
+- 确认 `WLocApp-macOS` 与 `WLocPrivilegedHelper` 使用同一个 Team，并且签名要求与实际 Bundle Identifier、Team ID 一致。
+- 更新 App 后若 Helper 无法连接，退出旧版本，重新安装并启动新版本。
+
 ## 根证书已安装但代理仍失败
 
 - iOS 安装描述文件后，还必须在“证书信任设置”中手动完全信任。
@@ -63,3 +70,5 @@ open WLocApp.xcworkspace
 2. 重新刷新定位服务。
 3. 不再测试时，删除 VPN 配置和受信任根证书。
 4. 仍有异常时重启设备。
+
+macOS 若 App 异常退出后 PAC 未恢复，重新打开 App 并再次锁定、解锁；应用会先恢复上次保存的 PAC 设置。

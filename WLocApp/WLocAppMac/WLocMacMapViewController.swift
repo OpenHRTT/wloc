@@ -99,9 +99,7 @@ private final class WLocMacLinkButton: NSButton {
                 .font: NSFont.systemFont(ofSize: 13, weight: .semibold)
             ]
         )
-        if #available(macOS 10.14, *) {
-            contentTintColor = .white
-        }
+        contentTintColor = .white
     }
 }
 
@@ -112,9 +110,7 @@ final class WLocMacMapViewController: NSViewController {
         case coordinate
     }
 
-    private lazy var vpnManager = AppWLocVPNManager(
-        providerBundleIdentifier: AppWLocConfig.tunnelProviderBundleIdentifier
-    )
+    private let pacManager = AppWLocPACManager()
 
     private let mapView = WLocArrowCursorMapView()
     private let searchField = NSSearchField()
@@ -249,9 +245,7 @@ final class WLocMacMapViewController: NSViewController {
         updateButton.wantsLayer = true
         updateButton.layer?.cornerRadius = 9
         updateButton.layer?.backgroundColor = NSColor(calibratedRed: 0.05, green: 0.45, blue: 0.96, alpha: 0.12).cgColor
-        if #available(macOS 10.14, *) {
-            updateButton.contentTintColor = NSColor(calibratedRed: 0.05, green: 0.45, blue: 0.96, alpha: 1)
-        }
+        updateButton.contentTintColor = NSColor(calibratedRed: 0.05, green: 0.45, blue: 0.96, alpha: 1)
         updateButton.target = self
         updateButton.action = #selector(openAvailableUpdate)
 
@@ -583,7 +577,7 @@ final class WLocMacMapViewController: NSViewController {
     private func lock(_ place: AppWLocPlace, successMessage: String) {
         lockButton.isEnabled = false
         lockButton.title = "锁定中..."
-        vpnManager.lock(to: place) { [weak self] result in
+        pacManager.lock(to: place) { [weak self] result in
             AppWLocUtils.mainThread {
                 guard let self else { return }
                 self.lockButton.isEnabled = true
@@ -616,8 +610,8 @@ final class WLocMacMapViewController: NSViewController {
         }
     }
 
-    func disconnectVPNForAppTermination() {
-        vpnManager.stop(clearState: true)
+    func stopPACForAppTermination() {
+        pacManager.stopForAppTermination()
     }
 
     private func applyExternalLocation(_ place: AppWLocPlace) {
@@ -625,7 +619,7 @@ final class WLocMacMapViewController: NSViewController {
         reverseGeocodeWorkItem?.cancel()
         geocoder.cancelGeocode()
         moveMap(to: place)
-        lock(place, successMessage: "已通过外部链接保存目标位置并连接 VPN。")
+        lock(place, successMessage: "已通过外部链接保存目标位置并启用 PAC 代理。")
     }
 
     @objc private func addFavorite() {
@@ -846,15 +840,13 @@ final class WLocMacMapViewController: NSViewController {
         isRefreshingLocationAfterLock = !selectResult
         mapView.showsUserLocation = true
 
-        let status = CLLocationManager.authorizationStatus()
+        let status = locationManager.authorizationStatus
         AppWLocUtils.debugLog(
             "\(AppWLocConfig.displayName) macOS 准备刷新系统定位 selectResult=\(selectResult)，status=\(authorizationStatusDescription(status))"
         )
         switch status {
         case .notDetermined:
-            if #available(macOS 10.15, *) {
-                locationManager.requestWhenInUseAuthorization()
-            }
+            locationManager.requestWhenInUseAuthorization()
             AppWLocUtils.debugLog("\(AppWLocConfig.displayName) macOS 请求定位权限并启动定位刷新")
             locationManager.startUpdatingLocation()
         case .authorizedAlways, .authorizedWhenInUse:
@@ -891,9 +883,7 @@ final class WLocMacMapViewController: NSViewController {
         case .denied, .restricted:
             AppWLocUtils.debugLog("\(AppWLocConfig.displayName) macOS 定位仍不可用，保持等待")
         case .notDetermined:
-            if #available(macOS 10.15, *) {
-                locationManager.requestWhenInUseAuthorization()
-            }
+            locationManager.requestWhenInUseAuthorization()
         @unknown default:
             AppWLocUtils.debugLog("\(AppWLocConfig.displayName) macOS 未知定位授权状态")
         }
@@ -1017,7 +1007,6 @@ extension WLocMacMapViewController: CLLocationManagerDelegate {
         handleLocationAuthorizationChange(status)
     }
 
-    @available(macOS 11.0, *)
     func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
         handleLocationAuthorizationChange(manager.authorizationStatus)
     }
@@ -1060,7 +1049,7 @@ private enum WLocMacExternalIcon {
     }
 
     static func image(named systemName: String, fallback: Fallback, size: NSSize) -> NSImage {
-        if #available(macOS 11.0, *), let systemImage = NSImage(systemSymbolName: systemName, accessibilityDescription: nil) {
+        if let systemImage = NSImage(systemSymbolName: systemName, accessibilityDescription: nil) {
             systemImage.size = size
             return systemImage
         }

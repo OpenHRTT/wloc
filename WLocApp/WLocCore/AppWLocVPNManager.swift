@@ -26,7 +26,7 @@ final class AppWLocVPNManager {
 
     init(providerBundleIdentifier: String, localizedDescription: String? = nil) {
         self.providerBundleIdentifier = providerBundleIdentifier
-        self.localizedDescription = "WLoc8.com iOS端"
+        self.localizedDescription = localizedDescription ?? AppWLocConfig.displayName
     }
 
     func lock(to place: AppWLocPlace, completion: @escaping (Result<Void, Error>) -> Void) {
@@ -45,24 +45,11 @@ final class AppWLocVPNManager {
             return
         }
 
-        #if os(macOS)
-        removeLegacyMacTransparentProxy { cleanupError in
-            if let cleanupError {
-                AppWLocUtils.debugLog(
-                    "\(AppWLocConfig.displayName) macOS 清理旧透明代理失败：\(cleanupError.localizedDescription)"
-                )
-                completion(.failure(cleanupError))
-                return
-            }
-            self.restartTunnelAfterMacCleanup(completion: completion)
-        }
-        #else
         stop(clearState: false) { _ in
             AppWLocUtils.mainThreadAfter(1.0) {
                 self.start(completion: completion)
             }
         }
-        #endif
     }
 
     func stop(clearState: Bool = false, completion: ((Error?) -> Void)? = nil) {
@@ -98,6 +85,11 @@ final class AppWLocVPNManager {
         AppWLocUtils.debugLog(
             "\(AppWLocConfig.displayName) VPN start provider=\(providerBundleIdentifier)，log=\(AppWLocUtils.debugLogURL?.path ?? "unavailable")"
         )
+
+        startVPNConfiguration(completion: completion)
+    }
+
+    private func startVPNConfiguration(completion: @escaping (Result<Void, Error>) -> Void) {
         loadOrCreateManager { result in
             switch result {
             case .failure(let error):
@@ -230,66 +222,4 @@ final class AppWLocVPNManager {
         }
     }
 
-    #if os(macOS)
-    private func restartTunnelAfterMacCleanup(
-        completion: @escaping (Result<Void, Error>) -> Void
-    ) {
-        stop(clearState: false) { _ in
-            AppWLocUtils.mainThreadAfter(1.0) {
-                self.start(completion: completion)
-            }
-        }
-    }
-
-    private func removeLegacyMacTransparentProxy(completion: @escaping (Error?) -> Void) {
-        guard #available(macOS 10.15, *) else {
-            completion(nil)
-            return
-        }
-
-        NETransparentProxyManager.loadAllFromPreferences { managers, loadError in
-            if let loadError {
-                completion(loadError)
-                return
-            }
-
-            let legacyManagers = (managers ?? []).filter { manager in
-                (manager.protocolConfiguration as? NETunnelProviderProtocol)?
-                    .providerBundleIdentifier == self.providerBundleIdentifier
-            }
-            guard !legacyManagers.isEmpty else {
-                completion(nil)
-                return
-            }
-
-            let group = DispatchGroup()
-            let errorLock = NSLock()
-            var firstError: Error?
-
-            legacyManagers.forEach { manager in
-                manager.connection.stopVPNTunnel()
-                group.enter()
-                manager.removeFromPreferences { removeError in
-                    if let removeError {
-                        errorLock.lock()
-                        if firstError == nil {
-                            firstError = removeError
-                        }
-                        errorLock.unlock()
-                    }
-                    group.leave()
-                }
-            }
-
-            group.notify(queue: .main) {
-                if firstError == nil {
-                    AppWLocUtils.debugLog(
-                        "\(AppWLocConfig.displayName) macOS 已删除旧透明代理配置 count=\(legacyManagers.count)"
-                    )
-                }
-                completion(firstError)
-            }
-        }
-    }
-    #endif
 }

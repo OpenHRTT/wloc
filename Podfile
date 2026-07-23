@@ -17,15 +17,10 @@ target 'WLocTunnel-iOS' do
 end
 
 target 'WLocApp-macOS' do
-  platform :osx, '10.12'
+  platform :osx, '13.0'
   pod 'SwiftProtobuf', '1.19.0'
   pod 'SnapKit', '5.6.0'
   pod 'GCDWebServer', '~> 3.5'
-end
-
-target 'WLocTunnel-macOS' do
-  platform :osx, '10.12'
-  pod 'SwiftProtobuf', '1.19.0'
 end
 
 post_install do |installer|
@@ -35,7 +30,7 @@ post_install do |installer|
         config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '12.0'
       end
       if config.build_settings['MACOSX_DEPLOYMENT_TARGET']
-        config.build_settings['MACOSX_DEPLOYMENT_TARGET'] = '10.12'
+        config.build_settings['MACOSX_DEPLOYMENT_TARGET'] = '13.0'
       end
     end
   end

@@ -73,6 +73,7 @@ class AppWLocUtils {
     }
 
     static var debugLogURL: URL? {
+        #if os(iOS)
         if let container = FileManager.default.containerURL(
             forSecurityApplicationGroupIdentifier: AppWLocConfig.appGroupIdentifier
         ) {
@@ -80,6 +81,7 @@ class AppWLocUtils {
                 .appendingPathComponent("AppWLoc", isDirectory: true)
                 .appendingPathComponent("wloc-debug.log", isDirectory: false)
         }
+        #endif
 
         return URL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true)
             .appendingPathComponent("AppWLoc", isDirectory: true)

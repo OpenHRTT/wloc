@@ -9,14 +9,10 @@
 /* Begin PBXBuildFile section */
 		00580BB756C67F2C1F5E53C6 /* WLocGlassView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDA7C6210F55F1EA98FC78D7 /* WLocGlassView.swift */; };
 		01C4576B60B3AF0CB490F5B6 /* AppWLocARPC.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9F9939D7325F27176EA3A51 /* AppWLocARPC.swift */; };
-		02F39714AA9B8D1CFC0ED794 /* PacketTunnelProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1C53079214FE279F94DE9C9 /* PacketTunnelProvider.swift */; };
 		05C034B4E8166C14BCEE1888 /* PacketTunnelProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1C53079214FE279F94DE9C9 /* PacketTunnelProvider.swift */; };
 		075985C70A339D900A1D3047 /* AppWLocTunnelService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 737A34C4DBE249D772087CE5 /* AppWLocTunnelService.swift */; };
 		0BF5E8157B7A67524629C221 /* Pods_WLocApp_macOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 17B9EA8A66066F95AEA5E2F8 /* Pods_WLocApp_macOS.framework */; };
 		1432CCF12F5B8D1FAE92CB31 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D55511537445C4B8E3A3AC3F /* Foundation.framework */; };
-		14496EC072D0266B18D00608 /* AppWLocModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 086D0B98BDC3BC6E4313F191 /* AppWLocModels.swift */; };
-		14BE9092735EC00EEF2F0162 /* AppWLocTunnelService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 737A34C4DBE249D772087CE5 /* AppWLocTunnelService.swift */; };
-		15FB92C97707103E0D6297B1 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D59F12CD163512E83B15C6FF /* Cocoa.framework */; };
 		16F7B6E8E6E588E26E8C290C /* WLocURLCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75E6249F27D71906CDCA640C /* WLocURLCommand.swift */; };
 		189685F78FFB82AB6CAAB8CB /* LiquidGlassFragment.metal in Sources */ = {isa = PBXBuildFile; fileRef = 64C20801036AF873D378E12F /* LiquidGlassFragment.metal */; };
 		1C9EAF8EF6F0ECDA886D7CC0 /* LiquidGlassView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 045CB05BDB0BF7827FB7A93B /* LiquidGlassView.swift */; };
@@ -24,16 +20,13 @@
 		21FC421027345655463543CE /* AppWLocConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBAE5E6495746F73DAEA4733 /* AppWLocConfig.swift */; };
 		25C5545E0EBFB37E1C18DFCD /* AppWLocVPNManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 170D9453C2946040F3A0E027 /* AppWLocVPNManager.swift */; };
 		2A1C674371F4452A9F0768F5 /* AppWLocRootCA.cer in Resources */ = {isa = PBXBuildFile; fileRef = 7A0963B4DFDCD3FAF77CBBEB /* AppWLocRootCA.cer */; };
-		2D77144A565C62FA1C79EB2A /* AppWLocCertificateStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = F23918D60953FAF2578AE646 /* AppWLocCertificateStore.swift */; };
 		3092A43024D4CABFBA45B9C3 /* Pods_WLocApp_iOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CF3428F46177D89400E6A066 /* Pods_WLocApp_iOS.framework */; };
 		39E26234662CE84214F61D55 /* AppWLocHTTPProxyServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A9219D0F70FCDA70E4FDD1C /* AppWLocHTTPProxyServer.swift */; };
 		3F32E4587B9E97A5A559A436 /* AppWLocState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70B65911A7DC14FAAB416D97 /* AppWLocState.swift */; };
 		43C12F480B971A0AB8BFF4E6 /* ZeroCopyBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59FA18DF2F9262D6B72F7418 /* ZeroCopyBridge.swift */; };
-		44D6017639DA96C0FA359823 /* AppWLocProxy.p12 in Resources */ = {isa = PBXBuildFile; fileRef = BCE9DA0657B3A065A8A9C9AB /* AppWLocProxy.p12 */; };
 		4CEDED130B5D120E73EECD7C /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D59F12CD163512E83B15C6FF /* Cocoa.framework */; };
 		504543F9AE73A010B904AC2D /* LiquidGlassSwitch.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACA9346E3F57CB651E6FF6C9 /* LiquidGlassSwitch.swift */; };
 		533ACB6F375D6754F015CB42 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4538D3FC6BB562401DA42388 /* Assets.xcassets */; };
-		54069E4894FC892B8206E8DB /* AppWLocHTTPProxyServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A9219D0F70FCDA70E4FDD1C /* AppWLocHTTPProxyServer.swift */; };
 		54E469D7AC05EAFFC258F9FC /* AppKitCompatibility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12D95F7773BD11BDF1CCC38D /* AppKitCompatibility.swift */; };
 		550CFFDC038296A7F242093C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B43FF7B90B2E58C17BD40141 /* AppDelegate.swift */; };
 		5D4F68FA5AFBA3ADA80FDD9C /* AppWLocTunnelService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 737A34C4DBE249D772087CE5 /* AppWLocTunnelService.swift */; };
@@ -44,7 +37,6 @@
 		6C60C66290E1A19EE6579DE1 /* AppWLocState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70B65911A7DC14FAAB416D97 /* AppWLocState.swift */; };
 		6DA40ED5821536823512460F /* CertificateDownloadServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85ABA53CB866EF36A55598A9 /* CertificateDownloadServer.swift */; };
 		6E456CF46FB8BDCC98843521 /* BSSIDApp.pb.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFC22EF13FF8AAECA1B6CD4C /* BSSIDApp.pb.swift */; };
-		6FC72B98407CDB3CD820DBB4 /* AppWLocARPC.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9F9939D7325F27176EA3A51 /* AppWLocARPC.swift */; };
 		75850612D1EE0F04D3CEAA51 /* AppWLocModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 086D0B98BDC3BC6E4313F191 /* AppWLocModels.swift */; };
 		769973DE58FA52B645A2CA45 /* WLocFavoritesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD37A1DE5D7BE17525F5FEC0 /* WLocFavoritesViewController.swift */; };
 		7EA077F96E2F24B8B939658C /* AppWLocProxy.p12 in Resources */ = {isa = PBXBuildFile; fileRef = BCE9DA0657B3A065A8A9C9AB /* AppWLocProxy.p12 */; };
@@ -52,13 +44,10 @@
 		821E656314DF6E8244BE5CFE /* BSSIDApp.pb.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFC22EF13FF8AAECA1B6CD4C /* BSSIDApp.pb.swift */; };
 		84802B75300626B80052C738 /* AppWLocUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84802B74300626B80052C738 /* AppWLocUtils.swift */; };
 		84802B76300626B80052C738 /* AppWLocUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84802B74300626B80052C738 /* AppWLocUtils.swift */; };
-		84802B77300626B80052C738 /* AppWLocUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84802B74300626B80052C738 /* AppWLocUtils.swift */; };
 		84802B78300626B80052C738 /* AppWLocUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84802B74300626B80052C738 /* AppWLocUtils.swift */; };
 		84802B7A300626B80052C738 /* AppWLocCoordinateTool.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84802B79300626B80052C738 /* AppWLocCoordinateTool.swift */; };
-		84802B7B300626B80052C738 /* AppWLocCoordinateTool.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84802B79300626B80052C738 /* AppWLocCoordinateTool.swift */; };
 		84802B7C300626B80052C738 /* AppWLocCoordinateTool.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84802B79300626B80052C738 /* AppWLocCoordinateTool.swift */; };
 		84802B7D300626B80052C738 /* AppWLocCoordinateTool.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84802B79300626B80052C738 /* AppWLocCoordinateTool.swift */; };
-		85BE9CA14CFD3EFC84AF984A /* AppWLocConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBAE5E6495746F73DAEA4733 /* AppWLocConfig.swift */; };
 		872A02D28C5144B148BFB1EC /* WLocMacMapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B949A3D08253AAC89A9E91AB /* WLocMacMapViewController.swift */; };
 		887E38140D9055E1C7228A15 /* AppWLocARPC.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9F9939D7325F27176EA3A51 /* AppWLocARPC.swift */; };
 		89811710F178F2027B62F0B6 /* WLocURLCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75E6249F27D71906CDCA640C /* WLocURLCommand.swift */; };
@@ -73,25 +62,23 @@
 		A10000000000000000000004 /* LiquidGlassFragment.metal in Sources */ = {isa = PBXBuildFile; fileRef = 64C20801036AF873D378E12F /* LiquidGlassFragment.metal */; };
 		A10000000000000000000005 /* LiquidGlassVertex.metal in Sources */ = {isa = PBXBuildFile; fileRef = 38732B259D02EA7EE53F08BB /* LiquidGlassVertex.metal */; };
 		A176916A0D6B8D2BAD9C1A3C /* AppWLocMutator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44DBFE0DB77957A65032F726 /* AppWLocMutator.swift */; };
-		A20000000000000000000001 /* SwiftProtobuf.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = A20000000000000000000002 /* SwiftProtobuf.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		A40000000000000000000001 /* AppWLocPACManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A40000000000000000000002 /* AppWLocPACManager.swift */; };
+		A50000000000000000000001 /* AppWLocPrivilegedHelperProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = A50000000000000000000011 /* AppWLocPrivilegedHelperProtocol.swift */; };
+		A50000000000000000000002 /* AppWLocPrivilegedHelperProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = A50000000000000000000011 /* AppWLocPrivilegedHelperProtocol.swift */; };
+		A50000000000000000000003 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = A50000000000000000000012 /* main.swift */; };
+		A50000000000000000000004 /* WLocPrivilegedHelper in Embed Privileged Helper */ = {isa = PBXBuildFile; fileRef = A50000000000000000000013 /* WLocPrivilegedHelper */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		A50000000000000000000005 /* com.hrtt.applocmac.helper.plist in Embed LaunchDaemon */ = {isa = PBXBuildFile; fileRef = A50000000000000000000014 /* com.hrtt.applocmac.helper.plist */; };
 		A557476A60AAAEEAF35216B1 /* WLocTunnel-iOS.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 6D7E280FA03E627C6F6F19EE /* WLocTunnel-iOS.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		A9C1A0ECD0A14DA25DB18C14 /* CertificateDownloadServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85ABA53CB866EF36A55598A9 /* CertificateDownloadServer.swift */; };
 		B12A81B9EC1CA371168B9DF7 /* AppWLocConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBAE5E6495746F73DAEA4733 /* AppWLocConfig.swift */; };
 		B21A119B26DDEA7EF0C217CF /* WLocMacTutorialWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF408712836F5D0F1BE52A08 /* WLocMacTutorialWindowController.swift */; };
 		BE1E47744A2E0A21689F12A2 /* LiquidLensView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAB1FAA0F3CCD8830EF32613 /* LiquidLensView.swift */; };
 		BFE3F17AEE9D306486BE67F8 /* AppWLocCertificateStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = F23918D60953FAF2578AE646 /* AppWLocCertificateStore.swift */; };
-		C0A389C8A25E90F73F1CE027 /* AppWLocTunnelService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 737A34C4DBE249D772087CE5 /* AppWLocTunnelService.swift */; };
-		C4EC6A11EC9DC78CD22A9785 /* Pods_WLocTunnel_macOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4E590D41AE08F8E900B76A60 /* Pods_WLocTunnel_macOS.framework */; };
 		C5A9A2ADCA9B56E5A82EF411 /* AppWLocConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBAE5E6495746F73DAEA4733 /* AppWLocConfig.swift */; };
 		C8F0322674972D89E97B4CCF /* AppWLocVPNManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 170D9453C2946040F3A0E027 /* AppWLocVPNManager.swift */; };
 		C9542F3AF72DBE4E5A9672D1 /* AppWLocCertificateStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = F23918D60953FAF2578AE646 /* AppWLocCertificateStore.swift */; };
 		CEEA298843A0CFDA2853CADC /* AppWLocHTTPProxyServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A9219D0F70FCDA70E4FDD1C /* AppWLocHTTPProxyServer.swift */; };
 		D08C57CBBE436236CC316344 /* AppWLocARPC.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9F9939D7325F27176EA3A51 /* AppWLocARPC.swift */; };
-		D0E5772EDF296FDCFB239DCA /* AppWLocVPNManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 170D9453C2946040F3A0E027 /* AppWLocVPNManager.swift */; };
-		D7D76634CA833F4DAE7DEC47 /* AppWLocMutator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44DBFE0DB77957A65032F726 /* AppWLocMutator.swift */; };
-		DAF0D89530B5A12AB3387C30 /* WLocTunnel-macOS.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 84BB5C5A2FF8DFF300268C7B /* WLocTunnel-macOS.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
-		DB9E918977E0F77148453B17 /* AppWLocState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70B65911A7DC14FAAB416D97 /* AppWLocState.swift */; };
-		DD6B1AED8C72E8F9865ECC77 /* BSSIDApp.pb.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFC22EF13FF8AAECA1B6CD4C /* BSSIDApp.pb.swift */; };
 		DE378E4A08FD988C964A021E /* WLocMapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A7A3FADCC4FCCC84AFDBDB6 /* WLocMapViewController.swift */; };
 		E0D30959788DE15A9B2B141E /* BSSIDApp.pb.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFC22EF13FF8AAECA1B6CD4C /* BSSIDApp.pb.swift */; };
 		E7ABBEBCA3EA4492363BB587 /* AppWLocCertificateStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = F23918D60953FAF2578AE646 /* AppWLocCertificateStore.swift */; };
@@ -101,17 +88,16 @@
 		F40A2BE80AC9AAB894078560 /* AppWLocModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 086D0B98BDC3BC6E4313F191 /* AppWLocModels.swift */; };
 		F79B213D40163B0E554F20D5 /* LiquidGlassSlider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BE037FE1269F8C000F13C4A /* LiquidGlassSlider.swift */; };
 		F9914486F198BB7A5E22B5D0 /* AppWLocState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70B65911A7DC14FAAB416D97 /* AppWLocState.swift */; };
-		FD8FBEE66DDB7F0789A1FC5C /* AppWLocVPNManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 170D9453C2946040F3A0E027 /* AppWLocVPNManager.swift */; };
 		FEB63B001775248A1EA238BB /* Pods_WLocTunnel_iOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8DA3FFD3DFA300EC4706F92B /* Pods_WLocTunnel_iOS.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		4954C340B3E2465F0981DE16 /* PBXContainerItemProxy */ = {
+		A50000000000000000000031 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 93468B41D2837A1B1C53661C /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = F3768357635C9AAC6129D0D9;
-			remoteInfo = "WLocTunnel-macOS";
+			remoteGlobalIDString = A50000000000000000000040;
+			remoteInfo = WLocPrivilegedHelper;
 		};
 		B46C9745527337C4CC2B748E /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -123,28 +109,6 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		866BE6A02A4C59EEE5B32D82 /* Embed App Extensions */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 13;
-			files = (
-				DAF0D89530B5A12AB3387C30 /* WLocTunnel-macOS.appex in Embed App Extensions */,
-			);
-			name = "Embed App Extensions";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		A20000000000000000000003 /* Embed Frameworks */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 10;
-			files = (
-				A20000000000000000000001 /* SwiftProtobuf.framework in Embed Frameworks */,
-			);
-			name = "Embed Frameworks";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		A2B1BFF3CEC812C02DDAB5D8 /* Embed App Extensions */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -156,6 +120,28 @@
 			name = "Embed App Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		A50000000000000000000032 /* Embed Privileged Helper */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 6;
+			files = (
+				A50000000000000000000004 /* WLocPrivilegedHelper in Embed Privileged Helper */,
+			);
+			name = "Embed Privileged Helper";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A50000000000000000000033 /* Embed LaunchDaemon */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = Contents/Library/LaunchDaemons;
+			dstSubfolderSpec = 1;
+			files = (
+				A50000000000000000000005 /* com.hrtt.applocmac.helper.plist in Embed LaunchDaemon */,
+			);
+			name = "Embed LaunchDaemon";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
@@ -164,20 +150,17 @@
 		086D0B98BDC3BC6E4313F191 /* AppWLocModels.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AppWLocModels.swift; sourceTree = "<group>"; };
 		0F8E81DBA996BB34785BA97E /* Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		12D95F7773BD11BDF1CCC38D /* AppKitCompatibility.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AppKitCompatibility.swift; sourceTree = "<group>"; };
-		1381E43059B4911773ACA059 /* Pods-WLocTunnel-macOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WLocTunnel-macOS.release.xcconfig"; path = "Target Support Files/Pods-WLocTunnel-macOS/Pods-WLocTunnel-macOS.release.xcconfig"; sourceTree = "<group>"; };
 		15154B3AEF11D8A920DCA5C1 /* AppDelegate.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		170D9453C2946040F3A0E027 /* AppWLocVPNManager.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AppWLocVPNManager.swift; sourceTree = "<group>"; };
 		17B9EA8A66066F95AEA5E2F8 /* Pods_WLocApp_macOS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_WLocApp_macOS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		287F1BDA8427D7DA06DBA29A /* WLocApp-iOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "WLocApp-iOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2A7A3FADCC4FCCC84AFDBDB6 /* WLocMapViewController.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = WLocMapViewController.swift; sourceTree = "<group>"; };
 		2B7CB3BBA427C5778DEE9BBC /* Pods-WLocTunnel-iOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WLocTunnel-iOS.release.xcconfig"; path = "Target Support Files/Pods-WLocTunnel-iOS/Pods-WLocTunnel-iOS.release.xcconfig"; sourceTree = "<group>"; };
-		2C0D0936E2AEF0611262E57F /* Info-macOS.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Info-macOS.plist"; sourceTree = "<group>"; };
 		2E69470A6928F567564928FD /* Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		38732B259D02EA7EE53F08BB /* LiquidGlassVertex.metal */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.metal; path = LiquidGlassVertex.metal; sourceTree = "<group>"; };
 		3B5760BFFC56F6FB8B4B7062 /* WLocTutorialViewController.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = WLocTutorialViewController.swift; sourceTree = "<group>"; };
 		44DBFE0DB77957A65032F726 /* AppWLocMutator.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AppWLocMutator.swift; sourceTree = "<group>"; };
 		4538D3FC6BB562401DA42388 /* Assets.xcassets */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		4E590D41AE08F8E900B76A60 /* Pods_WLocTunnel_macOS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_WLocTunnel_macOS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		59FA18DF2F9262D6B72F7418 /* ZeroCopyBridge.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ZeroCopyBridge.swift; sourceTree = "<group>"; };
 		5A9219D0F70FCDA70E4FDD1C /* AppWLocHTTPProxyServer.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AppWLocHTTPProxyServer.swift; sourceTree = "<group>"; };
 		64C20801036AF873D378E12F /* LiquidGlassFragment.metal */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.metal; path = LiquidGlassFragment.metal; sourceTree = "<group>"; };
@@ -194,13 +177,17 @@
 		84BB5C572FF8DFF300268C7B /* WLocApp-iOS.app */ = {isa = PBXFileReference; lastKnownFileType = wrapper.application; name = "WLocApp-iOS.app"; path = "../Debug-iphoneos/WLocApp-iOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		84BB5C582FF8DFF300268C7B /* WLocTunnel-iOS.appex */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.extensionkit-extension"; name = "WLocTunnel-iOS.appex"; path = "../Debug-iphoneos/WLocTunnel-iOS.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
 		84BB5C592FF8DFF300268C7B /* WLocApp-macOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; path = "WLocApp-macOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
-		84BB5C5A2FF8DFF300268C7B /* WLocTunnel-macOS.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; path = "WLocTunnel-macOS.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
 		85ABA53CB866EF36A55598A9 /* CertificateDownloadServer.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = CertificateDownloadServer.swift; sourceTree = "<group>"; };
 		8DA3FFD3DFA300EC4706F92B /* Pods_WLocTunnel_iOS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_WLocTunnel_iOS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		97B5569E1A17A1E69C2F3ED3 /* Info-iOS.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Info-iOS.plist"; sourceTree = "<group>"; };
 		9E4C119302B8442C81F711B0 /* main.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		A1C53079214FE279F94DE9C9 /* PacketTunnelProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = PacketTunnelProvider.swift; sourceTree = "<group>"; };
-		A20000000000000000000002 /* SwiftProtobuf.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = SwiftProtobuf.framework; path = "SwiftProtobuf-macOS/SwiftProtobuf.framework"; sourceTree = BUILT_PRODUCTS_DIR; };
+		A40000000000000000000002 /* AppWLocPACManager.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AppWLocPACManager.swift; sourceTree = "<group>"; };
+		A50000000000000000000011 /* AppWLocPrivilegedHelperProtocol.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AppWLocPrivilegedHelperProtocol.swift; sourceTree = "<group>"; };
+		A50000000000000000000012 /* main.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
+		A50000000000000000000013 /* WLocPrivilegedHelper */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = WLocPrivilegedHelper; sourceTree = BUILT_PRODUCTS_DIR; };
+		A50000000000000000000014 /* com.hrtt.applocmac.helper.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = com.hrtt.applocmac.helper.plist; sourceTree = "<group>"; };
+		A50000000000000000000015 /* WLocPrivilegedHelper-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "WLocPrivilegedHelper-Info.plist"; sourceTree = "<group>"; };
 		A9F9939D7325F27176EA3A51 /* AppWLocARPC.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AppWLocARPC.swift; sourceTree = "<group>"; };
 		ACA9346E3F57CB651E6FF6C9 /* LiquidGlassSwitch.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = LiquidGlassSwitch.swift; sourceTree = "<group>"; };
 		AFC22EF13FF8AAECA1B6CD4C /* BSSIDApp.pb.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = BSSIDApp.pb.swift; sourceTree = "<group>"; };
@@ -219,32 +206,27 @@
 		D55511537445C4B8E3A3AC3F /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS18.0.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
 		D59F12CD163512E83B15C6FF /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.0.sdk/System/Library/Frameworks/Cocoa.framework; sourceTree = DEVELOPER_DIR; };
 		DD37A1DE5D7BE17525F5FEC0 /* WLocFavoritesViewController.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = WLocFavoritesViewController.swift; sourceTree = "<group>"; };
-		E11FD73EC62859317D9E6C71 /* Pods-WLocTunnel-macOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WLocTunnel-macOS.debug.xcconfig"; path = "Target Support Files/Pods-WLocTunnel-macOS/Pods-WLocTunnel-macOS.debug.xcconfig"; sourceTree = "<group>"; };
 		E19E0C4A243613DE22FDAA12 /* AppWLocProxy.p12 */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = file; path = AppWLocProxy.p12; sourceTree = "<group>"; };
-		E378EC9CB454C1E24984AFCF /* WLocApp-macOS.entitlements */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.entitlements; path = "WLocApp-macOS.entitlements"; sourceTree = "<group>"; };
 		EBAE5E6495746F73DAEA4733 /* AppWLocConfig.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AppWLocConfig.swift; sourceTree = "<group>"; };
 		EF408712836F5D0F1BE52A08 /* WLocMacTutorialWindowController.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = WLocMacTutorialWindowController.swift; sourceTree = "<group>"; };
 		F23918D60953FAF2578AE646 /* AppWLocCertificateStore.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AppWLocCertificateStore.swift; sourceTree = "<group>"; };
-		F8B19643D818206F356F823A /* WLocTunnel-macOS.entitlements */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.entitlements; path = "WLocTunnel-macOS.entitlements"; sourceTree = "<group>"; };
 		FDA7C6210F55F1EA98FC78D7 /* WLocGlassView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = WLocGlassView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		0770CEB65019672245F10E8C /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				15FB92C97707103E0D6297B1 /* Cocoa.framework in Frameworks */,
-				C4EC6A11EC9DC78CD22A9785 /* Pods_WLocTunnel_macOS.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		08BB7F1D052D894DDDF0ACCB /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 				1432CCF12F5B8D1FAE92CB31 /* Foundation.framework in Frameworks */,
 				3092A43024D4CABFBA45B9C3 /* Pods_WLocApp_iOS.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A50000000000000000000034 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -277,8 +259,6 @@
 				CF3428F46177D89400E6A066 /* Pods_WLocApp_iOS.framework */,
 				17B9EA8A66066F95AEA5E2F8 /* Pods_WLocApp_macOS.framework */,
 				8DA3FFD3DFA300EC4706F92B /* Pods_WLocTunnel_iOS.framework */,
-				4E590D41AE08F8E900B76A60 /* Pods_WLocTunnel_macOS.framework */,
-				A20000000000000000000002 /* SwiftProtobuf.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -302,6 +282,7 @@
 				F14BF1341F6AD1140A3FF53D /* WLocAppShared */,
 				403DCAAB39DAC67AD278C85F /* WLocAppiOS */,
 				6A9998856E8E4C32B052DE06 /* WLocAppMac */,
+				A50000000000000000000021 /* WLocPrivilegedHelper */,
 			);
 			path = WLocApp;
 			sourceTree = "<group>";
@@ -335,8 +316,6 @@
 				73D3915E6DEE863A5B78D9E8 /* Pods-WLocApp-macOS.debug.xcconfig */,
 				2B7CB3BBA427C5778DEE9BBC /* Pods-WLocTunnel-iOS.release.xcconfig */,
 				085DE08A9C0C3F6E05FE6B1E /* Pods-WLocTunnel-iOS.debug.xcconfig */,
-				1381E43059B4911773ACA059 /* Pods-WLocTunnel-macOS.release.xcconfig */,
-				E11FD73EC62859317D9E6C71 /* Pods-WLocTunnel-macOS.debug.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -357,9 +336,7 @@
 			isa = PBXGroup;
 			children = (
 				97B5569E1A17A1E69C2F3ED3 /* Info-iOS.plist */,
-				2C0D0936E2AEF0611262E57F /* Info-macOS.plist */,
 				B07524018E68C294B2AA614D /* WLocTunnel-iOS.entitlements */,
-				F8B19643D818206F356F823A /* WLocTunnel-macOS.entitlements */,
 				BCE9DA0657B3A065A8A9C9AB /* AppWLocProxy.p12 */,
 			);
 			path = Tunnel;
@@ -371,6 +348,8 @@
 				9E4C119302B8442C81F711B0 /* main.swift */,
 				15154B3AEF11D8A920DCA5C1 /* AppDelegate.swift */,
 				12D95F7773BD11BDF1CCC38D /* AppKitCompatibility.swift */,
+				A40000000000000000000002 /* AppWLocPACManager.swift */,
+				A50000000000000000000011 /* AppWLocPrivilegedHelperProtocol.swift */,
 				B949A3D08253AAC89A9E91AB /* WLocMacMapViewController.swift */,
 				EF408712836F5D0F1BE52A08 /* WLocMacTutorialWindowController.swift */,
 			);
@@ -383,9 +362,9 @@
 				84BB5C572FF8DFF300268C7B /* WLocApp-iOS.app */,
 				84BB5C582FF8DFF300268C7B /* WLocTunnel-iOS.appex */,
 				84BB5C592FF8DFF300268C7B /* WLocApp-macOS.app */,
-				84BB5C5A2FF8DFF300268C7B /* WLocTunnel-macOS.appex */,
 				287F1BDA8427D7DA06DBA29A /* WLocApp-iOS.app */,
 				6D7E280FA03E627C6F6F19EE /* WLocTunnel-iOS.appex */,
+				A50000000000000000000013 /* WLocPrivilegedHelper */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -399,6 +378,14 @@
 				E19E0C4A243613DE22FDAA12 /* AppWLocProxy.p12 */,
 			);
 			path = iOS;
+			sourceTree = "<group>";
+		};
+		A50000000000000000000021 /* WLocPrivilegedHelper */ = {
+			isa = PBXGroup;
+			children = (
+				A50000000000000000000012 /* main.swift */,
+			);
+			path = WLocPrivilegedHelper;
 			sourceTree = "<group>";
 		};
 		AC4C48A5E96975E3E789077E /* iOS */ = {
@@ -447,7 +434,8 @@
 			isa = PBXGroup;
 			children = (
 				2E69470A6928F567564928FD /* Info.plist */,
-				E378EC9CB454C1E24984AFCF /* WLocApp-macOS.entitlements */,
+				A50000000000000000000015 /* WLocPrivilegedHelper-Info.plist */,
+				A50000000000000000000014 /* com.hrtt.applocmac.helper.plist */,
 				BDC679758E8EA7C1653CC302 /* AppWLocRootCA.cer */,
 				B11D1816DE5ECCBD6AD1B131 /* AppWLocProxy.p12 */,
 			);
@@ -474,13 +462,14 @@
 				FDAB44AF959EEBAB3C10BEC9 /* Sources */,
 				BB423CA997F09B5B4C706B06 /* Frameworks */,
 				B4BA2E331F40F18AD69373BE /* Resources */,
-				866BE6A02A4C59EEE5B32D82 /* Embed App Extensions */,
+				A50000000000000000000032 /* Embed Privileged Helper */,
+				A50000000000000000000033 /* Embed LaunchDaemon */,
 				469B1D5C502D4D4B4D79EC92 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
-				658EC78ACE30D70369C0FA7E /* PBXTargetDependency */,
+				A50000000000000000000037 /* PBXTargetDependency */,
 			);
 			name = "WLocApp-macOS";
 			productName = "WLocApp-macOS";
@@ -526,24 +515,21 @@
 			productReference = 6D7E280FA03E627C6F6F19EE /* WLocTunnel-iOS.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
-		F3768357635C9AAC6129D0D9 /* WLocTunnel-macOS */ = {
+		A50000000000000000000040 /* WLocPrivilegedHelper */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 0A826E8821C8870DEECA870C /* Build configuration list for PBXNativeTarget "WLocTunnel-macOS" */;
+			buildConfigurationList = A50000000000000000000043 /* Build configuration list for PBXNativeTarget "WLocPrivilegedHelper" */;
 			buildPhases = (
-				838FF0EB33B4B149D3D7A029 /* [CP] Check Pods Manifest.lock */,
-				89B22B9B53751A4537C39479 /* Sources */,
-				0770CEB65019672245F10E8C /* Frameworks */,
-				A20000000000000000000003 /* Embed Frameworks */,
-				D2A988969C8F7722D2086D1C /* Resources */,
+				A50000000000000000000035 /* Sources */,
+				A50000000000000000000034 /* Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
-			name = "WLocTunnel-macOS";
-			productName = "WLocTunnel-macOS";
-			productReference = 84BB5C5A2FF8DFF300268C7B /* WLocTunnel-macOS.appex */;
-			productType = "com.apple.product-type.app-extension";
+			name = WLocPrivilegedHelper;
+			productName = WLocPrivilegedHelper;
+			productReference = A50000000000000000000013 /* WLocPrivilegedHelper */;
+			productType = "com.apple.product-type.tool";
 		};
 /* End PBXNativeTarget section */
 
@@ -567,8 +553,10 @@
 						DevelopmentTeam = CDAW7B5WR4;
 						ProvisioningStyle = Manual;
 					};
-					F3768357635C9AAC6129D0D9 = {
+					A50000000000000000000040 = {
+						CreatedOnToolsVersion = 16.0;
 						DevelopmentTeam = CDAW7B5WR4;
+						ProvisioningStyle = Manual;
 					};
 				};
 			};
@@ -588,7 +576,7 @@
 				575D026FF2A38F4C0B49400F /* WLocApp-iOS */,
 				5919AA0DD8AFAC1250AC6540 /* WLocTunnel-iOS */,
 				1B626612F40E706994400CFE /* WLocApp-macOS */,
-				F3768357635C9AAC6129D0D9 /* WLocTunnel-macOS */,
+				A50000000000000000000040 /* WLocPrivilegedHelper */,
 			);
 		};
 /* End PBXProject section */
@@ -619,14 +607,6 @@
 				EAB56BD93EFF5E4A12CE0EA3 /* AppWLocRootCA.cer in Resources */,
 				94920E0706763239569DC1E4 /* AppWLocProxy.p12 in Resources */,
 				8C1F1F9D48EFB7DB77A2F468 /* Assets.xcassets in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		D2A988969C8F7722D2086D1C /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				44D6017639DA96C0FA359823 /* AppWLocProxy.p12 in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -699,28 +679,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-WLocApp-iOS/Pods-WLocApp-iOS-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		838FF0EB33B4B149D3D7A029 /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-WLocTunnel-macOS-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
 		D1BBCA2F288A280E725FF391 /* [CP] Check Pods Manifest.lock */ = {
@@ -804,23 +762,12 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		89B22B9B53751A4537C39479 /* Sources */ = {
+		A50000000000000000000035 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6FC72B98407CDB3CD820DBB4 /* AppWLocARPC.swift in Sources */,
-				2D77144A565C62FA1C79EB2A /* AppWLocCertificateStore.swift in Sources */,
-				85BE9CA14CFD3EFC84AF984A /* AppWLocConfig.swift in Sources */,
-				54069E4894FC892B8206E8DB /* AppWLocHTTPProxyServer.swift in Sources */,
-				84802B77300626B80052C738 /* AppWLocUtils.swift in Sources */,
-				84802B7B300626B80052C738 /* AppWLocCoordinateTool.swift in Sources */,
-				D7D76634CA833F4DAE7DEC47 /* AppWLocMutator.swift in Sources */,
-				DB9E918977E0F77148453B17 /* AppWLocState.swift in Sources */,
-				C0A389C8A25E90F73F1CE027 /* AppWLocTunnelService.swift in Sources */,
-				DD6B1AED8C72E8F9865ECC77 /* BSSIDApp.pb.swift in Sources */,
-				02F39714AA9B8D1CFC0ED794 /* PacketTunnelProvider.swift in Sources */,
-				14496EC072D0266B18D00608 /* AppWLocModels.swift in Sources */,
-				FD8FBEE66DDB7F0789A1FC5C /* AppWLocVPNManager.swift in Sources */,
+				A50000000000000000000003 /* main.swift in Sources */,
+				A50000000000000000000002 /* AppWLocPrivilegedHelperProtocol.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -834,10 +781,10 @@
 				CEEA298843A0CFDA2853CADC /* AppWLocHTTPProxyServer.swift in Sources */,
 				1FE958989D92AACC04671CDE /* AppWLocMutator.swift in Sources */,
 				3F32E4587B9E97A5A559A436 /* AppWLocState.swift in Sources */,
-				14BE9092735EC00EEF2F0162 /* AppWLocTunnelService.swift in Sources */,
 				821E656314DF6E8244BE5CFE /* BSSIDApp.pb.swift in Sources */,
 				F40A2BE80AC9AAB894078560 /* AppWLocModels.swift in Sources */,
-				D0E5772EDF296FDCFB239DCA /* AppWLocVPNManager.swift in Sources */,
+				A40000000000000000000001 /* AppWLocPACManager.swift in Sources */,
+				A50000000000000000000001 /* AppWLocPrivilegedHelperProtocol.swift in Sources */,
 				6DA40ED5821536823512460F /* CertificateDownloadServer.swift in Sources */,
 				9E4C119402B8442C81F711B0 /* main.swift in Sources */,
 				9729E15F7CC8A157F4AE4816 /* AppDelegate.swift in Sources */,
@@ -878,11 +825,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		658EC78ACE30D70369C0FA7E /* PBXTargetDependency */ = {
+		A50000000000000000000037 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			name = "WLocTunnel-macOS";
-			target = F3768357635C9AAC6129D0D9 /* WLocTunnel-macOS */;
-			targetProxy = 4954C340B3E2465F0981DE16 /* PBXContainerItemProxy */;
+			name = WLocPrivilegedHelper;
+			target = A50000000000000000000040 /* WLocPrivilegedHelper */;
+			targetProxy = A50000000000000000000031 /* PBXContainerItemProxy */;
 		};
 		BB62F945821E6E1DFDEC362F /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -893,29 +840,6 @@
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
-		027FFB83187AE93474244FAE /* Release */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 1381E43059B4911773ACA059 /* Pods-WLocTunnel-macOS.release.xcconfig */;
-			buildSettings = {
-				APPLICATION_EXTENSION_API_ONLY = YES;
-				CLANG_ENABLE_OBJC_WEAK = NO;
-				CODE_SIGN_ENTITLEMENTS = "Resources/Tunnel/WLocTunnel-macOS.entitlements";
-				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Mac Developer";
-				CURRENT_PROJECT_VERSION = 1;
-				"DEVELOPMENT_TEAM[sdk=macosx*]" = CDAW7B5WR4;
-				INFOPLIST_FILE = "Resources/Tunnel/Info-macOS.plist";
-				INFOPLIST_KEY_CFBundleDisplayName = "$(APP_DISPLAY_NAME)";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @executable_path/../../Frameworks";
-				MACOSX_DEPLOYMENT_TARGET = 10.12;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.hrtt.applocmac.tunnel;
-				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = apploc_mac_tunnel_dev;
-				SDKROOT = macosx;
-				SKIP_INSTALL = YES;
-				SWIFT_VERSION = 5.0;
-			};
-			name = Release;
-		};
 		05BA142373732D0D04553092 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 81C6AA14C119A9CAA69107CD /* Pods-WLocApp-iOS.debug.xcconfig */;
@@ -950,21 +874,22 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CLANG_ENABLE_OBJC_WEAK = NO;
-				CODE_SIGN_ENTITLEMENTS = "Resources/macOS/WLocApp-macOS.entitlements";
-				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Mac Developer";
+				CODE_SIGN_IDENTITY = "Apple Development";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = "";
 				"DEVELOPMENT_TEAM[sdk=macosx*]" = CDAW7B5WR4;
+				ENABLE_HARDENED_RUNTIME = YES;
 				INFOPLIST_FILE = Resources/macOS/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = WLoc8.com;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
-				MACOSX_DEPLOYMENT_TARGET = 10.12;
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.hrtt.applocmac;
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = apploc_mac_dev;
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = apploc_mac_dis;
 				SDKROOT = macosx;
 				SWIFT_VERSION = 5.0;
 			};
@@ -1065,17 +990,18 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CLANG_ENABLE_OBJC_WEAK = NO;
-				CODE_SIGN_ENTITLEMENTS = "Resources/macOS/WLocApp-macOS.entitlements";
-				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Mac Developer";
+				CODE_SIGN_IDENTITY = "Apple Development";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = "";
 				"DEVELOPMENT_TEAM[sdk=macosx*]" = CDAW7B5WR4;
+				ENABLE_HARDENED_RUNTIME = YES;
 				INFOPLIST_FILE = Resources/macOS/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = WLoc8.com;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
-				MACOSX_DEPLOYMENT_TARGET = 10.12;
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.hrtt.applocmac;
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -1111,29 +1037,6 @@
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
-		};
-		7C4C75B9DAA94FDDB890FB99 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = E11FD73EC62859317D9E6C71 /* Pods-WLocTunnel-macOS.debug.xcconfig */;
-			buildSettings = {
-				APPLICATION_EXTENSION_API_ONLY = YES;
-				CLANG_ENABLE_OBJC_WEAK = NO;
-				CODE_SIGN_ENTITLEMENTS = "Resources/Tunnel/WLocTunnel-macOS.entitlements";
-				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Mac Developer";
-				CURRENT_PROJECT_VERSION = 1;
-				"DEVELOPMENT_TEAM[sdk=macosx*]" = CDAW7B5WR4;
-				INFOPLIST_FILE = "Resources/Tunnel/Info-macOS.plist";
-				INFOPLIST_KEY_CFBundleDisplayName = "$(APP_DISPLAY_NAME)";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @executable_path/../../Frameworks";
-				MACOSX_DEPLOYMENT_TARGET = 10.12;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.hrtt.applocmac.tunnel;
-				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = apploc_mac_tunnel_dev;
-				SDKROOT = macosx;
-				SKIP_INSTALL = YES;
-				SWIFT_VERSION = 5.0;
-			};
-			name = Debug;
 		};
 		887E96041F31A1CDAD63A8AE /* Release */ = {
 			isa = XCBuildConfiguration;
@@ -1189,6 +1092,51 @@
 			};
 			name = Release;
 		};
+		A50000000000000000000041 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "Apple Development";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development: Xinxing Zhao (Z9AUB286C8)";
+				CODE_SIGN_STYLE = Manual;
+				CREATE_INFOPLIST_SECTION_IN_BINARY = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = CDAW7B5WR4;
+				ENABLE_HARDENED_RUNTIME = YES;
+				INFOPLIST_FILE = "Resources/macOS/WLocPrivilegedHelper-Info.plist";
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.hrtt.applocmac.helper;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		A50000000000000000000042 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "Apple Distribution";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Distribution: Tianjin Chaoyue Network Technology Co., Ltd. (CDAW7B5WR4)";
+				CODE_SIGN_STYLE = Manual;
+				CREATE_INFOPLIST_SECTION_IN_BINARY = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = CDAW7B5WR4;
+				ENABLE_HARDENED_RUNTIME = YES;
+				INFOPLIST_FILE = "Resources/macOS/WLocPrivilegedHelper-Info.plist";
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.hrtt.applocmac.helper;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
 		DAC59619D0545F5E7130847D /* Release */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = B455938E38014C3CFFD1A651 /* Pods-WLocApp-iOS.release.xcconfig */;
@@ -1220,20 +1168,20 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		0A826E8821C8870DEECA870C /* Build configuration list for PBXNativeTarget "WLocTunnel-macOS" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				027FFB83187AE93474244FAE /* Release */,
-				7C4C75B9DAA94FDDB890FB99 /* Debug */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
 		25F9DFA6BAA7438562CB3E48 /* Build configuration list for PBXNativeTarget "WLocApp-macOS" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				29739A6B6348FD2BF31B6D23 /* Release */,
 				640C93D883DFFD079FE9ED8D /* Debug */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		A50000000000000000000043 /* Build configuration list for PBXNativeTarget "WLocPrivilegedHelper" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A50000000000000000000042 /* Release */,
+				A50000000000000000000041 /* Debug */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

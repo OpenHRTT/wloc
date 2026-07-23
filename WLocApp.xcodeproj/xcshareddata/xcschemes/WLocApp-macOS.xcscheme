@@ -6,6 +6,15 @@
             <BuildableReference BuildableIdentifier="primary" BlueprintIdentifier="1B626612F40E706994400CFE" BuildableName="WLocApp-macOS.app" BlueprintName="WLocApp-macOS" ReferencedContainer="container:WLocApp.xcodeproj"/>
          </BuildActionEntry>
       </BuildActionEntries>
+      <PostActions>
+         <ExecutionAction ActionType="Xcode.IDEStandardExecutionActionsCore.ExecutionActionType.ShellScriptAction">
+            <ActionContent title="Install Debug App to Applications" scriptText="&quot;${SRCROOT}/packaging/install_macos_debug_app.sh&quot;&#10;">
+               <EnvironmentBuildable>
+                  <BuildableReference BuildableIdentifier="primary" BlueprintIdentifier="1B626612F40E706994400CFE" BuildableName="WLocApp-macOS.app" BlueprintName="WLocApp-macOS" ReferencedContainer="container:WLocApp.xcodeproj"/>
+               </EnvironmentBuildable>
+            </ActionContent>
+         </ExecutionAction>
+      </PostActions>
    </BuildAction>
    <TestAction buildConfiguration="Debug" selectedDebuggerIdentifier="Xcode.DebuggerFoundation.Debugger.LLDB" selectedLauncherIdentifier="Xcode.DebuggerFoundation.Launcher.LLDB" shouldUseLaunchSchemeArgsEnv="YES">
       <MacroExpansion>
@@ -14,9 +23,8 @@
       <Testables/>
    </TestAction>
    <LaunchAction buildConfiguration="Debug" selectedDebuggerIdentifier="Xcode.DebuggerFoundation.Debugger.LLDB" selectedLauncherIdentifier="Xcode.DebuggerFoundation.Launcher.LLDB" launchStyle="0" useCustomWorkingDirectory="NO" ignoresPersistentStateOnLaunch="NO" debugDocumentVersioning="YES" debugServiceExtension="internal" allowLocationSimulation="YES">
-      <BuildableProductRunnable runnableDebuggingMode="0">
-         <BuildableReference BuildableIdentifier="primary" BlueprintIdentifier="1B626612F40E706994400CFE" BuildableName="WLocApp-macOS.app" BlueprintName="WLocApp-macOS" ReferencedContainer="container:WLocApp.xcodeproj"/>
-      </BuildableProductRunnable>
+      <PathRunnable runnableDebuggingMode="0" FilePath="/Applications/WLoc8.com.app">
+      </PathRunnable>
    </LaunchAction>
    <ProfileAction buildConfiguration="Release" shouldUseLaunchSchemeArgsEnv="YES" savedToolIdentifier="" useCustomWorkingDirectory="NO" debugDocumentVersioning="YES">
       <BuildableProductRunnable runnableDebuggingMode="0">

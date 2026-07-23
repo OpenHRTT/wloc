@@ -33,17 +33,18 @@
 
 ## 项目介绍
 
-OpenHRTT WLoc 是一个 完全开源使用 Swift 编写的 iOS/macOS 实验性工具。用户可以在地图上搜索或选择坐标，应用通过 Packet Tunnel 和只匹配指定 Apple 定位服务域名的本地 HTTPS 代理，在设备内部处理定位响应数据。
+OpenHRTT WLoc 是一个完全开源、使用 Swift 编写的 iOS/macOS 实验性工具。iOS 使用 Packet Tunnel；macOS 的验证版本使用系统 PAC，只把指定 Apple 定位域名交给主应用内的本地 HTTPS 代理。
 
 ## 工作原理
 
 ```mermaid
 flowchart LR
-    A["地图选择位置"] --> B["写入 App Group 共享状态"]
-    B --> C["Packet Tunnel Extension"]
-    C --> D["本地 HTTPS 代理"]
-    D --> E["仅匹配 gs-loc.apple.com 等目标域名"]
-    E --> F["解析并替换定位响应坐标"]
+    A["地图选择位置"] --> B{"平台"}
+    B -->|"iOS"| C["Packet Tunnel Extension"]
+    B -->|"macOS"| D["系统 PAC"]
+    C --> E["本地 HTTPS 代理"]
+    D --> E
+    E --> F["仅处理目标定位域名"]
 ```
 
 代理目前只针对 `gs-loc.apple.com` 和 `gs-loc-cn.apple.com`，不应被当作通用 VPN 或通用 HTTPS 抓包工具。
@@ -54,10 +55,10 @@ flowchart LR
 - Xcode 16 或更高版本；当前已在 Xcode 26.6 下检查。
 - CocoaPods 1.16 或更高版本。
 - OpenSSL 3.x。
-- 需要 Network Extensions 能力的 Apple Developer 开发者账号。
+- iOS Tunnel 需要 Network Extensions 能力；macOS 使用嵌入式 Privileged Helper 修改 PAC，不需要 Network/System Extension 能力。
 - 真机运行才能完整验证证书信任、VPN 和系统定位行为。
 
-工程声明的最低版本为 iOS 12.0 和 macOS 10.11，但较旧系统尚未进行完整回归测试。
+工程声明的最低版本为 iOS 12.0 和 macOS 13.0。
 
 ## 快速开始
 
@@ -70,6 +71,8 @@ pod install
 ```
 
 后续请始终打开 `WLocApp.xcworkspace`，不要直接打开 `WLocApp.xcodeproj`。
+
+使用 `WLocApp-macOS` Scheme 执行 Debug Run 时，Scheme 会在构建完成后自动把已签名 App 安装到 `/Applications/WLoc8.com.app`，并从该路径启动调试。当前 Xcode 用户需要有 `/Applications` 写权限；如只想构建而不安装，可在环境中设置 `WLOC_SKIP_DEBUG_INSTALL=1`。
 
 ### 2. 生成你自己的本地证书
 
@@ -87,12 +90,12 @@ chmod +x generate_apple_wloc_p12.sh
 
 ### 3. 配置签名和唯一标识
 
-用 Xcode 打开 `WLocApp.xcworkspace`，对以下四个 Target 选择你自己的 Team：
+用 Xcode 打开 `WLocApp.xcworkspace`，对以下四个 Target 选择同一个 Team：
 
 - `WLocApp-iOS`
 - `WLocTunnel-iOS`
 - `WLocApp-macOS`
-- `WLocTunnel-macOS`
+- `WLocPrivilegedHelper`
 
 然后修改 Bundle Identifier，并保证 Tunnel 的标识为应用标识加 `.tunnel`。例如：
 
@@ -101,15 +104,23 @@ com.example.wloc
 com.example.wloc.tunnel
 ```
 
-项目还使用 App Group。请将下列文件中的 `group.com.wlocapp.shared` 统一替换为你的 App Group：
+App Group 只用于 iOS 主应用和 Tunnel 共享状态。请将下列文件中的 `group.com.wlocapp.shared` 统一替换为你的 App Group：
 
 - `Resources/iOS/WLocApp-iOS.entitlements`
 - `Resources/Tunnel/WLocTunnel-iOS.entitlements`
-- `Resources/macOS/WLocApp-macOS.entitlements`
-- `Resources/Tunnel/WLocTunnel-macOS.entitlements`
 - `WLocApp/WLocCore/AppWLocConfig.swift`
 
-在 Signing & Capabilities 中确认 App Groups 和 Network Extensions 已正确启用。
+在 iOS Target 的 Signing & Capabilities 中确认 App Groups 和 Network Extensions 已正确启用。macOS 两个 Target 使用普通自动签名；如修改 macOS Bundle Identifier 或 Team ID，还要同步修改 `AppWLocPrivilegedHelperProtocol.swift` 中的签名要求。运行正式版本前请将完整应用拖到 `/Applications`。
+
+### 4. macOS Developer ID 签名
+
+macOS 对用户仍只显示一个 `.app`，其中嵌入了签名后的 `WLocPrivilegedHelper` 和 LaunchDaemon 配置。使用 Xcode Archive 导出 Developer ID 应用后即可制作 DMG：
+
+```bash
+./packaging/build_macos_dmg.sh --app /path/WLoc8.com.app --skip-build
+```
+
+包含 LaunchDaemon 的应用必须公证。生成 DMG 后请通过 `notarytool` 提交公证，并使用 `stapler` 装订公证票据。首次锁定位置时，用户只需在“系统设置 > 通用 > 登录项与扩展”中允许一次后台项目，之后锁定和解锁不会重复请求管理员密码。
 
 
 ## 外部链接（待开发）
@@ -145,11 +156,11 @@ wlocapp://?payload=<percent-encoded-json>
 
 **Signing 或 App Group 报错？**
 
-确认四个 Target 都选择了你的 Team，Bundle Identifier 全部唯一，并且 App 与 Tunnel 使用同一个 App Group。
+确认四个 Target 都选择了正确的 Team，并且 iOS App 与 Tunnel 使用同一个 App Group。
 
 **点击锁定后没有生效？**
 
-检查根证书是否已安装且完全信任、VPN 是否已连接、Tunnel Bundle Identifier 是否与主 App 匹配，然后按 App 提示刷新定位服务。
+检查根证书是否已安装且完全信任。iOS 还需确认 VPN 已连接；macOS 需确认系统“自动代理配置”已指向本机 PAC，然后按 App 提示刷新定位服务。
 
 更多排查步骤见 [docs/TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md)。
 

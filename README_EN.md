@@ -23,17 +23,18 @@
 
 ## About
 
-OpenHRTT WLoc is a fully open-source experimental iOS/macOS project written in Swift. Users can search for or select a coordinate on a map. The app stores the selected location in a shared App Group and uses a Packet Tunnel together with a narrowly scoped local HTTPS proxy to process location responses on the device.
+OpenHRTT WLoc is a fully open-source experimental iOS/macOS project written in Swift. iOS uses a Packet Tunnel. The macOS validation build uses system PAC settings and sends only the selected Apple location hosts to a local HTTPS proxy running inside the main app.
 
 ## How it works
 
 ```mermaid
 flowchart LR
-    A["Select a location on the map"] --> B["Write shared state to the App Group"]
-    B --> C["Packet Tunnel Extension"]
-    C --> D["Local HTTPS proxy"]
-    D --> E["Match only target hosts such as gs-loc.apple.com"]
-    E --> F["Parse and replace location-response coordinates"]
+    A["Select a location"] --> B{"Platform"}
+    B -->|"iOS"| C["Packet Tunnel Extension"]
+    B -->|"macOS"| D["System PAC"]
+    C --> E["Local HTTPS proxy"]
+    D --> E
+    E --> F["Handle only target location hosts"]
 ```
 
 The proxy currently targets only `gs-loc.apple.com` and `gs-loc-cn.apple.com`. It must not be treated as a general-purpose VPN or HTTPS interception tool.
@@ -44,10 +45,10 @@ The proxy currently targets only `gs-loc.apple.com` and `gs-loc-cn.apple.com`. I
 - Xcode 16 or newer; the project has currently been checked with Xcode 26.6.
 - CocoaPods 1.16 or newer.
 - OpenSSL 3.x.
-- An Apple Developer account with the ability to sign Network Extensions.
+- iOS requires Network Extension signing capability. macOS changes PAC through an embedded privileged helper and does not require Network/System Extension capability.
 - A physical device for complete certificate-trust, VPN, and system-location testing.
 
-The project declares minimum deployment targets of iOS 12.0 and macOS 10.11, but older operating systems have not undergone complete regression testing.
+The project declares minimum deployment targets of iOS 12.0 and macOS 13.0.
 
 ## Quick start
 
@@ -60,6 +61,8 @@ pod install
 ```
 
 From this point onward, always open `WLocApp.xcworkspace` instead of `WLocApp.xcodeproj`.
+
+When running the `WLocApp-macOS` scheme in Debug, its build post-action installs the signed app at `/Applications/WLoc8.com.app` and Xcode debugs that installed copy. The Xcode user needs write access to `/Applications`; set `WLOC_SKIP_DEBUG_INSTALL=1` when a build should skip installation.
 
 ### 2. Generate your own local certificates
 
@@ -77,12 +80,12 @@ The script generates the certificates and automatically copies them into the App
 
 ### 3. Configure signing and unique identifiers
 
-Open `WLocApp.xcworkspace` in Xcode and select your own Team for all four targets:
+Open `WLocApp.xcworkspace` in Xcode and select the same Team for all four targets:
 
 - `WLocApp-iOS`
 - `WLocTunnel-iOS`
 - `WLocApp-macOS`
-- `WLocTunnel-macOS`
+- `WLocPrivilegedHelper`
 
 Change the Bundle Identifiers, making sure that the Tunnel identifier is the app identifier followed by `.tunnel`. For example:
 
@@ -91,15 +94,23 @@ com.example.wloc
 com.example.wloc.tunnel
 ```
 
-The project also uses an App Group. Replace `group.com.wlocapp.shared` consistently in the following files with your own App Group:
+The App Group is used only by the iOS app and Tunnel. Replace `group.com.wlocapp.shared` consistently in:
 
 - `Resources/iOS/WLocApp-iOS.entitlements`
 - `Resources/Tunnel/WLocTunnel-iOS.entitlements`
-- `Resources/macOS/WLocApp-macOS.entitlements`
-- `Resources/Tunnel/WLocTunnel-macOS.entitlements`
 - `WLocApp/WLocCore/AppWLocConfig.swift`
 
-Under Signing & Capabilities, confirm that App Groups and Network Extensions are correctly enabled.
+Confirm App Groups and Network Extensions on the iOS targets. Both macOS targets use normal automatic signing. If you change the macOS bundle identifier or Team ID, also update the signing requirements in `AppWLocPrivilegedHelperProtocol.swift`. Install the complete app in `/Applications` before running a distributed build.
+
+### 4. macOS Developer ID signing
+
+Users still see a single macOS `.app`; it embeds the signed `WLocPrivilegedHelper` and its LaunchDaemon configuration. Export a Developer ID app from Xcode Archive, then create the DMG:
+
+```bash
+./packaging/build_macos_dmg.sh --app /path/WLoc8.com.app --skip-build
+```
+
+Apps containing a LaunchDaemon must be notarized. After creating the DMG, submit it with `notarytool` and staple the notarization ticket with `stapler`. On first use, the user approves the background item once in System Settings; later lock and unlock operations do not repeatedly request an administrator password.
 
 
 ## External links （TODO）
@@ -134,11 +145,11 @@ Run `./generate_apple_wloc_p12.sh` from the repository root.
 
 **Signing or App Group configuration fails. What should I check?**
 
-Make sure all four targets use your Team, every Bundle Identifier is unique, and the App and Tunnel use the same App Group.
+Make sure all four targets use the correct Team and the iOS App and Tunnel use the same App Group.
 
 **Lock Location does not take effect. What should I check?**
 
-Confirm that the root certificate is installed and fully trusted, the VPN is connected, and the Tunnel Bundle Identifier matches the main app. Then refresh Location Services as instructed by the app.
+Confirm that the root certificate is installed and fully trusted. On iOS, verify the VPN connection. On macOS, verify that Automatic Proxy Configuration points to the local PAC URL. Then refresh Location Services as instructed by the app.
 
 For more diagnostic steps, see [Troubleshooting](docs/TROUBLESHOOTING.md).
 

@@ -54,9 +54,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         window.contentMinSize = minimumWindowSize
         window.setFrameAutosaveName(windowFrameName)
         window.tabbingMode = .disallowed
-        if #available(macOS 11.0, *) {
-            window.toolbarStyle = .unifiedCompact
-        }
+        window.toolbarStyle = .unifiedCompact
 
         let windowController = NSWindowController(window: window)
         self.windowController = windowController
@@ -113,19 +111,15 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     func applicationWillTerminate(_ notification: Notification) {
-        mapController?.disconnectVPNForAppTermination()
+        mapController?.stopPACForAppTermination()
     }
 
     @objc private func showAboutPanel() {
-        if #available(macOS 10.13, *) {
-            NSApp.orderFrontStandardAboutPanel(options: [
-                .applicationName: AppWLocConfig.displayName,
-                .applicationVersion: AppWLocConfig.currentVersion,
-                .credits: NSAttributedString(string: "在地图上选择并锁定测试位置。\nGitHub 开源项目与版本更新")
-            ])
-        } else {
-            NSApp.orderFrontStandardAboutPanel(nil)
-        }
+        NSApp.orderFrontStandardAboutPanel(options: [
+            .applicationName: AppWLocConfig.displayName,
+            .applicationVersion: AppWLocConfig.currentVersion,
+            .credits: NSAttributedString(string: "在地图上选择并锁定测试位置。\nGitHub 开源项目与版本更新")
+        ])
         NSApp.activate(ignoringOtherApps: true)
     }
 

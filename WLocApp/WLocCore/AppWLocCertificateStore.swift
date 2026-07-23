@@ -186,11 +186,13 @@ final class AppWLocCertificateStore {
     }
 
     private var identityFileURL: URL? {
+        #if os(iOS)
         if let container = FileManager.default.containerURL(
             forSecurityApplicationGroupIdentifier: AppWLocConfig.appGroupIdentifier
         ) {
             return container.appendingPathComponent(fileName, isDirectory: false)
         }
+        #endif
 
         return FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
             .first?

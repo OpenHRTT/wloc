@@ -74,6 +74,14 @@ if [[ ! -d "$APP_PATH" ]]; then
   exit 1
 fi
 
+HELPER_PATH="$APP_PATH/Contents/MacOS/WLocPrivilegedHelper"
+DAEMON_PLIST="$APP_PATH/Contents/Library/LaunchDaemons/com.hrtt.applocmac.helper.plist"
+if [[ ! -x "$HELPER_PATH" || ! -f "$DAEMON_PLIST" ]]; then
+  echo "App 缺少 Privileged Helper 或 LaunchDaemon 配置，请使用 WLocApp-macOS Scheme 重新构建。" >&2
+  exit 1
+fi
+plutil -lint "$DAEMON_PLIST" >/dev/null
+
 VERSION="$(/usr/libexec/PlistBuddy -c 'Print :CFBundleShortVersionString' "$APP_PATH/Contents/Info.plist" 2>/dev/null || echo "1.0")"
 VOLUME_NAME="WLoc8.com"
 DMG_NAME="WLoc8.com-${VERSION}-macOS.dmg"
@@ -143,4 +151,3 @@ fi
 
 hdiutil convert "$RW_DMG" -format UDZO -imagekey zlib-level=9 -o "$OUTPUT_DMG" >/dev/null
 echo "DMG 已生成: $OUTPUT_DMG"
-
