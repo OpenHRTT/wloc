@@ -723,7 +723,7 @@ extension WLocMapViewController: UITableViewDataSource, UITableViewDelegate {
         view.endEditing(true)
         let place = searchResults[indexPath.row]
         searchField.text = place.name
-        selectPlace(place, shouldReverseGeocode: place.detail.isEmpty, moveMap: true, animated: true, avoidingResults: true)
+        selectPlace(place, shouldReverseGeocode: place.detail.isEmpty, moveMap: true, animated: false, avoidingResults: true)
     }
 }
 

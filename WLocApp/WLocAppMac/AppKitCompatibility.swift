@@ -1,5 +1,30 @@
 import AppKit
 
+final class WLocMacGlassView: NSVisualEffectView {
+    let contentView = NSView()
+
+    init(cornerRadius: CGFloat, material: NSVisualEffectView.Material = .hudWindow) {
+        super.init(frame: .zero)
+        self.material = material
+        blendingMode = .withinWindow
+        state = .active
+        wantsLayer = true
+        layer?.cornerRadius = cornerRadius
+        layer?.masksToBounds = true
+
+        addSubview(contentView)
+    }
+
+    required init?(coder: NSCoder) {
+        nil
+    }
+
+    override func layout() {
+        super.layout()
+        contentView.frame = bounds
+    }
+}
+
 extension NSTextField {
     static func wlocLabel(_ text: String) -> NSTextField {
         let field = NSTextField(frame: .zero)

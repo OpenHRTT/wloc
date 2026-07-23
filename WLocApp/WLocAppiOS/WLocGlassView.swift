@@ -1,4 +1,3 @@
-import Metal
 import SnapKit
 import UIKit
 
@@ -6,23 +5,12 @@ final class WLocGlassView: UIView {
     let contentView: UIView
 
     init(cornerRadius: CGFloat = 24, fallbackStyle: UIBlurEffect.Style = .light) {
-        if #available(iOS 13.0, *), MTLCreateSystemDefaultDevice() != nil {
-            let effect = LiquidGlassEffect(style: .regular, isNative: true)
-            let glassView = VisualEffectView(effect: effect)
-            contentView = glassView.contentView
-            super.init(frame: .zero)
-            addSubview(glassView)
-            glassView.snp.makeConstraints { make in
-                make.edges.equalToSuperview()
-            }
-        } else {
-            let effectView = UIVisualEffectView(effect: UIBlurEffect(style: fallbackStyle))
-            contentView = effectView.contentView
-            super.init(frame: .zero)
-            addSubview(effectView)
-            effectView.snp.makeConstraints { make in
-                make.edges.equalToSuperview()
-            }
+        let effectView = UIVisualEffectView(effect: UIBlurEffect(style: fallbackStyle))
+        contentView = effectView.contentView
+        super.init(frame: .zero)
+        addSubview(effectView)
+        effectView.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
         }
 
         clipsToBounds = false

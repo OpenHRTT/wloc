@@ -14,8 +14,6 @@
 		0BF5E8157B7A67524629C221 /* Pods_WLocApp_macOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 17B9EA8A66066F95AEA5E2F8 /* Pods_WLocApp_macOS.framework */; };
 		1432CCF12F5B8D1FAE92CB31 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D55511537445C4B8E3A3AC3F /* Foundation.framework */; };
 		16F7B6E8E6E588E26E8C290C /* WLocURLCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75E6249F27D71906CDCA640C /* WLocURLCommand.swift */; };
-		189685F78FFB82AB6CAAB8CB /* LiquidGlassFragment.metal in Sources */ = {isa = PBXBuildFile; fileRef = 64C20801036AF873D378E12F /* LiquidGlassFragment.metal */; };
-		1C9EAF8EF6F0ECDA886D7CC0 /* LiquidGlassView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 045CB05BDB0BF7827FB7A93B /* LiquidGlassView.swift */; };
 		1FE958989D92AACC04671CDE /* AppWLocMutator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44DBFE0DB77957A65032F726 /* AppWLocMutator.swift */; };
 		21FC421027345655463543CE /* AppWLocConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBAE5E6495746F73DAEA4733 /* AppWLocConfig.swift */; };
 		25C5545E0EBFB37E1C18DFCD /* AppWLocVPNManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 170D9453C2946040F3A0E027 /* AppWLocVPNManager.swift */; };
@@ -23,9 +21,7 @@
 		3092A43024D4CABFBA45B9C3 /* Pods_WLocApp_iOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CF3428F46177D89400E6A066 /* Pods_WLocApp_iOS.framework */; };
 		39E26234662CE84214F61D55 /* AppWLocHTTPProxyServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A9219D0F70FCDA70E4FDD1C /* AppWLocHTTPProxyServer.swift */; };
 		3F32E4587B9E97A5A559A436 /* AppWLocState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70B65911A7DC14FAAB416D97 /* AppWLocState.swift */; };
-		43C12F480B971A0AB8BFF4E6 /* ZeroCopyBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59FA18DF2F9262D6B72F7418 /* ZeroCopyBridge.swift */; };
 		4CEDED130B5D120E73EECD7C /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D59F12CD163512E83B15C6FF /* Cocoa.framework */; };
-		504543F9AE73A010B904AC2D /* LiquidGlassSwitch.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACA9346E3F57CB651E6FF6C9 /* LiquidGlassSwitch.swift */; };
 		533ACB6F375D6754F015CB42 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4538D3FC6BB562401DA42388 /* Assets.xcassets */; };
 		54E469D7AC05EAFFC258F9FC /* AppKitCompatibility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12D95F7773BD11BDF1CCC38D /* AppKitCompatibility.swift */; };
 		550CFFDC038296A7F242093C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B43FF7B90B2E58C17BD40141 /* AppDelegate.swift */; };
@@ -40,7 +36,6 @@
 		75850612D1EE0F04D3CEAA51 /* AppWLocModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 086D0B98BDC3BC6E4313F191 /* AppWLocModels.swift */; };
 		769973DE58FA52B645A2CA45 /* WLocFavoritesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD37A1DE5D7BE17525F5FEC0 /* WLocFavoritesViewController.swift */; };
 		7EA077F96E2F24B8B939658C /* AppWLocProxy.p12 in Resources */ = {isa = PBXBuildFile; fileRef = BCE9DA0657B3A065A8A9C9AB /* AppWLocProxy.p12 */; };
-		81C10E9AE77C669BEA8AF96C /* LiquidGlassEffectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC6F8F2728BE79BEE2D2A419 /* LiquidGlassEffectView.swift */; };
 		821E656314DF6E8244BE5CFE /* BSSIDApp.pb.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFC22EF13FF8AAECA1B6CD4C /* BSSIDApp.pb.swift */; };
 		84802B75300626B80052C738 /* AppWLocUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84802B74300626B80052C738 /* AppWLocUtils.swift */; };
 		84802B76300626B80052C738 /* AppWLocUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84802B74300626B80052C738 /* AppWLocUtils.swift */; };
@@ -56,11 +51,6 @@
 		94920E0706763239569DC1E4 /* AppWLocProxy.p12 in Resources */ = {isa = PBXBuildFile; fileRef = B11D1816DE5ECCBD6AD1B131 /* AppWLocProxy.p12 */; };
 		9729E15F7CC8A157F4AE4816 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15154B3AEF11D8A920DCA5C1 /* AppDelegate.swift */; };
 		9E4C119402B8442C81F711B0 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E4C119302B8442C81F711B0 /* main.swift */; };
-		A10000000000000000000001 /* LiquidGlassView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 045CB05BDB0BF7827FB7A93B /* LiquidGlassView.swift */; };
-		A10000000000000000000002 /* LiquidGlassEffectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC6F8F2728BE79BEE2D2A419 /* LiquidGlassEffectView.swift */; };
-		A10000000000000000000003 /* ZeroCopyBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59FA18DF2F9262D6B72F7418 /* ZeroCopyBridge.swift */; };
-		A10000000000000000000004 /* LiquidGlassFragment.metal in Sources */ = {isa = PBXBuildFile; fileRef = 64C20801036AF873D378E12F /* LiquidGlassFragment.metal */; };
-		A10000000000000000000005 /* LiquidGlassVertex.metal in Sources */ = {isa = PBXBuildFile; fileRef = 38732B259D02EA7EE53F08BB /* LiquidGlassVertex.metal */; };
 		A176916A0D6B8D2BAD9C1A3C /* AppWLocMutator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44DBFE0DB77957A65032F726 /* AppWLocMutator.swift */; };
 		A40000000000000000000001 /* AppWLocPACManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A40000000000000000000002 /* AppWLocPACManager.swift */; };
 		A50000000000000000000001 /* AppWLocPrivilegedHelperProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = A50000000000000000000011 /* AppWLocPrivilegedHelperProtocol.swift */; };
@@ -72,7 +62,6 @@
 		A9C1A0ECD0A14DA25DB18C14 /* CertificateDownloadServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85ABA53CB866EF36A55598A9 /* CertificateDownloadServer.swift */; };
 		B12A81B9EC1CA371168B9DF7 /* AppWLocConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBAE5E6495746F73DAEA4733 /* AppWLocConfig.swift */; };
 		B21A119B26DDEA7EF0C217CF /* WLocMacTutorialWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF408712836F5D0F1BE52A08 /* WLocMacTutorialWindowController.swift */; };
-		BE1E47744A2E0A21689F12A2 /* LiquidLensView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAB1FAA0F3CCD8830EF32613 /* LiquidLensView.swift */; };
 		BFE3F17AEE9D306486BE67F8 /* AppWLocCertificateStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = F23918D60953FAF2578AE646 /* AppWLocCertificateStore.swift */; };
 		C5A9A2ADCA9B56E5A82EF411 /* AppWLocConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBAE5E6495746F73DAEA4733 /* AppWLocConfig.swift */; };
 		C8F0322674972D89E97B4CCF /* AppWLocVPNManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 170D9453C2946040F3A0E027 /* AppWLocVPNManager.swift */; };
@@ -84,9 +73,7 @@
 		E7ABBEBCA3EA4492363BB587 /* AppWLocCertificateStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = F23918D60953FAF2578AE646 /* AppWLocCertificateStore.swift */; };
 		E9C0B288B9E0594AECEA749B /* WLocTutorialViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B5760BFFC56F6FB8B4B7062 /* WLocTutorialViewController.swift */; };
 		EAB56BD93EFF5E4A12CE0EA3 /* AppWLocRootCA.cer in Resources */ = {isa = PBXBuildFile; fileRef = BDC679758E8EA7C1653CC302 /* AppWLocRootCA.cer */; };
-		F07E6E4AC945171E3DE11E8A /* LiquidGlassVertex.metal in Sources */ = {isa = PBXBuildFile; fileRef = 38732B259D02EA7EE53F08BB /* LiquidGlassVertex.metal */; };
 		F40A2BE80AC9AAB894078560 /* AppWLocModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 086D0B98BDC3BC6E4313F191 /* AppWLocModels.swift */; };
-		F79B213D40163B0E554F20D5 /* LiquidGlassSlider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BE037FE1269F8C000F13C4A /* LiquidGlassSlider.swift */; };
 		F9914486F198BB7A5E22B5D0 /* AppWLocState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70B65911A7DC14FAAB416D97 /* AppWLocState.swift */; };
 		FEB63B001775248A1EA238BB /* Pods_WLocTunnel_iOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8DA3FFD3DFA300EC4706F92B /* Pods_WLocTunnel_iOS.framework */; };
 /* End PBXBuildFile section */
@@ -145,7 +132,6 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		045CB05BDB0BF7827FB7A93B /* LiquidGlassView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = LiquidGlassView.swift; sourceTree = "<group>"; };
 		085DE08A9C0C3F6E05FE6B1E /* Pods-WLocTunnel-iOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WLocTunnel-iOS.debug.xcconfig"; path = "Target Support Files/Pods-WLocTunnel-iOS/Pods-WLocTunnel-iOS.debug.xcconfig"; sourceTree = "<group>"; };
 		086D0B98BDC3BC6E4313F191 /* AppWLocModels.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AppWLocModels.swift; sourceTree = "<group>"; };
 		0F8E81DBA996BB34785BA97E /* Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -157,20 +143,16 @@
 		2A7A3FADCC4FCCC84AFDBDB6 /* WLocMapViewController.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = WLocMapViewController.swift; sourceTree = "<group>"; };
 		2B7CB3BBA427C5778DEE9BBC /* Pods-WLocTunnel-iOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WLocTunnel-iOS.release.xcconfig"; path = "Target Support Files/Pods-WLocTunnel-iOS/Pods-WLocTunnel-iOS.release.xcconfig"; sourceTree = "<group>"; };
 		2E69470A6928F567564928FD /* Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		38732B259D02EA7EE53F08BB /* LiquidGlassVertex.metal */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.metal; path = LiquidGlassVertex.metal; sourceTree = "<group>"; };
 		3B5760BFFC56F6FB8B4B7062 /* WLocTutorialViewController.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = WLocTutorialViewController.swift; sourceTree = "<group>"; };
 		44DBFE0DB77957A65032F726 /* AppWLocMutator.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AppWLocMutator.swift; sourceTree = "<group>"; };
 		4538D3FC6BB562401DA42388 /* Assets.xcassets */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		59FA18DF2F9262D6B72F7418 /* ZeroCopyBridge.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ZeroCopyBridge.swift; sourceTree = "<group>"; };
 		5A9219D0F70FCDA70E4FDD1C /* AppWLocHTTPProxyServer.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AppWLocHTTPProxyServer.swift; sourceTree = "<group>"; };
-		64C20801036AF873D378E12F /* LiquidGlassFragment.metal */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.metal; path = LiquidGlassFragment.metal; sourceTree = "<group>"; };
 		6D7E280FA03E627C6F6F19EE /* WLocTunnel-iOS.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "WLocTunnel-iOS.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
 		70B65911A7DC14FAAB416D97 /* AppWLocState.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AppWLocState.swift; sourceTree = "<group>"; };
 		737A34C4DBE249D772087CE5 /* AppWLocTunnelService.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AppWLocTunnelService.swift; sourceTree = "<group>"; };
 		73D3915E6DEE863A5B78D9E8 /* Pods-WLocApp-macOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WLocApp-macOS.debug.xcconfig"; path = "Target Support Files/Pods-WLocApp-macOS/Pods-WLocApp-macOS.debug.xcconfig"; sourceTree = "<group>"; };
 		75E6249F27D71906CDCA640C /* WLocURLCommand.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = WLocURLCommand.swift; sourceTree = "<group>"; };
 		7A0963B4DFDCD3FAF77CBBEB /* AppWLocRootCA.cer */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = file; path = AppWLocRootCA.cer; sourceTree = "<group>"; };
-		7BE037FE1269F8C000F13C4A /* LiquidGlassSlider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = LiquidGlassSlider.swift; sourceTree = "<group>"; };
 		81C6AA14C119A9CAA69107CD /* Pods-WLocApp-iOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WLocApp-iOS.debug.xcconfig"; path = "Target Support Files/Pods-WLocApp-iOS/Pods-WLocApp-iOS.debug.xcconfig"; sourceTree = "<group>"; };
 		84802B74300626B80052C738 /* AppWLocUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppWLocUtils.swift; sourceTree = "<group>"; };
 		84802B79300626B80052C738 /* AppWLocCoordinateTool.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppWLocCoordinateTool.swift; sourceTree = "<group>"; };
@@ -189,19 +171,16 @@
 		A50000000000000000000014 /* com.hrtt.applocmac.helper.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = com.hrtt.applocmac.helper.plist; sourceTree = "<group>"; };
 		A50000000000000000000015 /* WLocPrivilegedHelper-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "WLocPrivilegedHelper-Info.plist"; sourceTree = "<group>"; };
 		A9F9939D7325F27176EA3A51 /* AppWLocARPC.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AppWLocARPC.swift; sourceTree = "<group>"; };
-		ACA9346E3F57CB651E6FF6C9 /* LiquidGlassSwitch.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = LiquidGlassSwitch.swift; sourceTree = "<group>"; };
 		AFC22EF13FF8AAECA1B6CD4C /* BSSIDApp.pb.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = BSSIDApp.pb.swift; sourceTree = "<group>"; };
 		B07524018E68C294B2AA614D /* WLocTunnel-iOS.entitlements */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.entitlements; path = "WLocTunnel-iOS.entitlements"; sourceTree = "<group>"; };
 		B11D1816DE5ECCBD6AD1B131 /* AppWLocProxy.p12 */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = file; path = AppWLocProxy.p12; sourceTree = "<group>"; };
 		B43FF7B90B2E58C17BD40141 /* AppDelegate.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		B455938E38014C3CFFD1A651 /* Pods-WLocApp-iOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WLocApp-iOS.release.xcconfig"; path = "Target Support Files/Pods-WLocApp-iOS/Pods-WLocApp-iOS.release.xcconfig"; sourceTree = "<group>"; };
 		B949A3D08253AAC89A9E91AB /* WLocMacMapViewController.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = WLocMacMapViewController.swift; sourceTree = "<group>"; };
-		BAB1FAA0F3CCD8830EF32613 /* LiquidLensView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = LiquidLensView.swift; sourceTree = "<group>"; };
 		BCE9DA0657B3A065A8A9C9AB /* AppWLocProxy.p12 */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = file; path = AppWLocProxy.p12; sourceTree = "<group>"; };
 		BDC679758E8EA7C1653CC302 /* AppWLocRootCA.cer */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = file; path = AppWLocRootCA.cer; sourceTree = "<group>"; };
 		BEFD4A4BDBF29EAD357BB82C /* WLocApp-iOS.entitlements */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.entitlements; path = "WLocApp-iOS.entitlements"; sourceTree = "<group>"; };
 		C44FAAA5600473B5CDA91879 /* Pods-WLocApp-macOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WLocApp-macOS.release.xcconfig"; path = "Target Support Files/Pods-WLocApp-macOS/Pods-WLocApp-macOS.release.xcconfig"; sourceTree = "<group>"; };
-		CC6F8F2728BE79BEE2D2A419 /* LiquidGlassEffectView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = LiquidGlassEffectView.swift; sourceTree = "<group>"; };
 		CF3428F46177D89400E6A066 /* Pods_WLocApp_iOS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_WLocApp_iOS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D55511537445C4B8E3A3AC3F /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS18.0.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
 		D59F12CD163512E83B15C6FF /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.0.sdk/System/Library/Frameworks/Cocoa.framework; sourceTree = DEVELOPER_DIR; };
@@ -277,7 +256,6 @@
 		156E36D46EE39A369EE33F3C /* WLocApp */ = {
 			isa = PBXGroup;
 			children = (
-				D26527F7D57B648BEBD09866 /* LiquidGlassKit */,
 				2B18B5CD8CD2889FB6F66C37 /* WLocCore */,
 				F14BF1341F6AD1140A3FF53D /* WLocAppShared */,
 				403DCAAB39DAC67AD278C85F /* WLocAppiOS */,
@@ -413,21 +391,6 @@
 				D59F12CD163512E83B15C6FF /* Cocoa.framework */,
 			);
 			name = "OS X";
-			sourceTree = "<group>";
-		};
-		D26527F7D57B648BEBD09866 /* LiquidGlassKit */ = {
-			isa = PBXGroup;
-			children = (
-				045CB05BDB0BF7827FB7A93B /* LiquidGlassView.swift */,
-				CC6F8F2728BE79BEE2D2A419 /* LiquidGlassEffectView.swift */,
-				BAB1FAA0F3CCD8830EF32613 /* LiquidLensView.swift */,
-				59FA18DF2F9262D6B72F7418 /* ZeroCopyBridge.swift */,
-				7BE037FE1269F8C000F13C4A /* LiquidGlassSlider.swift */,
-				ACA9346E3F57CB651E6FF6C9 /* LiquidGlassSwitch.swift */,
-				64C20801036AF873D378E12F /* LiquidGlassFragment.metal */,
-				38732B259D02EA7EE53F08BB /* LiquidGlassVertex.metal */,
-			);
-			path = LiquidGlassKit;
 			sourceTree = "<group>";
 		};
 		E5C1911C40FB111DBF0DD645 /* macOS */ = {
@@ -751,14 +714,6 @@
 				E9C0B288B9E0594AECEA749B /* WLocTutorialViewController.swift in Sources */,
 				89811710F178F2027B62F0B6 /* WLocURLCommand.swift in Sources */,
 				00580BB756C67F2C1F5E53C6 /* WLocGlassView.swift in Sources */,
-				1C9EAF8EF6F0ECDA886D7CC0 /* LiquidGlassView.swift in Sources */,
-				81C10E9AE77C669BEA8AF96C /* LiquidGlassEffectView.swift in Sources */,
-				BE1E47744A2E0A21689F12A2 /* LiquidLensView.swift in Sources */,
-				43C12F480B971A0AB8BFF4E6 /* ZeroCopyBridge.swift in Sources */,
-				F79B213D40163B0E554F20D5 /* LiquidGlassSlider.swift in Sources */,
-				504543F9AE73A010B904AC2D /* LiquidGlassSwitch.swift in Sources */,
-				189685F78FFB82AB6CAAB8CB /* LiquidGlassFragment.metal in Sources */,
-				F07E6E4AC945171E3DE11E8A /* LiquidGlassVertex.metal in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -789,11 +744,6 @@
 				9E4C119402B8442C81F711B0 /* main.swift in Sources */,
 				9729E15F7CC8A157F4AE4816 /* AppDelegate.swift in Sources */,
 				54E469D7AC05EAFFC258F9FC /* AppKitCompatibility.swift in Sources */,
-				A10000000000000000000001 /* LiquidGlassView.swift in Sources */,
-				A10000000000000000000002 /* LiquidGlassEffectView.swift in Sources */,
-				A10000000000000000000003 /* ZeroCopyBridge.swift in Sources */,
-				A10000000000000000000004 /* LiquidGlassFragment.metal in Sources */,
-				A10000000000000000000005 /* LiquidGlassVertex.metal in Sources */,
 				872A02D28C5144B148BFB1EC /* WLocMacMapViewController.swift in Sources */,
 				84802B76300626B80052C738 /* AppWLocUtils.swift in Sources */,
 				84802B7C300626B80052C738 /* AppWLocCoordinateTool.swift in Sources */,
@@ -874,12 +824,12 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CLANG_ENABLE_OBJC_WEAK = NO;
-				CODE_SIGN_IDENTITY = "Apple Development";
-				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
+				CODE_SIGN_IDENTITY = "Apple Distribution";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Developer ID Application";
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = CDAW7B5WR4;
 				"DEVELOPMENT_TEAM[sdk=macosx*]" = CDAW7B5WR4;
 				ENABLE_HARDENED_RUNTIME = YES;
 				INFOPLIST_FILE = Resources/macOS/Info.plist;
@@ -991,11 +941,11 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CLANG_ENABLE_OBJC_WEAK = NO;
 				CODE_SIGN_IDENTITY = "Apple Development";
-				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development: Xinxing Zhao (Z9AUB286C8)";
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = CDAW7B5WR4;
 				"DEVELOPMENT_TEAM[sdk=macosx*]" = CDAW7B5WR4;
 				ENABLE_HARDENED_RUNTIME = YES;
 				INFOPLIST_FILE = Resources/macOS/Info.plist;

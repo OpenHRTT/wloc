@@ -3,10 +3,5 @@ Copyright (c) 2026 WLoc8.com contributors
 
 The MIT License in this repository applies only to project-owned code.
 
-The files under WLocApp/LiquidGlassKit are attributed in their source headers
-to Alexey Demin and originate from https://github.com/DnV1eX/LiquidGlassKit.
-No explicit upstream license was published when this repository was prepared.
-Those files are not relicensed under this project's MIT License.
-
 Other third-party dependencies remain under their respective licenses. See
 THIRD_PARTY_NOTICES.md for details.

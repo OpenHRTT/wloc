@@ -323,14 +323,8 @@ final class WLocMacMapViewController: NSViewController {
     }
 
     private func layoutViews() {
-        let sidebar = LiquidGlassEffectView(
-            effect: LiquidGlassEffect(style: .regular, isNative: true),
-            cornerRadius: 28
-        )
-        let controlsPanel = LiquidGlassEffectView(
-            effect: LiquidGlassEffect(style: .regular, isNative: true),
-            cornerRadius: 8
-        )
+        let sidebar = WLocMacGlassView(cornerRadius: 28)
+        let controlsPanel = WLocMacGlassView(cornerRadius: 8)
         self.controlsPanel = controlsPanel
 
         view.addSubview(mapView)

@@ -218,14 +218,13 @@ final class AppWLocPACManager {
 
         switch status {
         case .enabled:
-            guard waitForHelperLoaded(timeout: 3), pingHelper(timeout: 3) else {
+            if !waitForHelperLoaded(timeout: 3) || !pingHelper(timeout: 3) {
                 defaults.removeObject(forKey: registeredHelperSignatureKey)
                 try unregisterHelper(service)
                 try registerHelper(service)
                 guard waitForHelperLoaded(timeout: 3), pingHelper(timeout: 3) else {
                     throw AppWLocPACError.helperFailed("launchd 已注册但 Privileged Helper 无法启动")
                 }
-                throw AppWLocPACError.helperFailed("waitForHelperLoaded 异常")
             }
             defaults.set(signature, forKey: registeredHelperSignatureKey)
             return
@@ -331,7 +330,9 @@ final class AppWLocPACManager {
             lock.lock()
             defer { lock.unlock() }
             guard !finished else { return }
-            
+            finished = true
+            ok = message == nil
+            semaphore.signal()
         }
         
         connection.activate()

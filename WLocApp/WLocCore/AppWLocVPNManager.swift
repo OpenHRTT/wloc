@@ -26,7 +26,7 @@ final class AppWLocVPNManager {
 
     init(providerBundleIdentifier: String, localizedDescription: String? = nil) {
         self.providerBundleIdentifier = providerBundleIdentifier
-        self.localizedDescription = localizedDescription ?? AppWLocConfig.displayName
+        self.localizedDescription = "\(localizedDescription ?? AppWLocConfig.displayName)-App VPN"
     }
 
     func lock(to place: AppWLocPlace, completion: @escaping (Result<Void, Error>) -> Void) {

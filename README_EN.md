@@ -100,15 +100,18 @@ The App Group is used only by the iOS app and Tunnel. Replace `group.com.wlocapp
 - `Resources/Tunnel/WLocTunnel-iOS.entitlements`
 - `WLocApp/WLocCore/AppWLocConfig.swift`
 
-Confirm App Groups and Network Extensions on the iOS targets. Both macOS targets use normal automatic signing. If you change the macOS bundle identifier or Team ID, also update the signing requirements in `AppWLocPrivilegedHelperProtocol.swift`. Install the complete app in `/Applications` before running a distributed build.
+Confirm App Groups and Network Extensions on the iOS targets. The macOS app and Helper must be signed by the same team; the app reads the Team ID from its current signature at runtime. Install the complete app in `/Applications` before running a distributed build.
 
 ### 4. macOS Developer ID signing
 
 Users still see a single macOS `.app`; it embeds the signed `WLocPrivilegedHelper` and its LaunchDaemon configuration. Export a Developer ID app from Xcode Archive, then create the DMG:
 
 ```bash
-./packaging/build_macos_dmg.sh --app /path/WLoc8.com.app --skip-build
+cd /path/to/export-folder
+/path/to/WLocApp/packaging/build_macos_dmg.sh
 ```
+
+By default, the script reads `WLocApp-macOS.app` and `dmg-background.png` from the current directory and creates `WLoc8.com-{version}.dmg` there. Use `--app`, `--background`, and `--output` for custom paths, or `--build` to build before packaging.
 
 Apps containing a LaunchDaemon must be notarized. After creating the DMG, submit it with `notarytool` and staple the notarization ticket with `stapler`. On first use, the user approves the background item once in System Settings; later lock and unlock operations do not repeatedly request an administrator password.
 
@@ -159,7 +162,7 @@ Issues and pull requests are welcome. Please read [CONTRIBUTING.md](CONTRIBUTING
 
 ## Third-party dependencies
 
-The project uses SwiftProtobuf, SnapKit, IQKeyboardManagerSwift, GCDWebServer, and the bundled LiquidGlassKit. See [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) for versions, sources, and license information.
+The project uses SwiftProtobuf, SnapKit, IQKeyboardManagerSwift, and GCDWebServer. See [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) for versions, sources, and license information.
 
 ## License
 
