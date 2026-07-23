@@ -54,7 +54,7 @@ flowchart LR
 - Xcode 16 或更高版本；当前已在 Xcode 26.6 下检查。
 - CocoaPods 1.16 或更高版本。
 - OpenSSL 3.x。
-- iOS Tunnel 需要 Network Extensions 能力；macOS 使用嵌入式 Privileged Helper 修改 PAC，不需要 Network/System Extension 能力。
+- iOS Tunnel 需要 Network Extensions 权限；macOS 使用嵌入式 Privileged Helper 修改 PAC。
 - 真机运行才能完整验证证书信任、VPN 和系统定位行为。
 
 工程声明的最低版本为 iOS 12.0 和 macOS 13.0。
@@ -110,19 +110,6 @@ App Group 只用于 iOS 主应用和 Tunnel 共享状态。请将下列文件中
 - `WLocApp/WLocCore/AppWLocConfig.swift`
 
 在 iOS Target 的 Signing & Capabilities 中确认 App Groups 和 Network Extensions 已正确启用。macOS 主应用与 Helper 必须使用同一 Team 签名；应用会在运行时从当前签名读取 Team ID。运行正式版本前请将完整应用拖到 `/Applications`。
-
-### 4. macOS Developer ID 签名
-
-macOS 对用户仍只显示一个 `.app`，其中嵌入了签名后的 `WLocPrivilegedHelper` 和 LaunchDaemon 配置。使用 Xcode Archive 导出 Developer ID 应用后即可制作 DMG：
-
-```bash
-cd /path/to/export-folder
-/path/to/WLocApp/packaging/build_macos_dmg.sh
-```
-
-默认读取当前目录下的 `WLocApp-macOS.app` 和 `dmg-background.png`，并在当前目录生成 `WLoc8.com-{版本号}.dmg`。也可以使用 `--app`、`--background` 和 `--output` 指定其他路径，或使用 `--build` 先构建再打包。
-
-包含 LaunchDaemon 的应用必须公证。生成 DMG 后请通过 `notarytool` 提交公证，并使用 `stapler` 装订公证票据。首次锁定位置时，用户只需在“系统设置 > 通用 > 登录项与扩展”中允许一次后台项目，之后锁定和解锁不会重复请求管理员密码。
 
 
 ## 外部链接（待开发）

@@ -44,7 +44,7 @@ The proxy currently targets only `gs-loc.apple.com` and `gs-loc-cn.apple.com`. I
 - Xcode 16 or newer; the project has currently been checked with Xcode 26.6.
 - CocoaPods 1.16 or newer.
 - OpenSSL 3.x.
-- iOS requires Network Extension signing capability. macOS changes PAC through an embedded privileged helper and does not require Network/System Extension capability.
+- iOS requires Network Extension signing capability. macOS changes PAC through an embedded privileged helper.
 - A physical device for complete certificate-trust, VPN, and system-location testing.
 
 The project declares minimum deployment targets of iOS 12.0 and macOS 13.0.
@@ -100,19 +100,6 @@ The App Group is used only by the iOS app and Tunnel. Replace `group.com.wlocapp
 - `WLocApp/WLocCore/AppWLocConfig.swift`
 
 Confirm App Groups and Network Extensions on the iOS targets. The macOS app and Helper must be signed by the same team; the app reads the Team ID from its current signature at runtime. Install the complete app in `/Applications` before running a distributed build.
-
-### 4. macOS Developer ID signing
-
-Users still see a single macOS `.app`; it embeds the signed `WLocPrivilegedHelper` and its LaunchDaemon configuration. Export a Developer ID app from Xcode Archive, then create the DMG:
-
-```bash
-cd /path/to/export-folder
-/path/to/WLocApp/packaging/build_macos_dmg.sh
-```
-
-By default, the script reads `WLocApp-macOS.app` and `dmg-background.png` from the current directory and creates `WLoc8.com-{version}.dmg` there. Use `--app`, `--background`, and `--output` for custom paths, or `--build` to build before packaging.
-
-Apps containing a LaunchDaemon must be notarized. After creating the DMG, submit it with `notarytool` and staple the notarization ticket with `stapler`. On first use, the user approves the background item once in System Settings; later lock and unlock operations do not repeatedly request an administrator password.
 
 
 ## External links （TODO）
