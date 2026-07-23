@@ -1,6 +1,5 @@
 
-<h1>现急需Mac系统做兼容性测试，如你有Mac电脑，请联系：<br />开发者：https://t.me/wloc8
-  <br /> 群 组：https://t.me/wloc88</h1>
+<h1>现急需Mac系统做兼容性测试，如你有Mac电脑，请联系：<br />开发者：https://t.me/wloc8</h1>
 
 
 <p align="center">
