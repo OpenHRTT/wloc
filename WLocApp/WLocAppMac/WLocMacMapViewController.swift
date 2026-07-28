@@ -560,12 +560,48 @@ final class WLocMacMapViewController: NSViewController {
 
     @objc private func lockCurrentPlace() {
         guard let place = selectedPlace else { return }
+        guard canLockWithLocationServices() else { return }
         var msg = "锁定成功。请确认已通过“钥匙串访问”→“系统”→“文件”→“导入项目…”导入根证书并设为“始终信任”，然后关闭系统定位服务，等待两秒后再打开。"
         #if DEBUG
         let logPath = AppWLocUtils.debugLogURL?.path ?? "/tmp/AppWLoc/wloc-debug.log"
         msg += "\n\n调试日志：\(logPath)"
         #endif
         lock(place, successMessage:msg)
+    }
+
+    private func canLockWithLocationServices() -> Bool {
+        guard CLLocationManager.locationServicesEnabled() else {
+            AppWLocUtils.debugLog("\(AppWLocConfig.displayName) macOS 锁定已取消：系统定位服务未开启")
+            showAlert(
+                title: "定位服务未开启",
+                message: "请先前往“系统设置”→“隐私与安全性”→“定位服务”，开启定位服务后再锁定位置。"
+            )
+            return false
+        }
+
+        switch locationManager.authorizationStatus {
+        case .authorizedAlways, .authorizedWhenInUse:
+            return true
+        case .notDetermined:
+            AppWLocUtils.debugLog("\(AppWLocConfig.displayName) macOS 锁定前请求定位权限")
+            locationManager.requestWhenInUseAuthorization()
+            showAlert(
+                title: "需要定位权限",
+                message: "请允许 \(AppWLocConfig.displayName) 使用定位服务，授权后再次点击“锁定位置”。"
+            )
+        case .denied, .restricted:
+            AppWLocUtils.debugLog(
+                "\(AppWLocConfig.displayName) macOS 锁定已取消：定位权限 \(authorizationStatusDescription(locationManager.authorizationStatus))"
+            )
+            showAlert(
+                title: "定位权限未开启",
+                message: "请前往“系统设置”→“隐私与安全性”→“定位服务”，允许 \(AppWLocConfig.displayName) 使用定位服务后再试。"
+            )
+        @unknown default:
+            AppWLocUtils.debugLog("\(AppWLocConfig.displayName) macOS 锁定已取消：未知定位权限状态")
+            showAlert(title: "无法使用定位", message: "当前定位权限状态不可用，请检查系统定位服务设置。")
+        }
+        return false
     }
 
     private func lock(_ place: AppWLocPlace, successMessage: String) {

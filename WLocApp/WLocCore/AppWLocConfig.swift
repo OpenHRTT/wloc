@@ -5,14 +5,92 @@ enum AppWLocConfig {
     static let rootCertificateDownloadFileName = "WLoc8.com-RootCA.cer"
 
     #if os(iOS)
-    static let appGroupIdentifier = "group.com.wlocapp.shared"
+    private static let builtInAppGroupIdentifier = "group.com.wlocapp.shared"
+    private static let provisioningProfileEntitlements: [String: Any]? = {
+        guard let profileURL = Bundle.main.url(
+            forResource: "embedded",
+            withExtension: "mobileprovision"
+        ),
+        let profileData = try? Data(contentsOf: profileURL),
+        let plistStart = profileData.range(of: Data("<?xml".utf8)),
+        let plistEnd = profileData.range(
+            of: Data("</plist>".utf8),
+            options: .backwards
+        ) else {
+            return nil
+        }
+
+        let plistData = profileData.subdata(in: plistStart.lowerBound..<plistEnd.upperBound)
+        guard let profile = try? PropertyListSerialization.propertyList(
+            from: plistData,
+            options: [],
+            format: nil
+        ) as? [String: Any] else {
+            return nil
+        }
+        return profile["Entitlements"] as? [String: Any]
+    }()
+    static let provisionedAppGroupIdentifiers: [String] = {
+        guard let value = provisioningProfileEntitlements?[
+            "com.apple.security.application-groups"
+        ] as? [String] else {
+            return []
+        }
+        return value
+    }()
+    static let appGroupIdentifier: String = {
+        var candidates = provisionedAppGroupIdentifiers
+        if let builtInIndex = candidates.firstIndex(of: builtInAppGroupIdentifier) {
+            candidates.remove(at: builtInIndex)
+            candidates.insert(builtInAppGroupIdentifier, at: 0)
+        }
+        if !candidates.contains(builtInAppGroupIdentifier) {
+            candidates.append(builtInAppGroupIdentifier)
+        }
+        return candidates.first(where: {
+            FileManager.default.containerURL(
+                forSecurityApplicationGroupIdentifier: $0
+            ) != nil
+        }) ?? candidates.first ?? builtInAppGroupIdentifier
+    }()
     static let defaultsSuiteName: String? = appGroupIdentifier
     static var tunnelProviderBundleIdentifier: String {
+        if let plugInsURL = Bundle.main.builtInPlugInsURL,
+           let plugInURLs = try? FileManager.default.contentsOfDirectory(
+            at: plugInsURL,
+            includingPropertiesForKeys: nil
+           ),
+           let packetTunnelIdentifier = plugInURLs.lazy.compactMap({ Bundle(url: $0) }).first(where: {
+               guard let extensionInfo = $0.object(forInfoDictionaryKey: "NSExtension") as? [String: Any] else {
+                   return false
+               }
+               return extensionInfo["NSExtensionPointIdentifier"] as? String
+                   == "com.apple.networkextension.packet-tunnel"
+           })?.bundleIdentifier {
+            return packetTunnelIdentifier
+        }
         if let bundleIdentifier = Bundle.main.bundleIdentifier,
            !bundleIdentifier.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
             return "\(bundleIdentifier).tunnel"
         }
         return "com.hrtt.apploc.tunnel"
+    }
+    static var signingDiagnostics: String {
+        let groups = provisionedAppGroupIdentifiers.isEmpty
+            ? "<未读取到>"
+            : provisionedAppGroupIdentifiers.joined(separator: ",")
+        let applicationIdentifier = provisioningProfileEntitlements?[
+            "application-identifier"
+        ] as? String ?? "<未读取到>"
+        let containerAvailable = FileManager.default.containerURL(
+            forSecurityApplicationGroupIdentifier: appGroupIdentifier
+        ) != nil
+        return "bundle=\(Bundle.main.bundleIdentifier ?? "<nil>")"
+            + " provider=\(tunnelProviderBundleIdentifier)"
+            + " profileAppIdentifier=\(applicationIdentifier)"
+            + " profileAppGroups=\(groups)"
+            + " selectedAppGroup=\(appGroupIdentifier)"
+            + " sharedContainer=\(containerAvailable ? "available" : "unavailable")"
     }
     #else
     static let defaultsSuiteName: String? = nil

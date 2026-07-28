@@ -31,6 +31,7 @@ final class WLocMapViewController: UIViewController {
     private let tutorialButton = WLocGlassButton(title: "教程", style: .secondary)
     private let telegramButton = WLocGlassButton(title: "Telegram", style: .secondary)
     private let websiteButton = WLocGlassButton(title: "WLoc8.com", style: .secondary)
+    private let debugLogButton = WLocGlassButton(title: "查看日志", style: .secondary)
     private let versionLabel = UILabel()
     private let updateButton = WLocGlassButton(title: "检查更新", style: .secondary)
     private let locateButton = WLocGlassButton(title: "", style: .icon)
@@ -145,6 +146,7 @@ final class WLocMapViewController: UIViewController {
             accessibilityLabel: "打开 WLoc8.com 官网"
         )
         websiteButton.addTarget(self, action: #selector(openWebsite), for: .touchUpInside)
+        debugLogButton.addTarget(self, action: #selector(openDebugLog), for: .touchUpInside)
 
         versionLabel.text = "\(AppWLocConfig.displayName) · 版本 \(AppWLocConfig.currentVersion)"
         versionLabel.font = .systemFont(ofSize: 12, weight: .medium)
@@ -233,7 +235,7 @@ final class WLocMapViewController: UIViewController {
         secondaryRow.spacing = 10
         secondaryRow.distribution = .fillEqually
 
-        let externalLinkRow = UIStackView(arrangedSubviews: [telegramButton, websiteButton])
+        let externalLinkRow = UIStackView(arrangedSubviews: [telegramButton, websiteButton, debugLogButton])
         externalLinkRow.axis = .horizontal
         externalLinkRow.spacing = 10
         externalLinkRow.distribution = .fillEqually
@@ -602,6 +604,14 @@ final class WLocMapViewController: UIViewController {
         openExternalURL(WLocExternalLink.website)
     }
 
+    @objc private func openDebugLog() {
+        view.endEditing(true)
+        let controller = WLocDebugLogViewController()
+        let navigation = UINavigationController(rootViewController: controller)
+        navigation.modalPresentationStyle = .formSheet
+        present(navigation, animated: true)
+    }
+
     @objc private func updateButtonTapped() {
         if let availableUpdate {
             openExternalURL(availableUpdate.downloadURL)
@@ -655,6 +665,61 @@ final class WLocMapViewController: UIViewController {
         let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "好", style: .default))
         present(alert, animated: true)
+    }
+}
+
+private final class WLocDebugLogViewController: UIViewController {
+    private let textView = UITextView()
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        title = "调试日志"
+        if #available(iOS 13.0, *) {
+            view.backgroundColor = .systemBackground
+            textView.backgroundColor = .systemBackground
+            textView.textColor = .label
+        } else {
+            view.backgroundColor = .white
+            textView.backgroundColor = .white
+            textView.textColor = .black
+        }
+        navigationItem.leftBarButtonItem = UIBarButtonItem(
+            barButtonSystemItem: .done,
+            target: self,
+            action: #selector(close)
+        )
+        navigationItem.rightBarButtonItems = [
+            UIBarButtonItem(title: "清空", style: .plain, target: self, action: #selector(clearLog)),
+            UIBarButtonItem(barButtonSystemItem: .refresh, target: self, action: #selector(reloadLog))
+        ]
+
+        textView.isEditable = false
+        textView.isSelectable = true
+        textView.alwaysBounceVertical = true
+        textView.font = UIFont(name: "Menlo-Regular", size: 11) ?? .systemFont(ofSize: 11)
+        textView.textContainerInset = UIEdgeInsets(top: 14, left: 10, bottom: 14, right: 10)
+        view.addSubview(textView)
+        textView.snp.makeConstraints { make in
+            make.edges.equalTo(view.safeAreaLayoutGuide)
+        }
+
+        reloadLog()
+    }
+
+    @objc private func close() {
+        dismiss(animated: true)
+    }
+
+    @objc private func reloadLog() {
+        AppWLocUtils.readDebugLog { [weak self] content in
+            self?.textView.text = content
+        }
+    }
+
+    @objc private func clearLog() {
+        AppWLocUtils.clearDebugLog { [weak self] in
+            self?.reloadLog()
+        }
     }
 }
 

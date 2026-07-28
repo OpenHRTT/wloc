@@ -49,27 +49,72 @@ class AppWLocUtils {
         let line = "[\(Date())] \(message)\n"
         NSLog("%@", message)
 
-        #if DEBUG
         debugLogQueue.async {
-            guard let url = debugLogURL else { return }
+            appendDebugLogLine(line)
+        }
+    }
+
+    static func readDebugLog(completion: @escaping (String) -> Void) {
+        debugLogQueue.async {
+            let content: String
+            if let url = debugLogURL,
+               let data = try? Data(contentsOf: url),
+               let text = String(data: data, encoding: .utf8),
+               !text.isEmpty {
+                content = text
+            } else {
+                content = "暂无日志。"
+            }
+            DispatchQueue.main.async {
+                completion(content)
+            }
+        }
+    }
+
+    static func clearDebugLog(completion: (() -> Void)? = nil) {
+        debugLogQueue.async {
+            guard let url = debugLogURL else {
+                DispatchQueue.main.async {
+                    completion?()
+                }
+                return
+            }
+
             do {
                 try FileManager.default.createDirectory(
                     at: url.deletingLastPathComponent(),
                     withIntermediateDirectories: true
                 )
-                guard let data = line.data(using: .utf8) else { return }
-                if !FileManager.default.fileExists(atPath: url.path) {
-                    FileManager.default.createFile(atPath: url.path, contents: nil)
-                }
-                let handle = try FileHandle(forWritingTo: url)
-                defer { handle.closeFile() }
-                handle.seekToEndOfFile()
-                handle.write(data)
+                try Data().write(to: url, options: .atomic)
+                appendDebugLogLine("[\(Date())] 调试日志已清空，开始重新记录。\n")
             } catch {
-                NSLog("%@ debug log write failed: %@", AppWLocConfig.displayName, error.localizedDescription)
+                NSLog("%@ debug log clear failed: %@", AppWLocConfig.displayName, error.localizedDescription)
+            }
+
+            DispatchQueue.main.async {
+                completion?()
             }
         }
-        #endif
+    }
+
+    private static func appendDebugLogLine(_ line: String) {
+        guard let url = debugLogURL else { return }
+        do {
+            try FileManager.default.createDirectory(
+                at: url.deletingLastPathComponent(),
+                withIntermediateDirectories: true
+            )
+            guard let data = line.data(using: .utf8) else { return }
+            if !FileManager.default.fileExists(atPath: url.path) {
+                FileManager.default.createFile(atPath: url.path, contents: nil)
+            }
+            let handle = try FileHandle(forWritingTo: url)
+            defer { handle.closeFile() }
+            handle.seekToEndOfFile()
+            handle.write(data)
+        } catch {
+            NSLog("%@ debug log write failed: %@", AppWLocConfig.displayName, error.localizedDescription)
+        }
     }
 
     static var debugLogURL: URL? {

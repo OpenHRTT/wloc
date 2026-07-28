@@ -11,6 +11,7 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
     ) -> Bool {
         IQKeyboardManager.shared.enable = true
+        AppWLocUtils.debugLog("\(AppWLocConfig.displayName) App 启动签名信息 \(AppWLocConfig.signingDiagnostics)")
 
         let window = UIWindow(frame: UIScreen.main.bounds)
         let controller = WLocMapViewController()

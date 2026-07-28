@@ -49,6 +49,12 @@ final class AppWLocStateStore {
     init() {
         let defaults = UserDefaults(suiteName: AppWLocConfig.defaultsSuiteName)
         self.defaults = defaults ?? .standard
+        #if os(iOS)
+        AppWLocUtils.debugLog(
+            "\(AppWLocConfig.displayName) 状态存储 suite=\(AppWLocConfig.defaultsSuiteName ?? "<standard>")"
+                + " opened=\(defaults != nil)"
+        )
+        #endif
     }
 
     func save(_ state: AppWLocLockState) throws {
@@ -87,7 +93,17 @@ final class AppWLocStateStore {
     }
 
     func load() -> AppWLocLockState? {
-        guard let data = defaults.data(forKey: key) else { return nil }
-        return try? JSONDecoder().decode(AppWLocLockState.self, from: data)
+        guard let data = defaults.data(forKey: key) else {
+            AppWLocUtils.debugLog("\(AppWLocConfig.displayName) 未读取到锁定坐标")
+            return nil
+        }
+        guard let state = try? JSONDecoder().decode(AppWLocLockState.self, from: data) else {
+            AppWLocUtils.debugLog("\(AppWLocConfig.displayName) 锁定坐标解码失败")
+            return nil
+        }
+        AppWLocUtils.debugLog(
+            "\(AppWLocConfig.displayName) 已读取锁定坐标 lat=\(state.latitude), lng=\(state.longitude)"
+        )
+        return state
     }
 }

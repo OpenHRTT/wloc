@@ -7,6 +7,9 @@ final class PacketTunnelProvider: NEPacketTunnelProvider {
     private var wlocService: AppWLocTunnelService?
 
     override func startTunnel(options: [String: NSObject]?, completionHandler: @escaping (Error?) -> Void) {
+        #if os(iOS)
+        AppWLocUtils.debugLog("\(AppWLocConfig.displayName) Tunnel 签名信息 \(AppWLocConfig.signingDiagnostics)")
+        #endif
         let settings = NEPacketTunnelNetworkSettings(tunnelRemoteAddress: localTunnelAddress)
         let ipv4 = NEIPv4Settings(addresses: [localTunnelAddress], subnetMasks: [localTunnelSubnetMask])
         ipv4.includedRoutes = [NEIPv4Route(destinationAddress: localTunnelAddress, subnetMask: localTunnelSubnetMask)]
