@@ -572,7 +572,7 @@ final class WLocMacMapViewController: NSViewController {
     private func canLockWithLocationServices() -> Bool {
         guard CLLocationManager.locationServicesEnabled() else {
             AppWLocUtils.debugLog("\(AppWLocConfig.displayName) macOS 锁定已取消：系统定位服务未开启")
-            showAlert(
+            showLocationSettingsAlert(
                 title: "定位服务未开启",
                 message: "请先前往“系统设置”→“隐私与安全性”→“定位服务”，开启定位服务后再锁定位置。"
             )
@@ -585,7 +585,7 @@ final class WLocMacMapViewController: NSViewController {
         case .notDetermined:
             AppWLocUtils.debugLog("\(AppWLocConfig.displayName) macOS 锁定前请求定位权限")
             locationManager.requestWhenInUseAuthorization()
-            showAlert(
+            showLocationSettingsAlert(
                 title: "需要定位权限",
                 message: "请允许 \(AppWLocConfig.displayName) 使用定位服务，授权后再次点击“锁定位置”。"
             )
@@ -593,13 +593,16 @@ final class WLocMacMapViewController: NSViewController {
             AppWLocUtils.debugLog(
                 "\(AppWLocConfig.displayName) macOS 锁定已取消：定位权限 \(authorizationStatusDescription(locationManager.authorizationStatus))"
             )
-            showAlert(
+            showLocationSettingsAlert(
                 title: "定位权限未开启",
                 message: "请前往“系统设置”→“隐私与安全性”→“定位服务”，允许 \(AppWLocConfig.displayName) 使用定位服务后再试。"
             )
         @unknown default:
             AppWLocUtils.debugLog("\(AppWLocConfig.displayName) macOS 锁定已取消：未知定位权限状态")
-            showAlert(title: "无法使用定位", message: "当前定位权限状态不可用，请检查系统定位服务设置。")
+            showLocationSettingsAlert(
+                title: "无法使用定位",
+                message: "当前定位权限状态不可用，请检查系统定位服务设置。"
+            )
         }
         return false
     }
@@ -954,6 +957,45 @@ final class WLocMacMapViewController: NSViewController {
         alert.informativeText = message
         alert.addButton(withTitle: "好")
         alert.beginSheetModal(for: view.window ?? NSWindow()) { _ in }
+    }
+
+    private func showLocationSettingsAlert(title: String, message: String) {
+        let alert = NSAlert()
+        alert.messageText = title
+        alert.informativeText = message
+        alert.addButton(withTitle: "打开系统设置")
+        alert.addButton(withTitle: "取消")
+
+        let completion: (NSApplication.ModalResponse) -> Void = { [weak self] response in
+            guard response == .alertFirstButtonReturn else { return }
+            self?.openLocationServicesSettings()
+        }
+        if let window = view.window {
+            alert.beginSheetModal(for: window, completionHandler: completion)
+        } else {
+            completion(alert.runModal())
+        }
+    }
+
+    private func openLocationServicesSettings() {
+        let settingsURLs = [
+            "x-apple.systempreferences:com.apple.preference.security?Privacy_LocationServices",
+            "x-apple.systempreferences:com.apple.preference.security"
+        ]
+
+        for settingsURL in settingsURLs {
+            guard let url = URL(string: settingsURL) else { continue }
+            if NSWorkspace.shared.open(url) {
+                AppWLocUtils.debugLog("\(AppWLocConfig.displayName) macOS 已打开定位服务系统设置：\(settingsURL)")
+                return
+            }
+        }
+
+        AppWLocUtils.debugLog("\(AppWLocConfig.displayName) macOS 无法打开定位服务系统设置")
+        showAlert(
+            title: "无法打开系统设置",
+            message: "请手动前往“系统设置”→“隐私与安全性”→“定位服务”。"
+        )
     }
 }
 

@@ -56,7 +56,7 @@ final class WLocTutorialViewController: UIViewController {
 
         addTitle("三、恢复原始位置")
         addStep("1. 退出应用会自动断开 \(AppWLocConfig.displayName) VPN。")
-        addStep("2. 再次刷新系统定位服务。如未恢复，重启设备后再试。")
+        addStep("2. 再次关开系统定位服务。如未恢复，重启设备后再试。")
     }
 
     private func addTitle(_ text: String) {

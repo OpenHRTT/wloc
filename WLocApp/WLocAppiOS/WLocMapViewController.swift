@@ -28,9 +28,9 @@ final class WLocMapViewController: UIViewController {
     private let lockButton = WLocGlassButton(title: "锁定位置", style: .primary)
     private let favoriteButton = WLocGlassButton(title: "收藏", style: .secondary)
     private let favoritesButton = WLocGlassButton(title: "收藏夹", style: .secondary)
-    private let tutorialButton = WLocGlassButton(title: "教程", style: .secondary)
+    private let tutorialButton = WLocGlassButton(title: "教程", style: .required)
     private let telegramButton = WLocGlassButton(title: "Telegram", style: .secondary)
-    private let websiteButton = WLocGlassButton(title: "WLoc8.com", style: .secondary)
+    private let websiteButton = WLocGlassButton(title: "Github", style: .secondary)
     private let debugLogButton = WLocGlassButton(title: "查看日志", style: .secondary)
     private let versionLabel = UILabel()
     private let updateButton = WLocGlassButton(title: "检查更新", style: .secondary)
@@ -143,7 +143,7 @@ final class WLocMapViewController: UIViewController {
         configureExternalLinkButton(
             websiteButton,
             image: WLocExternalIcon.image(named: "chevron.left.forwardslash.chevron.right", fallback: .code, size: CGSize(width: 18, height: 18)),
-            accessibilityLabel: "打开 WLoc8.com 官网"
+            accessibilityLabel: "查看Github源码"
         )
         websiteButton.addTarget(self, action: #selector(openWebsite), for: .touchUpInside)
         debugLogButton.addTarget(self, action: #selector(openDebugLog), for: .touchUpInside)
@@ -227,7 +227,7 @@ final class WLocMapViewController: UIViewController {
 
         bottomGlass.snp.makeConstraints { make in
             make.leading.trailing.equalToSuperview().inset(14)
-            make.bottom.equalTo(view.safeAreaLayoutGuide).inset(14)
+            make.bottom.equalTo(view.safeAreaLayoutGuide)
         }
 
         let secondaryRow = UIStackView(arrangedSubviews: [favoriteButton, favoritesButton, tutorialButton])
@@ -601,7 +601,7 @@ final class WLocMapViewController: UIViewController {
     }
 
     @objc private func openWebsite() {
-        openExternalURL(WLocExternalLink.website)
+        openExternalURL(WLocExternalLink.github)
     }
 
     @objc private func openDebugLog() {
@@ -925,6 +925,7 @@ private enum WLocLocationIcon {
 private enum WLocExternalLink {
     static let telegram = URL(string: "https://t.me/wloc88")!
     static let website = URL(string: "https://wloc8.com/")!
+    static let github = URL(string: "https://github.com/OpenHRTT/wloc")!
 }
 
 private enum WLocExternalIcon {

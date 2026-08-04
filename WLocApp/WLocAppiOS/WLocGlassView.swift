@@ -52,6 +52,7 @@ final class WLocGlassButton: UIButton {
     enum Style {
         case primary
         case secondary
+        case required
         case icon
     }
 
@@ -59,6 +60,7 @@ final class WLocGlassButton: UIButton {
         super.init(frame: .zero)
         setTitle(title, for: .normal)
         titleLabel?.font = .systemFont(ofSize: style == .primary ? 16 : 14, weight: .semibold)
+        titleLabel?.adjustsFontSizeToFitWidth = true
         layer.cornerRadius = style == .icon ? 24 : 16
         if #available(iOS 13.0, *) {
             layer.cornerCurve = .continuous
@@ -70,17 +72,20 @@ final class WLocGlassButton: UIButton {
         layer.shadowRadius = style == .primary ? 14 : 8
         layer.shadowOffset = CGSize(width: 0, height: style == .primary ? 8 : 4)
         contentEdgeInsets = UIEdgeInsets(top: 11, left: 14, bottom: 11, right: 14)
-
+        let fontColor = UIColor(red: 0.08, green: 0.12, blue: 0.18, alpha: 1)
         switch style {
         case .primary:
             setTitleColor(.white, for: .normal)
             backgroundColor = UIColor(red: 0.06, green: 0.35, blue: 0.95, alpha: 0.88)
         case .secondary:
-            setTitleColor(UIColor(red: 0.08, green: 0.12, blue: 0.18, alpha: 1), for: .normal)
+            setTitleColor(fontColor, for: .normal)
             backgroundColor = UIColor.white.withAlphaComponent(0.46)
         case .icon:
-            setTitleColor(UIColor(red: 0.08, green: 0.12, blue: 0.18, alpha: 1), for: .normal)
+            setTitleColor(fontColor, for: .normal)
             backgroundColor = UIColor.white.withAlphaComponent(0.5)
+        case .required:
+            setTitleColor(.white, for: .normal)
+            backgroundColor = .red.withAlphaComponent(0.6)
         }
     }
 
