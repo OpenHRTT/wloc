@@ -46,7 +46,11 @@ class AppWLocUtils {
     }
 
     static func debugLog(_ message: String) {
-        let line = "[\(Date())] \(message)\n"
+        let f = DateFormatter()
+        f.dateFormat = "yyyy-MM-dd HH:mm:ss"
+        let str = f.string(from: Date())
+        
+        let line = "[\(str)] \(message)\n"
         NSLog("%@", message)
 
         debugLogQueue.async {
@@ -86,7 +90,7 @@ class AppWLocUtils {
                     withIntermediateDirectories: true
                 )
                 try Data().write(to: url, options: .atomic)
-                appendDebugLogLine("[\(Date())] 调试日志已清空，开始重新记录。\n")
+                debugLog("调试日志已清空，开始重新记录。\n")
             } catch {
                 NSLog("%@ debug log clear failed: %@", AppWLocConfig.displayName, error.localizedDescription)
             }
