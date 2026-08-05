@@ -1,57 +1,36 @@
-<h1>现急需Mac系统做兼容性测试，如你有Mac电脑，请联系：<br />开发者：https://t.me/wloc8</h1>
-
 <p align="center">
   <img src="Resources/Assets.xcassets/AppIcon.appiconset/1024.png" width="112" alt="OpenHRTT WLoc icon">
 </p>
 
-<h1 align="center">OpenHRTT WLoc</h1>
+<h1 align="center">OpenHRTT WLoc</h1> <a href="README.md">中文</a>
 
-<p>Online access: <a href="https://wloc8.com/">https://wloc8.com/</a>. Telegram group: https://t.me/wloc88</p>
+<h4>
 
-<a href="https://t.me/wloc88/132">Usage tutorial &gt;&gt;&gt;</a>
 
-<p align="center">
-  An experimental location-response research tool for iOS and macOS
-</p>
+<p>Web-based location supports iOS 27.0. Try it online: <a href="https://wloc8.com/" target="_blank">https://wloc8.com/</a>. Telegram group: https://t.me/wloc88</p>
+If you have a Mac, please join the group for compatibility testing: https://t.me/wloc88</h4>
 
-<p align="center">
-  <a href="README.md">中文</a> |
-  <a href="CONTRIBUTING.md">Contributing</a> |
-  <a href="SECURITY.md">Security</a>
-</p>
+## Project Overview
 
-## About
+OpenHRTT WLoc is a fully open-source experimental tool for iOS and macOS written in Swift. It changes the device's actual location by modifying responses to `gs-loc` API requests and supports the latest iOS and macOS versions.
 
-OpenHRTT WLoc is a fully open-source experimental iOS/macOS project written in Swift. iOS uses a Packet Tunnel. The macOS validation build uses system PAC settings and sends only the selected Apple location hosts to a local HTTPS proxy running inside the main app.
-
-## How it works
+## How It Works
 
 ```mermaid
 flowchart LR
-    A["Select a location"] --> B{"Platform"}
+    A["Select a location on the map"] --> B{"Platform"}
     B -->|"iOS"| C["Packet Tunnel Extension"]
     B -->|"macOS"| D["System PAC"]
     C --> E["Local HTTPS proxy"]
     D --> E
-    E --> F["Handle only target location hosts"]
+    E --> F["Handle only target location domains"]
 ```
 
-The proxy currently targets only `gs-loc.apple.com` and `gs-loc-cn.apple.com`. It must not be treated as a general-purpose VPN or HTTPS interception tool.
+The proxy currently targets only `gs-loc.apple.com` and `gs-loc-cn.apple.com`. It should not be treated as a general-purpose VPN or HTTPS traffic interception tool.
 
-## Requirements
+## Quick Start
 
-- A macOS development environment.
-- Xcode 16 or newer; the project has currently been checked with Xcode 26.6.
-- CocoaPods 1.16 or newer.
-- OpenSSL 3.x.
-- iOS requires Network Extension signing capability. macOS changes PAC through an embedded privileged helper.
-- A physical device for complete certificate-trust, VPN, and system-location testing.
-
-The project declares minimum deployment targets of iOS 12.0 and macOS 13.0.
-
-## Quick start
-
-### 1. Get the code and install dependencies
+### 1. Get the Code and Install Dependencies
 
 ```bash
 git clone https://github.com/OpenHRTT/wloc.git
@@ -59,50 +38,36 @@ cd wloc
 pod install
 ```
 
-From this point onward, always open `WLocApp.xcworkspace` instead of `WLocApp.xcodeproj`.
+When you perform a Debug Run using the `WLocApp-macOS` scheme, the scheme automatically installs the signed app to `/Applications/WLoc8.com.app` after the build completes and launches debugging from that path. The current Xcode user needs write access to `/Applications`. If you only want to build without installing, set `WLOC_SKIP_DEBUG_INSTALL=1` in the environment.
 
-When running the `WLocApp-macOS` scheme in Debug, its build post-action installs the signed app at `/Applications/WLoc8.com.app` and Xcode debugs that installed copy. The Xcode user needs write access to `/Applications`; set `WLOC_SKIP_DEBUG_INSTALL=1` when a build should skip installation.
+### 2. Generate Your Own Local Certificates
 
-### 2. Generate your own local certificates
-
-The repository does not include any reusable root-certificate private key or `.p12` file. Every developer must generate an independent set of certificates locally:
+The repository does not include any reusable root certificate private keys or `.p12` files. Each developer must generate an independent certificate locally:
 
 ```bash
 chmod +x generate_apple_wloc_p12.sh
 ./generate_apple_wloc_p12.sh
 ```
 
-The script generates the certificates and automatically copies them into the App and Extension resource directories. The default `.p12` password is `app-wloc`, matching `AppWLocConfig.proxyIdentityPassword`. If you change the password in the script, update the app configuration as well.
+The script generates the certificates and automatically copies them to the App and Extension resource directories. The default `.p12` password is `app-wloc`, which matches `AppWLocConfig.proxyIdentityPassword`. If you change the password in the script, you must also update the app configuration.
 
-> [!IMPORTANT]
-> `app_wloc_certs/`, `*.key`, `*.p12`, and the generated certificate files under `Resources` are excluded by `.gitignore`. Never force-add them with `git add -f`.
+### 3. Configure Bundle Identifiers
 
-### 3. Configure signing and unique identifiers
-
-Open `WLocApp.xcworkspace` in Xcode and select the same Team for all four targets:
-
-- `WLocApp-iOS`
-- `WLocTunnel-iOS`
-- `WLocApp-macOS`
-- `WLocPrivilegedHelper`
-
-Change the Bundle Identifiers, making sure that the Tunnel identifier is the app identifier followed by `.tunnel`. For example:
+Next, change the Bundle Identifiers and make sure the Tunnel identifier is the app identifier followed by `.tunnel`. For example:
 
 ```text
 com.example.wloc
 com.example.wloc.tunnel
 ```
 
-The App Group is used only by the iOS app and Tunnel. Replace `group.com.wlocapp.shared` consistently in:
+The App Group is used only to share state between the iOS app and the Tunnel. Replace `group.com.wlocapp.shared` consistently with your App Group in the following files:
 
 - `Resources/iOS/WLocApp-iOS.entitlements`
 - `Resources/Tunnel/WLocTunnel-iOS.entitlements`
 - `WLocApp/WLocCore/AppWLocConfig.swift`
 
-Confirm App Groups and Network Extensions on the iOS targets. The macOS app and Helper must be signed by the same team; the app reads the Team ID from its current signature at runtime. Install the complete app in `/Applications` before running a distributed build.
 
-
-## External links （TODO）
+## External Links (Under Development)
 
 The app supports importing locations through `wlocapp://`. The payload is URL-encoded JSON:
 
@@ -119,37 +84,30 @@ The app supports importing locations through `wlocapp://`. The payload is URL-en
 }
 ```
 
-Supported `coordinateSystem` values are `wgs84`, `gcj02`, `bd09`, and `apple`. A complete URL can use either of these formats:
+Supported `coordinateSystem` values include `wgs84`, `gcj02`, `bd09`, and `apple`. A complete URL can use either of the following formats:
 
 ```text
 wlocapp://<percent-encoded-json>
 wlocapp://?payload=<percent-encoded-json>
 ```
 
+
 ## FAQ
 
 **The build cannot find `AppWLocProxy.p12` or `AppWLocRootCA.cer`. What should I do?**
 
-Run `./generate_apple_wloc_p12.sh` from the repository root.
+Run `./generate_apple_wloc_p12.sh` from the project root.
 
-**Signing or App Group configuration fails. What should I check?**
+**Signing or App Group errors?**
 
-Make sure all four targets use the correct Team and the iOS App and Tunnel use the same App Group.
+Make sure all four targets use the correct Team and that the iOS App and Tunnel use the same App Group.
 
-**Lock Location does not take effect. What should I check?**
+**Locking a location does not take effect?**
 
-Confirm that the root certificate is installed and fully trusted. On iOS, verify the VPN connection. On macOS, verify that Automatic Proxy Configuration points to the local PAC URL. Then refresh Location Services as instructed by the app.
+Check that the root certificate is installed and fully trusted. On iOS, also make sure the VPN is connected. On macOS, make sure the system's Automatic Proxy Configuration points to the local PAC, then refresh Location Services as instructed by the app.
 
-For more diagnostic steps, see [Troubleshooting](docs/TROUBLESHOOTING.md).
-
-## Contributing
-
-Issues and pull requests are welcome. Please read [CONTRIBUTING.md](CONTRIBUTING.md) and [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) first.
-
-## Third-party dependencies
-
-The project uses SwiftProtobuf, SnapKit, IQKeyboardManagerSwift, and GCDWebServer. See [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) for versions, sources, and license information.
+For more troubleshooting steps, see [docs/TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md).
 
 ## License
 
-Project-owned code is available under the [MIT License](LICENSE). Third-party code is not covered by the project's MIT License; see [NOTICE](NOTICE) and [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) for details.
+Code owned by this project is licensed under the [MIT License](LICENSE). Third-party code is not covered by this project's MIT License. See [NOTICE](NOTICE) and [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) for details.
