@@ -35,6 +35,6 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func applicationWillTerminate(_ application: UIApplication) {
-        mapController?.disconnectVPNForAppTermination()
+//        mapController?.disconnectVPNForAppTermination()
     }
 }
