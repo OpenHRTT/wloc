@@ -9,7 +9,12 @@
 
 
 <p>网页定位支持到iOS27.0 beta5， 27.0 beta6以后的版本由于苹果封堵暂不能使用，在线体验：<a href="https://wloc8.com/" target="_blank">https://wloc8.com/</a>，TG群：https://t.me/wloc88</p>
-如您有Mac电脑，请加入群聊进行兼容性测试：https://t.me/wloc88</h4>
+
+## 【重要】:
+  ### <p>由于苹果静默下发更新系统证书库，凡 设置 -> 通用 -> 证书信任设置，受信任资产版本显示为：1014 及以上版本均不可使用wloc方式改定位，解决方案如下：<br>
+    
+  设备恢复出厂设置，恢复后先不要联网，将项目中`apple-gsloc-block.mobileconfig`文件传到设备上安装好后再联网，即可实现屏蔽Apple更新定位域名
+</p>
 
 ## 项目介绍
 
