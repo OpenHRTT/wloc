@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>PayloadContent</key>
+	<array>
+		<dict>
+			<key>DNSSettings</key>
+			<dict>
+				<key>ServerAddresses</key>
+				<array/>
+				<key>SupplementalMatchDomains</key>
+				<array>
+					<string>gdmf.apple.com</string>
+					<string>updates.cdn-apple.com</string>
+					<string>mesu.apple.com</string>
+				</array>
+			</dict>
+			<key>PayloadDisplayName</key>
+			<string>Apple定位屏蔽更新-wloc8.com</string>
+			<key>PayloadIdentifier</key>
+			<string>local.apple-update-dns.71b91815-d3d3-4a4e-8f6f-af612a6e4dfd.dns</string>
+			<key>PayloadType</key>
+			<string>com.apple.dnsSettings.managed</string>
+			<key>PayloadUUID</key>
+			<string>DE6E62DA-FF87-42CA-BFE9-CEBBE4EC6087</string>
+			<key>PayloadVersion</key>
+			<integer>1</integer>
+		</dict>
+	</array>
+	<key>PayloadDescription</key>
+	<string>屏蔽gdmf.apple.com、updates.cdn-apple.com、mesu.apple.com 及其子域名。移除后撤销本配置。</string>
+	<key>PayloadDisplayName</key>
+	<string>Apple定位屏蔽更新-wloc8.com</string>
+	<key>PayloadIdentifier</key>
+	<string>local.apple-update-dns.71b91815-d3d3-4a4e-8f6f-af612a6e4dfd</string>
+	<key>PayloadScope</key>
+	<string>User</string>
+	<key>PayloadType</key>
+	<string>Configuration</string>
+	<key>PayloadUUID</key>
+	<string>F8D100EC-101E-4B8A-AA31-6A90740B99AC</string>
+	<key>PayloadVersion</key>
+	<integer>1</integer>
+</dict>
+</plist>
