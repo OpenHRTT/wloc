@@ -2,7 +2,15 @@ import Foundation
 
 enum AppWLocConfig {
     static let displayName = "WLoc8.com"
+    #if os(iOS)
+    static let rootCertificateDownloadFileName = "WLoc8.com-iOS-App-RootCA.cer"
+    static let dnsProfileName = "Apple定位屏蔽增强-TG：wloc88"
+    static let dnsProfileResourceName = "wloc-dns-ios"
+    #else
     static let rootCertificateDownloadFileName = "WLoc8.com-RootCA.cer"
+    static let dnsProfileName = "Apple定位屏蔽增强-TG：wloc88（macOS）"
+    static let dnsProfileResourceName = "wloc-dns-mac"
+    #endif
 
     #if os(iOS)
     private static let builtInAppGroupIdentifier = "group.com.wlocapp.shared"

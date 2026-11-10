@@ -11,27 +11,50 @@ final class CertificateDownloadServer {
         server.isRunning
     }
 
+    /// 证书下载继续沿用本机服务，和 DNS 文件共用同一个端口。
     func start() throws -> String {
-        stop()
-        
-        if let urlString, server.isRunning {
-            return urlString
-        }
-
         guard let data = rootCertificateData() else {
             throw AppWLocCertificateError.rootCertificateNotFound
         }
+        return try start(data: data, fileName: AppWLocConfig.rootCertificateDownloadFileName,
+                         contentType: "application/x-x509-ca-cert")
+    }
 
-        let fileName = AppWLocConfig.rootCertificateDownloadFileName
+    /// 按资源文件名下载当前平台内置的 DNS 描述文件。
+    func startDNSProfile() throws -> String {
+        guard let url = Bundle.main.url(forResource: AppWLocConfig.dnsProfileResourceName,
+                                        withExtension: "mobileconfig") else {
+            throw NSError(domain: "WLocDNSProfile", code: 1,
+                          userInfo: [NSLocalizedDescriptionKey: "未找到 DNS 描述文件，请重新安装完整的 App。"])
+        }
+        return try start(data: Data(contentsOf: url),
+                         fileName: url.lastPathComponent,
+                         contentType: "application/x-apple-aspen-config")
+    }
 
+    /// 浏览器访问本机地址即可下载；切换文件时替换原来的下载路由。
+    private func start(data: Data, fileName: String, contentType: String) throws -> String {
+        var components = URLComponents()
+        components.scheme = "http"
+        components.host = "127.0.0.1"
+        components.port = Int(AppWLocConfig.certificateServerPort)
+        components.path = "/\(fileName)"
+        guard let url = components.url else { throw URLError(.badURL) }
+
+        let encodedFileName = String(components.percentEncodedPath.dropFirst())
+        let disposition = fileName == encodedFileName
+            ? "attachment; filename=\"\(fileName)\""
+            : "attachment; filename*=UTF-8''\(encodedFileName)"
+
+        stop()
         server.removeAllHandlers()
         server.addHandler(
             forMethod: "GET",
-            path: "/\(fileName)",
+            path: components.path,
             request: GCDWebServerRequest.self
         ) { _ in
-            let response = GCDWebServerDataResponse(data: data, contentType: "application/x-x509-ca-cert")
-            response.setValue("attachment; filename=\"\(fileName)\"", forAdditionalHeader: "Content-Disposition")
+            let response = GCDWebServerDataResponse(data: data, contentType: contentType)
+            response.setValue(disposition, forAdditionalHeader: "Content-Disposition")
             return response
         }
 
@@ -44,10 +67,8 @@ final class CertificateDownloadServer {
         #endif
         try server.start(options: options)
 
-        let host = "127.0.0.1"
-        let value = "http://\(host):\(AppWLocConfig.certificateServerPort)/\(fileName)"
-        urlString = value
-        return value
+        urlString = url.absoluteString
+        return url.absoluteString
     }
 
     func stop() {

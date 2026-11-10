@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		6C6F67D03CD54F89A2A498E1 /* WLocMacDebugLogWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C6F67D03CD54F89A2A498E2 /* WLocMacDebugLogWindowController.swift */; };
 		00580BB756C67F2C1F5E53C6 /* WLocGlassView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDA7C6210F55F1EA98FC78D7 /* WLocGlassView.swift */; };
 		01C4576B60B3AF0CB490F5B6 /* AppWLocARPC.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9F9939D7325F27176EA3A51 /* AppWLocARPC.swift */; };
 		05C034B4E8166C14BCEE1888 /* PacketTunnelProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1C53079214FE279F94DE9C9 /* PacketTunnelProvider.swift */; };
@@ -32,6 +31,7 @@
 		674BAD8A45999CB2BF91F4A8 /* AppWLocMutator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44DBFE0DB77957A65032F726 /* AppWLocMutator.swift */; };
 		6BCEF136258ABC3BB1F1E61D /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D55511537445C4B8E3A3AC3F /* Foundation.framework */; };
 		6C60C66290E1A19EE6579DE1 /* AppWLocState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70B65911A7DC14FAAB416D97 /* AppWLocState.swift */; };
+		6C6F67D03CD54F89A2A498E1 /* WLocMacDebugLogWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C6F67D03CD54F89A2A498E2 /* WLocMacDebugLogWindowController.swift */; };
 		6DA40ED5821536823512460F /* CertificateDownloadServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85ABA53CB866EF36A55598A9 /* CertificateDownloadServer.swift */; };
 		6E456CF46FB8BDCC98843521 /* BSSIDApp.pb.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFC22EF13FF8AAECA1B6CD4C /* BSSIDApp.pb.swift */; };
 		75850612D1EE0F04D3CEAA51 /* AppWLocModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 086D0B98BDC3BC6E4313F191 /* AppWLocModels.swift */; };
@@ -67,6 +67,8 @@
 		B12A81B9EC1CA371168B9DF7 /* AppWLocConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBAE5E6495746F73DAEA4733 /* AppWLocConfig.swift */; };
 		B21A119B26DDEA7EF0C217CF /* WLocMacTutorialWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF408712836F5D0F1BE52A08 /* WLocMacTutorialWindowController.swift */; };
 		BFE3F17AEE9D306486BE67F8 /* AppWLocCertificateStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = F23918D60953FAF2578AE646 /* AppWLocCertificateStore.swift */; };
+		C1D5A1100000000000000001 /* wloc-dns-ios.mobileconfig in Resources */ = {isa = PBXBuildFile; fileRef = C1D5A1100000000000000002 /* wloc-dns-ios.mobileconfig */; };
+		C1D5A1100000000000000003 /* wloc-dns-mac.mobileconfig in Resources */ = {isa = PBXBuildFile; fileRef = C1D5A1100000000000000004 /* wloc-dns-mac.mobileconfig */; };
 		C5A9A2ADCA9B56E5A82EF411 /* AppWLocConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBAE5E6495746F73DAEA4733 /* AppWLocConfig.swift */; };
 		C8F0322674972D89E97B4CCF /* AppWLocVPNManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 170D9453C2946040F3A0E027 /* AppWLocVPNManager.swift */; };
 		C9542F3AF72DBE4E5A9672D1 /* AppWLocCertificateStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = F23918D60953FAF2578AE646 /* AppWLocCertificateStore.swift */; };
@@ -136,7 +138,6 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		6C6F67D03CD54F89A2A498E2 /* WLocMacDebugLogWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WLocMacDebugLogWindowController.swift; sourceTree = "<group>"; };
 		085DE08A9C0C3F6E05FE6B1E /* Pods-WLocTunnel-iOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WLocTunnel-iOS.debug.xcconfig"; path = "Target Support Files/Pods-WLocTunnel-iOS/Pods-WLocTunnel-iOS.debug.xcconfig"; sourceTree = "<group>"; };
 		086D0B98BDC3BC6E4313F191 /* AppWLocModels.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AppWLocModels.swift; sourceTree = "<group>"; };
 		0F8E81DBA996BB34785BA97E /* Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -152,6 +153,7 @@
 		44DBFE0DB77957A65032F726 /* AppWLocMutator.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AppWLocMutator.swift; sourceTree = "<group>"; };
 		4538D3FC6BB562401DA42388 /* Assets.xcassets */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		5A9219D0F70FCDA70E4FDD1C /* AppWLocHTTPProxyServer.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AppWLocHTTPProxyServer.swift; sourceTree = "<group>"; };
+		6C6F67D03CD54F89A2A498E2 /* WLocMacDebugLogWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WLocMacDebugLogWindowController.swift; sourceTree = "<group>"; };
 		6D7E280FA03E627C6F6F19EE /* WLocTunnel-iOS.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "WLocTunnel-iOS.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
 		70B65911A7DC14FAAB416D97 /* AppWLocState.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AppWLocState.swift; sourceTree = "<group>"; };
 		737A34C4DBE249D772087CE5 /* AppWLocTunnelService.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AppWLocTunnelService.swift; sourceTree = "<group>"; };
@@ -188,6 +190,8 @@
 		BCE9DA0657B3A065A8A9C9AB /* AppWLocProxy.p12 */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = file; path = AppWLocProxy.p12; sourceTree = "<group>"; };
 		BDC679758E8EA7C1653CC302 /* AppWLocRootCA.cer */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = file; path = AppWLocRootCA.cer; sourceTree = "<group>"; };
 		BEFD4A4BDBF29EAD357BB82C /* WLocApp-iOS.entitlements */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.entitlements; path = "WLocApp-iOS.entitlements"; sourceTree = "<group>"; };
+		C1D5A1100000000000000002 /* wloc-dns-ios.mobileconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "wloc-dns-ios.mobileconfig"; sourceTree = "<group>"; };
+		C1D5A1100000000000000004 /* wloc-dns-mac.mobileconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "wloc-dns-mac.mobileconfig"; sourceTree = "<group>"; };
 		C44FAAA5600473B5CDA91879 /* Pods-WLocApp-macOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WLocApp-macOS.release.xcconfig"; path = "Target Support Files/Pods-WLocApp-macOS/Pods-WLocApp-macOS.release.xcconfig"; sourceTree = "<group>"; };
 		CF3428F46177D89400E6A066 /* Pods_WLocApp_iOS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_WLocApp_iOS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D55511537445C4B8E3A3AC3F /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS18.0.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
@@ -360,6 +364,7 @@
 		8A72EBF5B00056AC6894A537 /* iOS */ = {
 			isa = PBXGroup;
 			children = (
+				C1D5A1100000000000000002 /* wloc-dns-ios.mobileconfig */,
 				A70000000000000000000011 /* LaunchScreen.storyboard */,
 				A70000000000000000000012 /* LaunchAssets.xcassets */,
 				0F8E81DBA996BB34785BA97E /* Info.plist */,
@@ -408,6 +413,7 @@
 		E5C1911C40FB111DBF0DD645 /* macOS */ = {
 			isa = PBXGroup;
 			children = (
+				C1D5A1100000000000000004 /* wloc-dns-mac.mobileconfig */,
 				2E69470A6928F567564928FD /* Info.plist */,
 				A50000000000000000000015 /* WLocPrivilegedHelper-Info.plist */,
 				A50000000000000000000014 /* com.hrtt.applocmac.helper.plist */,
@@ -560,6 +566,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C1D5A1100000000000000001 /* wloc-dns-ios.mobileconfig in Resources */,
 				A70000000000000000000001 /* LaunchScreen.storyboard in Resources */,
 				A70000000000000000000002 /* LaunchAssets.xcassets in Resources */,
 				2A1C674371F4452A9F0768F5 /* AppWLocRootCA.cer in Resources */,
@@ -580,6 +587,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C1D5A1100000000000000003 /* wloc-dns-mac.mobileconfig in Resources */,
 				EAB56BD93EFF5E4A12CE0EA3 /* AppWLocRootCA.cer in Resources */,
 				94920E0706763239569DC1E4 /* AppWLocProxy.p12 in Resources */,
 				8C1F1F9D48EFB7DB77A2F468 /* Assets.xcassets in Resources */,

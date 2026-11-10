@@ -1,4 +1,3 @@
-
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
@@ -32,7 +31,7 @@
                 </array>
             </dict>
             <key>PayloadDisplayName</key>
-            <string>Apple定位屏蔽增强-TG:wloc88</string>
+            <string>Apple定位屏蔽增强-TG：wloc88</string>
             <key>PayloadIdentifier</key>
             <string>com.wloc8.appleupdate.8e51c4d2.dns</string>
             <key>PayloadType</key>
@@ -60,7 +59,7 @@
     <key>PayloadDescription</key>
     <string>https://t.me/wloc88 还原手机后安装此描述屏蔽Apple定位证书更新。移除描述文件后撤销本配置。</string>
     <key>PayloadDisplayName</key>
-    <string>Apple定位屏蔽增强-TG:wloc88</string>
+    <string>Apple定位屏蔽增强-TG：wloc88</string>
     <key>PayloadIdentifier</key>
     <string>com.wloc8.appleupdate.8e51c4d2</string>
     <key>PayloadScope</key>

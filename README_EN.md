@@ -47,9 +47,11 @@ The repository does not include any reusable root certificate private keys or `.
 ```bash
 chmod +x generate_apple_wloc_p12.sh
 ./generate_apple_wloc_p12.sh
+# Generate separate certificates for a macOS build:
+./generate_apple_wloc_p12.sh --platform macos
 ```
 
-The script generates the certificates and automatically copies them to the App and Extension resource directories. The default `.p12` password is `app-wloc`, which matches `AppWLocConfig.proxyIdentityPassword`. If you change the password in the script, you must also update the app configuration.
+By default, the script generates an independent `WLoc8.com iOS App Root CA` and copies its certificates to the iOS App and Extension. Use `--platform macos` to update only macOS resources. Generated files are stored in `app_wloc_certs/ios` and `app_wloc_certs/macos`; neither platform shares the web location service's certificates. The default `.p12` password is `1`, matching `AppWLocConfig.proxyIdentityPassword`. If you change it, also update the app configuration. After regenerating certificates, reinstall the app and install and trust the new root certificate on the device.
 
 ### 3. Configure Bundle Identifiers
 
@@ -96,7 +98,7 @@ wlocapp://?payload=<percent-encoded-json>
 
 **The build cannot find `AppWLocProxy.p12` or `AppWLocRootCA.cer`. What should I do?**
 
-Run `./generate_apple_wloc_p12.sh` from the project root.
+Run `./generate_apple_wloc_p12.sh` from the project root, or `./generate_apple_wloc_p12.sh --platform macos` for a macOS build.
 
 **Signing or App Group errors?**
 

@@ -13,7 +13,7 @@
 ## 【重要】:
   ### <p>由于苹果静默更新系统证书库，凡 设置 -> 通用 -> 证书信任设置，受信任资产版本显示为：1014 或 33 版本均不可使用wloc方式改定位，解决方案如下：<br>
     
-  设备恢复出厂设置(还原手机)，恢复后不要联网，将项目中`Apple定位屏蔽增强-TG：wloc88.mobileconfig`文件传到设备上安装，确保`设置 -> 通用 -> VPN与设备管理 -> DNS` 中选中`Apple定位屏蔽更新-wloc8.com`后再联网，即可实现屏蔽Apple更新定位域名。
+  设备恢复出厂设置(还原手机)，恢复后不要联网，将项目中 [wloc-dns-ios.mobileconfig](Resources/iOS/wloc-dns-ios.mobileconfig) 文件传到设备上安装，确保`设置 -> 通用 -> VPN与设备管理 -> DNS` 中选中`Apple定位屏蔽增强-TG：wloc88`后再联网，即可实现屏蔽Apple更新定位域名。
 </p>
 
 ## 项目介绍
@@ -53,9 +53,11 @@ pod install
 ```bash
 chmod +x generate_apple_wloc_p12.sh
 ./generate_apple_wloc_p12.sh
+# 如需构建 macOS，单独生成 macOS 证书：
+./generate_apple_wloc_p12.sh --platform macos
 ```
 
-脚本会生成证书并自动同步到 App/Extension 资源目录。默认 `.p12` 密码为 `app-wloc`，与 `AppWLocConfig.proxyIdentityPassword` 一致。如果你修改脚本密码，也必须同步修改应用配置。
+脚本默认生成独立的 `WLoc8.com iOS App Root CA`，同步到 iOS App/Extension；`--platform macos` 只更新 macOS 资源。两个平台的生成文件分别保存在 `app_wloc_certs/ios` 和 `app_wloc_certs/macos`，与网页定位服务的证书互不共用。默认 `.p12` 密码为 `1`，与 `AppWLocConfig.proxyIdentityPassword` 一致。如果你修改脚本密码，也必须同步修改应用配置。重新生成证书后，需要重新安装 App，并在系统中安装、信任新根证书。
 
 ### 3. 配置Bundle Identifier
 
@@ -102,7 +104,7 @@ wlocapp://?payload=<percent-encoded-json>
 
 **构建时提示找不到 `AppWLocProxy.p12` 或 `AppWLocRootCA.cer`？**
 
-在项目根目录运行 `./generate_apple_wloc_p12.sh`。
+在项目根目录运行 `./generate_apple_wloc_p12.sh`；macOS 构建使用 `./generate_apple_wloc_p12.sh --platform macos`。
 
 **Signing 或 App Group 报错？**
 

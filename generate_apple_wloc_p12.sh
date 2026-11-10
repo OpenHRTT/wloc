@@ -9,17 +9,19 @@ set -euo pipefail
 # 3. 服务端私钥：只用于生成 p12，p12 已经包含该私钥；运行时不需要单独导入 .key 文件。
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-CERTIFICATE_BRAND="WLoc8.com"
-OUTPUT_DIR="$SCRIPT_DIR/app_wloc_certs"
+PLATFORM="ios"
+OUTPUT_DIR=""
 P12_PASSWORD="1"
 FORCE_WRITE=1
 COPY_APP_RESOURCES=1
 
+# 说明平台选项，避免把两套证书同步到同一个 App。
 print_usage() {
   echo "用法：$0 [选项]"
   echo ""
   echo "选项："
-  echo "  -o, --output DIR       证书输出目录，默认：$OUTPUT_DIR"
+  echo "  --platform ios|macos   生成指定平台的独立证书，默认：ios"
+  echo "  -o, --output DIR       证书输出目录，默认：app_wloc_certs/平台名"
   echo "  -p, --password PASS    p12 密码，默认：$P12_PASSWORD"
   echo "  -f, --force            如果输出目录已有文件，允许覆盖（默认行为）"
   echo "  --no-overwrite         如果输出目录已有文件，直接退出"
@@ -33,6 +35,10 @@ print_usage() {
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
+    --platform)
+      PLATFORM="$2"
+      shift 2
+      ;;
     -o|--output)
       OUTPUT_DIR="$2"
       shift 2
@@ -65,6 +71,13 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
+case "$PLATFORM" in
+  ios) CERTIFICATE_BRAND="WLoc8.com iOS App" ;;
+  macos) CERTIFICATE_BRAND="WLoc8.com" ;;
+  *) echo "不支持的平台：$PLATFORM（仅支持 ios、macos）"; exit 1 ;;
+esac
+OUTPUT_DIR="${OUTPUT_DIR:-$SCRIPT_DIR/app_wloc_certs/$PLATFORM}"
+
 if ! command -v openssl >/dev/null 2>&1; then
   echo "错误：未找到 openssl，请先安装或确认系统 PATH。"
   exit 1
@@ -89,6 +102,7 @@ fi
 
 mkdir -p "$OUTPUT_DIR"
 
+# 失败时显示 OpenSSL 原始错误，成功时不输出生成过程。
 run_quiet() {
   local description="$1"
   shift
@@ -193,12 +207,16 @@ run_quiet "生成 p12" openssl pkcs12 \
   -passout "pass:$P12_PASSWORD"
 
 if [[ "$COPY_APP_RESOURCES" -eq 1 ]]; then
-  mkdir -p "$SCRIPT_DIR/Resources/iOS" "$SCRIPT_DIR/Resources/macOS" "$SCRIPT_DIR/Resources/Tunnel"
-  cp "$ROOT_CERT_CER" "$SCRIPT_DIR/Resources/iOS/AppWLocRootCA.cer"
-  cp "$ROOT_CERT_CER" "$SCRIPT_DIR/Resources/macOS/AppWLocRootCA.cer"
-  cp "$SERVER_P12" "$SCRIPT_DIR/Resources/iOS/AppWLocProxy.p12"
-  cp "$SERVER_P12" "$SCRIPT_DIR/Resources/macOS/AppWLocProxy.p12"
-  cp "$SERVER_P12" "$SCRIPT_DIR/Resources/Tunnel/AppWLocProxy.p12"
+  # 每个平台使用自己的根证书与私钥，不覆盖另一平台的证书。
+  RESOURCE_PLATFORM="iOS"
+  if [[ "$PLATFORM" == "macos" ]]; then RESOURCE_PLATFORM="macOS"; fi
+  mkdir -p "$SCRIPT_DIR/Resources/$RESOURCE_PLATFORM"
+  cp "$ROOT_CERT_CER" "$SCRIPT_DIR/Resources/$RESOURCE_PLATFORM/AppWLocRootCA.cer"
+  cp "$SERVER_P12" "$SCRIPT_DIR/Resources/$RESOURCE_PLATFORM/AppWLocProxy.p12"
+  if [[ "$PLATFORM" == "ios" ]]; then
+    mkdir -p "$SCRIPT_DIR/Resources/Tunnel"
+    cp "$SERVER_P12" "$SCRIPT_DIR/Resources/Tunnel/AppWLocProxy.p12"
+  fi
 fi
 
 echo ""
@@ -210,20 +228,20 @@ echo "  服务端中间私钥：$SERVER_KEY"
 echo "  扩展内置 p12：$SERVER_P12"
 echo "  p12 密码：$P12_PASSWORD"
 if [[ "$COPY_APP_RESOURCES" -eq 1 ]]; then
-  echo "  iOS App 根证书：$SCRIPT_DIR/Resources/iOS/AppWLocRootCA.cer"
-  echo "  macOS App 根证书：$SCRIPT_DIR/Resources/macOS/AppWLocRootCA.cer"
-  echo "  App 内置 p12：$SCRIPT_DIR/Resources/iOS/AppWLocProxy.p12 / $SCRIPT_DIR/Resources/macOS/AppWLocProxy.p12"
-  echo "  扩展内置 p12：$SCRIPT_DIR/Resources/Tunnel/AppWLocProxy.p12"
+  echo "  $PLATFORM 根证书和 p12 已同步到对应资源目录。"
 fi
 echo ""
-echo "手机端操作："
-echo "  1. 把 $CERTIFICATE_BRAND 根证书安装到 iPhone。"
-echo "  2. 到“设置 -> 通用 -> 关于本机 -> 证书信任设置”里完全信任该根证书。"
-echo "  3. p12 会随扩展内置，用户不需要手动导入。"
-echo "macOS 端操作："
-echo "  1. 下载 $CERTIFICATE_BRAND 根证书后，打开“钥匙串访问”并选择左侧的“系统”钥匙串。"
-echo "  2. 选择菜单“文件 -> 导入项目…”，手动导入根证书；不要双击证书直接安装。"
-echo "  3. 在“系统”钥匙串中把该根证书设置为始终信任。"
+if [[ "$PLATFORM" == "ios" ]]; then
+  echo "手机端操作："
+  echo "  1. 把 $CERTIFICATE_BRAND Root CA 安装到 iPhone。"
+  echo "  2. 到“设置 -> 通用 -> 关于本机 -> 证书信任设置”里完全信任该根证书。"
+  echo "  3. p12 会随扩展内置，用户不需要手动导入。"
+else
+  echo "macOS 端操作："
+  echo "  1. 下载 $CERTIFICATE_BRAND 根证书后，打开“钥匙串访问”并选择左侧的“系统”钥匙串。"
+  echo "  2. 选择菜单“文件 -> 导入项目…”，手动导入根证书；不要双击证书直接安装。"
+  echo "  3. 在“系统”钥匙串中把该根证书设置为始终信任。"
+fi
 echo ""
 echo "注意：根证书私钥和服务端中间私钥都只用于生成证书，请不要提交、上传或外发。"
 echo "      运行时只需要内置代理 p12，不需要单独导入代理 key。"

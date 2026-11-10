@@ -31,6 +31,7 @@ final class WLocMapViewController: UIViewController {
     private let favoriteButton = WLocGlassButton(title: "", style: .icon)
     private let moreButton = WLocGlassButton(title: "", style: .icon)
     private let tutorialButton = WLocGlassButton(title: "教程与证书", style: .secondary)
+    private let dnsButton = WLocGlassButton(title: "先安装 DNS", style: .required)
     private let updateBadge = UIView()
     private let telegramButton = WLocGlassButton(title: "Telegram", style: .secondary)
     private let websiteButton = WLocGlassButton(title: "GitHub", style: .secondary)
@@ -121,7 +122,7 @@ final class WLocMapViewController: UIViewController {
         resultsTable.tableFooterView = UIView()
     }
 
-    /// 锁定和教程入口用醒目的蓝色，辅助工具用图标，社区入口使用淡底色。
+    /// DNS 安装入口用醒目的橙色，定位和教程入口沿用蓝色。
     private func configureBottomPanel() {
         titleLabel.font = .systemFont(ofSize: 19, weight: .bold)
         titleLabel.textColor = UIColor(red: 0.05, green: 0.08, blue: 0.13, alpha: 1)
@@ -177,6 +178,15 @@ final class WLocMapViewController: UIViewController {
         tutorialButton.accessibilityHint = "查看使用教程、下载并安装定位证书"
         tutorialButton.addTarget(self, action: #selector(openTutorial), for: .touchUpInside)
         configureExternalLinkButton(
+            dnsButton,
+            image: WLocExternalIcon.image(named: "exclamationmark.shield.fill", fallback: .symbol("!"), size: CGSize(width: 18, height: 18)),
+            color: .white,
+            accessibilityLabel: "使用前请先安装 DNS，查看安装说明"
+        )
+        dnsButton.backgroundColor = UIColor(red: 0.85, green: 0.29, blue: 0.04, alpha: 1)
+        dnsButton.titleLabel?.font = .systemFont(ofSize: 15, weight: .bold)
+        dnsButton.addTarget(self, action: #selector(openTutorial), for: .touchUpInside)
+        configureExternalLinkButton(
             telegramButton,
             image: WLocExternalIcon.image(named: "paperplane.fill", fallback: .telegram, size: CGSize(width: 16, height: 16)),
             color: UIColor(red: 0.08, green: 0.43, blue: 0.68, alpha: 1),
@@ -203,11 +213,12 @@ final class WLocMapViewController: UIViewController {
         locationManager.desiredAccuracy = kCLLocationAccuracyBest
     }
 
-    /// 地点面板保持两排，教程与证书单独放在搜索框下方，其他工具从更多菜单打开。
+    /// DNS 提示和教程入口并排放在搜索框下方，始终保留安装说明入口。
     private func layoutViews() {
         view.addSubview(mapView)
         view.addSubview(searchGlass)
         view.addSubview(tutorialButton)
+        view.addSubview(dnsButton)
         view.addSubview(resultsGlass)
         view.addSubview(locateButton)
         view.addSubview(bottomGlass)
@@ -239,6 +250,11 @@ final class WLocMapViewController: UIViewController {
             make.trailing.equalTo(searchGlass)
             make.width.equalTo(136)
             make.height.equalTo(44)
+        }
+        dnsButton.snp.makeConstraints { make in
+            make.top.height.equalTo(tutorialButton)
+            make.leading.equalTo(searchGlass)
+            make.trailing.equalTo(tutorialButton.snp.leading).offset(-10)
         }
 
         resultsGlass.contentView.addSubview(resultsTitleLabel)
