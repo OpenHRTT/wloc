@@ -1,0 +1,75 @@
+
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>PayloadContent</key>
+    <array>
+        <dict>
+            <key>DNSSettings</key>
+            <dict>
+                <key>ServerAddresses</key>
+                <array/>
+                <key>SupplementalMatchDomains</key>
+                <array>
+                    <string>gdmf.apple.com</string>
+                    <string>gdmf-ados.apple.com</string>
+                    <string>mesu.apple.com</string>
+                    <string>gsra.apple.com</string>
+                    <string>xp.apple.com</string>
+                    <string>updates.cdn-apple.com</string>
+                    <string>updates-http.cdn-apple.com</string>
+                    <string>appldnld.apple.com</string>
+                    <string>secure-appldnld.apple.com</string>
+                    <string>swcdn.apple.com</string>
+                    <string>swscan.apple.com</string>
+                    <string>swdist.apple.com</string>
+                    <string>swdownload.apple.com</string>
+                    <string>skl.apple.com</string>
+                    <string>oscdn.apple.com</string>
+                    <string>osrecovery.apple.com</string>
+                    <string>wkms-public.apple.com</string>
+                </array>
+            </dict>
+            <key>PayloadDisplayName</key>
+            <string>Apple定位屏蔽增强-TG:wloc88</string>
+            <key>PayloadIdentifier</key>
+            <string>com.wloc8.appleupdate.8e51c4d2.dns</string>
+            <key>PayloadType</key>
+            <string>com.apple.dnsSettings.managed</string>
+            <key>PayloadUUID</key>
+            <string>7C48A1B9-2E6D-4F03-91A5-BC837D40E2F6</string>
+            <key>PayloadVersion</key>
+            <integer>1</integer>
+        </dict>
+        <dict>
+            <key>PayloadType</key>
+            <string>com.apple.applicationaccess</string>
+            <key>PayloadIdentifier</key>
+            <string>com.wloc8.appleupdate.8e51c4d2.pki</string>
+            <key>PayloadUUID</key>
+            <string>2D93F6A1-5B47-4C8E-A0D2-6F18B9E35C74</string>
+            <key>PayloadVersion</key>
+            <integer>1</integer>
+            <key>PayloadDisplayName</key>
+            <string>Apple OTA PKI更新限制</string>
+            <key>allowOTAPKIUpdates</key>
+            <false/>
+        </dict>
+    </array>
+    <key>PayloadDescription</key>
+    <string>https://t.me/wloc88 还原手机后安装此描述屏蔽Apple定位证书更新。移除描述文件后撤销本配置。</string>
+    <key>PayloadDisplayName</key>
+    <string>Apple定位屏蔽增强-TG:wloc88</string>
+    <key>PayloadIdentifier</key>
+    <string>com.wloc8.appleupdate.8e51c4d2</string>
+    <key>PayloadScope</key>
+    <string>User</string>
+    <key>PayloadType</key>
+    <string>Configuration</string>
+    <key>PayloadUUID</key>
+    <string>9A61E4C7-D382-4F50-B6A9-1C28D7E35F04</string>
+    <key>PayloadVersion</key>
+    <integer>1</integer>
+</dict>
+</plist>
