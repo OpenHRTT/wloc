@@ -10,8 +10,8 @@ OpenHRTT WLoc is an open-source location tool for iOS and macOS, written in Swif
 
 ## Location Spoofing Methods
 
-- **Virtual Location:** Simulates a selected location via macOS location services.
-- **WLoc:** Available for both iOS and macOS; it modifies the responses from `gs-loc.apple.com` and `gs-loc-cn.apple.com` using a local HTTPS proxy. As Apple has taken measures to block this method, a factory reset of your device may be required to make it functional. For detailed instructions, please visit the following channel: https://t.me/wloc8c.
+- **Virtual Location:**：Simulates a selected location via macOS location services.
+- **WLoc:**：Available for both iOS and macOS; it modifies the responses from `gs-loc.apple.com` and `gs-loc-cn.apple.com` using a local HTTPS proxy. As Apple has taken measures to block this method, a factory reset of your device may be required to make it functional. For detailed instructions, please visit the following channel: https://t.me/wloc8c.
 
 Compatibility for web-based location spoofing is confirmed up to iOS 27.0 beta 5. If your iOS "Certificate Trust Settings" show a "Trusted Assets" version of `1014` or `33`, the WLoc method may be restricted. For further details, please check the channel: https://t.me/wloc8c.
 
