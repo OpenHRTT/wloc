@@ -13,7 +13,7 @@ OpenHRTT WLoc 是一款用 Swift 编写的开源 iOS 和 macOS 定位工具。�
 - **虚拟定位**：通过 macOS 定位服务模拟所选位置。
 - **WLoc**：适用于 iOS 和 macOS，通过本地 HTTPS 代理修改 `gs-loc.apple.com` 和 `gs-loc-cn.apple.com` 的响应。由于苹果封禁此方式，可能需要还原出厂设置才有使用，具体操作查看频道：https://t.me/wloc8c。
 
-网页定位的已知兼容范围截至 iOS 27.0 beta 5。iOS 的「证书信任设置」若显示受信任资产版本为 `1014` 或 `33`，WLoc 方式会受限。具体操作查看频道：https://t.me/wloc8c。
+网页定位的已知兼容范围截至 iOS 27.0 beta 5。iOS 的「证书信任设置」若显示受信任资产版本为 `1014` 或 `33` 及以上版本，WLoc 方式会受限。具体操作查看频道：https://t.me/wloc8c。
 
 ## 从源码构建
 
