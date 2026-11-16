@@ -8,12 +8,12 @@
 
 OpenHRTT WLoc is an open-source location tool for iOS and macOS, written in Swift. Pick a point on the map, lock the location, and restore it when you're done.
 
-## Location modes
+## Location Spoofing Methods
 
-- **Simulated Location** uses macOS Location Services to simulate the selected location. Turn on Location Services, select **Simulated Location** (虚拟定位), pick a point, and click **Lock Location** (锁定位置). The first use requires administrator authorization. When finished, click **Restore Location** (还原定位). The app refreshes Location Services when locking or restoring, so you can request your current location again in Apple Maps or the target app.
-- **WLoc** uses a local HTTPS proxy on iOS and macOS to modify responses from `gs-loc.apple.com` and `gs-loc-cn.apple.com`. Install the local root certificate and enable full trust. Then make sure the iOS VPN (Packet Tunnel) is connected or macOS Automatic Proxy Configuration (PAC) is enabled.
+- **Virtual Location:** Simulates a selected location via macOS location services.
+- **WLoc:** Available for both iOS and macOS; it modifies the responses from `gs-loc.apple.com` and `gs-loc-cn.apple.com` using a local HTTPS proxy. As Apple has taken measures to block this method, a factory reset of your device may be required to make it functional. For detailed instructions, please visit the following channel: https://t.me/wloc8c.
 
-The web version is known to work through iOS 27.0 beta 5. WLoc mode is limited on iOS devices that show Trusted Asset Version `1014` or `33` under Certificate Trust Settings. The project provides an [iOS DNS configuration profile](Resources/iOS/wloc-dns-ios.mobileconfig) that blocks the relevant update domains.
+Compatibility for web-based location spoofing is confirmed up to iOS 27.0 beta 5. If your iOS "Certificate Trust Settings" show a "Trusted Assets" version of `1014` or `33`, the WLoc method may be restricted. For further details, please check the channel: https://t.me/wloc8c.
 
 ## Build from source
 
