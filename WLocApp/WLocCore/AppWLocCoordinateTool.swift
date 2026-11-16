@@ -1,5 +1,8 @@
 import CoreLocation
 import Foundation
+#if os(macOS)
+import CoreGraphics
+#endif
 
 enum AppWLocCoordinateSystem: CaseIterable {
     case wgs84
@@ -76,7 +79,14 @@ enum AppWLocCoordinateTool {
         return coordinate
     }
 
+    /// 判断地图坐标是否需要使用大陆坐标系。
     static func isInMainlandChina(_ coordinate: CLLocationCoordinate2D) -> Bool {
+        #if os(macOS)
+        return mainlandChinaBoundary.contains(
+            CGPoint(x: coordinate.longitude, y: coordinate.latitude),
+            using: .evenOdd
+        )
+        #else
         let latitude = coordinate.latitude
         let longitude = coordinate.longitude
         guard longitude >= 72.004,
@@ -90,7 +100,26 @@ enum AppWLocCoordinateTool {
         let isMacau = latitude >= 22.06 && latitude <= 22.24 && longitude >= 113.52 && longitude <= 113.65
         let isTaiwan = latitude >= 21.7 && latitude <= 25.6 && longitude >= 119.9 && longitude <= 122.2
         return !(isHongKong || isMacau || isTaiwan)
+        #endif
     }
+
+    #if os(macOS)
+    /// 加载 Natural Earth 1:10m v5.1.1 的 CHN 边界。香港、澳门、台湾在原始数据中是独立图形。
+    private static let mainlandChinaBoundary: CGPath = {
+        let path = CGMutablePath()
+        guard let url = Bundle.main.url(forResource: "mainland-china-boundary", withExtension: "json"),
+              let data = try? Data(contentsOf: url),
+              let rings = try? JSONDecoder().decode([[[Double]]].self, from: data) else {
+            return path
+        }
+
+        for ring in rings {
+            path.addLines(between: ring.map { CGPoint(x: $0[0], y: $0[1]) })
+            path.closeSubpath()
+        }
+        return path
+    }()
+    #endif
 
     static func appleMapCoordinate(from coordinate: CLLocationCoordinate2D, sourceSystem: AppWLocCoordinateSystem) -> CLLocationCoordinate2D {
         switch sourceSystem {
@@ -101,25 +130,25 @@ enum AppWLocCoordinateTool {
         case .bd09:
             return bd09ToGCJ02(coordinate)
         case .wgs84:
-            guard isInMainlandChina(coordinate) else {
-                return coordinate
-            }
             return wgs84ToGCJ02(coordinate)
         }
     }
 
+    /// 将 Apple 地图选点转换为系统定位使用的 WGS-84 坐标。
     static func wlocResponseCoordinate(fromAppleMapCoordinate coordinate: CLLocationCoordinate2D) -> CLLocationCoordinate2D {
-        guard isInMainlandChina(coordinate) else {
-            return coordinate
-        }
         return gcj02ToWGS84(coordinate)
     }
 
+    /// 仅转换大陆范围内的 WGS-84 坐标。
     static func wgs84ToGCJ02(_ coordinate: CLLocationCoordinate2D) -> CLLocationCoordinate2D {
         guard isInMainlandChina(coordinate) else {
             return coordinate
         }
+        return applyGCJ02Offset(coordinate)
+    }
 
+    /// 计算偏移。反解时中间坐标可能跨过边界，仍需要继续计算。
+    private static func applyGCJ02Offset(_ coordinate: CLLocationCoordinate2D) -> CLLocationCoordinate2D {
         let latitude = coordinate.latitude
         let longitude = coordinate.longitude
         var deltaLatitude = transformLatitude(longitude - 105.0, latitude - 35.0)
@@ -133,6 +162,7 @@ enum AppWLocCoordinateTool {
         return CLLocationCoordinate2D(latitude: latitude + deltaLatitude, longitude: longitude + deltaLongitude)
     }
 
+    /// 先判定地图点所在范围，再反解大陆点的 GCJ-02 偏移。
     static func gcj02ToWGS84(_ coordinate: CLLocationCoordinate2D) -> CLLocationCoordinate2D {
         guard isInMainlandChina(coordinate) else {
             return coordinate
@@ -140,7 +170,7 @@ enum AppWLocCoordinateTool {
 
         var guess = coordinate
         for _ in 0..<4 {
-            let converted = wgs84ToGCJ02(guess)
+            let converted = applyGCJ02Offset(guess)
             guess.latitude -= converted.latitude - coordinate.latitude
             guess.longitude -= converted.longitude - coordinate.longitude
         }

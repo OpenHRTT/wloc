@@ -126,6 +126,20 @@ final class WLocMacMapViewController: NSViewController {
         case coordinate
     }
 
+    private enum LocationMode: Int {
+        case simulated
+        case wloc
+
+        var title: String { self == .simulated ? "虚拟定位" : "WLoc" }
+    }
+
+    private static let locationModeKey = "AppWLoc.macOS.locationMode"
+    private var locationMode = LocationMode(
+        rawValue: UserDefaults.standard.integer(forKey: WLocMacMapViewController.locationModeKey)
+    ) ?? .simulated
+    private var hasSystemLocationToRestore = false
+    var showsCertificateTutorial: Bool { locationMode == .wloc }
+
     private let pacManager = AppWLocPACManager()
 
     private let mapView = WLocArrowCursorMapView()
@@ -141,6 +155,8 @@ final class WLocMacMapViewController: NSViewController {
     private let titleLabel = NSTextField.wlocLabel("地图中心")
     private let detailLabel = NSTextField.wlocLabel("")
     private let coordinateLabel = NSTextField.wlocLabel("")
+    private let locationModeControl = NSSegmentedControl(labels: [LocationMode.simulated.title, LocationMode.wloc.title], trackingMode: .selectOne, target: nil, action: nil)
+    private let locationModeHint = NSTextField(wrappingLabelWithString: "")
     private let lockButton = WLocMacActionButton(title: "锁定位置", color: NSColor(calibratedRed: 0.12, green: 0.36, blue: 0.94, alpha: 1))
     private let advancedLockButton = WLocMacActionButton(title: "高级锁定")
     private let restoreButton = WLocMacActionButton(title: "还原定位")
@@ -186,7 +202,9 @@ final class WLocMacMapViewController: NSViewController {
     private var shouldQuitAfterUpdateCancellation = false
     private var shouldSelectNextLocationUpdate = false
     private var isRefreshingLocationAfterLock = false
-    private var isChangingLocation = false
+    private var isChangingLocation = false {
+        didSet { updateLocationModeControls() }
+    }
     private var locationRefreshWorkItem: DispatchWorkItem?
 
     deinit {
@@ -207,9 +225,14 @@ final class WLocMacMapViewController: NSViewController {
         configureViews()
         layoutViews()
         reloadFavorites()
-        let initialPlace = AppWLocPlace(name: "上海", detail: "单击地图可选择新的位置", latitude: 31.2304, longitude: 121.4737)
+        let initialPlace = AppWLocPlace(name: "上海", detail: "双击地图可选择新的位置", latitude: 31.2304, longitude: 121.4737)
         updateSelectedPlace(initialPlace)
         updateSelectedAnnotation(with: initialPlace)
+        pacManager.performSystemLocation(.status) { [weak self] active, _ in
+            guard let self, let active, !self.isChangingLocation else { return }
+            self.hasSystemLocationToRestore = active
+            self.updateLocationModeControls()
+        }
         checkForUpdates(userInitiated: false)
     }
 
@@ -220,7 +243,7 @@ final class WLocMacMapViewController: NSViewController {
         mapView.showsScale = true
         mapView.showsUserLocation = false
         let clickGesture = NSClickGestureRecognizer(target: self, action: #selector(selectMapPoint(_:)))
-        clickGesture.numberOfClicksRequired = 1
+        clickGesture.numberOfClicksRequired = 2
         clickGesture.delegate = self
         clickGesture.delaysPrimaryMouseButtonEvents = false
         mapClickGesture = clickGesture
@@ -303,6 +326,15 @@ final class WLocMacMapViewController: NSViewController {
         detailLabel.cell?.wraps = true
         coordinateLabel.font = .monospacedDigitSystemFont(ofSize: 11, weight: .medium)
         coordinateLabel.textColor = .secondaryLabelColor
+        locationModeControl.segmentDistribution = .fillEqually
+        locationModeControl.selectedSegment = locationMode.rawValue
+        locationModeControl.setAccessibilityLabel("定位方式")
+        locationModeControl.target = self
+        locationModeControl.action = #selector(changeLocationMode)
+        locationModeHint.font = .systemFont(ofSize: 11)
+        locationModeHint.textColor = .secondaryLabelColor
+        locationModeHint.preferredMaxLayoutWidth = 292
+        locationModeHint.maximumNumberOfLines = 2
         configureCopyMenu(for: titleLabel, field: .name)
         configureCopyMenu(for: detailLabel, field: .detail)
         configureCopyMenu(for: coordinateLabel, field: .coordinate)
@@ -357,6 +389,7 @@ final class WLocMacMapViewController: NSViewController {
         zoomOutButton.action = #selector(zoomOut)
         currentLocationButton.target = self
         currentLocationButton.action = #selector(centerOnCurrentLocation)
+        updateLocationModeControls()
 
         // 搜索列表是浮层；监听窗口内点击，可在用户点击浮层之外时自然收起。
         outsideSearchClickMonitor = NSEvent.addLocalMonitorForEvents(matching: [.leftMouseDown, .rightMouseDown]) { [weak self] event in
@@ -495,6 +528,7 @@ final class WLocMacMapViewController: NSViewController {
         toolbar.alignment = .centerY
         toolbar.distribution = .fill
         toolbar.spacing = 6
+        toolbar.detachesHiddenViews = true
         [advancedLockButton, restoreButton, coordinateInputButton, debugLogButton].forEach { button in
             button.snp.makeConstraints { make in make.width.height.equalTo(32) }
         }
@@ -549,7 +583,7 @@ final class WLocMacMapViewController: NSViewController {
             make.leading.greaterThanOrEqualToSuperview().inset(8)
         }
 
-        [header, searchField, externalLinkStack, selectionDivider, selectionHeading, detailLabel, coordinateLabel,
+        [header, searchField, externalLinkStack, selectionDivider, selectionHeading, detailLabel, coordinateLabel, locationModeControl, locationModeHint,
          lockButton, toolbar, favoritesDivider, favoritesHeading, favoritesArea].forEach {
             sidebar.contentView?.addSubview($0)
         }
@@ -587,8 +621,17 @@ final class WLocMacMapViewController: NSViewController {
             make.top.equalTo(detailLabel.snp.bottom).offset(8)
             make.leading.trailing.equalTo(header)
         }
+        locationModeControl.snp.makeConstraints { make in
+            make.top.equalTo(coordinateLabel.snp.bottom).offset(12)
+            make.leading.trailing.equalTo(header)
+        }
+        locationModeHint.snp.makeConstraints { make in
+            make.top.equalTo(locationModeControl.snp.bottom).offset(6)
+            make.leading.trailing.equalTo(header)
+            make.height.equalTo(30)
+        }
         lockButton.snp.makeConstraints { make in
-            make.top.equalTo(coordinateLabel.snp.bottom).offset(18)
+            make.top.equalTo(locationModeHint.snp.bottom).offset(12)
             make.leading.trailing.equalTo(header)
             make.height.equalTo(42)
         }
@@ -790,20 +833,59 @@ final class WLocMacMapViewController: NSViewController {
         favoritesHeightConstraint?.update(offset: favorites.isEmpty ? 60 : min(listHeight, 208))
     }
 
+    @objc private func changeLocationMode() {
+        guard let mode = LocationMode(rawValue: locationModeControl.selectedSegment) else { return }
+        locationMode = mode
+        UserDefaults.standard.set(mode.rawValue, forKey: Self.locationModeKey)
+        AppWLocUtils.debugLog("已切换定位方式：\(mode.title)")
+        if !showsCertificateTutorial { tutorialWindow?.close() }
+        updateLocationModeControls()
+    }
+
+    /// 随定位方式显示提示，并在执行定位操作时禁用切换。
+    private func updateLocationModeControls() {
+        locationModeControl.isEnabled = !isChangingLocation
+        advancedLockButton.isEnabled = !isChangingLocation
+        tutorialButton.isHidden = !showsCertificateTutorial
+        switch locationMode {
+        case .simulated:
+            locationModeHint.stringValue = hasSystemLocationToRestore
+                ? "虚拟定位配置已保存。可更新坐标，或点击「还原定位」。"
+                : "需开启系统定位服务，首次需管理员授权。锁定和还原无需重启 Mac。"
+        case .wloc:
+            locationModeHint.stringValue = "Apple 已限制定位接口的 MITM 拦截。\nWLoc 可能不生效，建议使用虚拟定位。"
+        }
+    }
+
     @objc private func lockCurrentPlace() {
         guard let place = selectedPlace else { return }
-        guard canLockWithLocationServices() else { return }
-        lock(place)
+        lockSelectedPlace(place)
     }
 
     @objc private func openAdvancedLock() {
         guard let place = selectedPlace, !isChangingLocation else { return }
         view.window?.makeFirstResponder(nil)
-        let controller = WLocMacAdvancedLockViewController(place: place) { [weak self] parameters in
-            guard let self, self.canLockWithLocationServices() else { return }
-            self.lock(place, parameters: parameters)
+        var initialParameters = AppWLocLockParameters(state: locationMode == .wloc ? AppWLocStateStore.shared.load() : nil)
+        if locationMode == .simulated {
+            initialParameters.altitude = 0
+            initialParameters.horizontalAccuracy = 5
+        }
+        let controller = WLocMacAdvancedLockViewController(place: place, initialParameters: initialParameters) { [weak self] parameters in
+            self?.lockSelectedPlace(place, parameters: parameters)
         }
         presentAsSheet(controller)
+    }
+
+    /// 普通和高级锁定都按当前方式提交，共用定位权限检查。
+    private func lockSelectedPlace(_ place: AppWLocPlace, parameters: AppWLocLockParameters? = nil) {
+        guard !isChangingLocation, canLockWithLocationServices() else { return }
+        switch locationMode {
+        case .simulated:
+            let coordinate = AppWLocCoordinateTool.wlocResponseCoordinate(fromAppleMapCoordinate: place.coordinate)
+            performSystemLocation(.lock(latitude: coordinate.latitude, longitude: coordinate.longitude, parameters: parameters))
+        case .wloc:
+            lock(place, parameters: parameters ?? AppWLocLockParameters())
+        }
     }
 
     private var lockSuccessMessage: String {
@@ -860,7 +942,6 @@ final class WLocMacMapViewController: NSViewController {
         locationRefreshWorkItem?.cancel()
         restoreButton.isEnabled = false
         lockButton.isEnabled = false
-        advancedLockButton.isEnabled = false
         lockButton.title = "锁定中..."
         pacManager.lock(to: place, parameters: parameters) { [weak self] result in
             AppWLocUtils.mainThread {
@@ -868,7 +949,6 @@ final class WLocMacMapViewController: NSViewController {
                 self.isChangingLocation = false
                 self.restoreButton.isEnabled = true
                 self.lockButton.isEnabled = true
-                self.advancedLockButton.isEnabled = true
                 switch result {
                 case .success:
                     self.lockButton.title = "锁定位置"
@@ -888,6 +968,10 @@ final class WLocMacMapViewController: NSViewController {
 
     @objc private func restoreLocation() {
         guard !isChangingLocation else { return }
+        if !pacManager.hasPACToRestore, locationMode == .simulated || hasSystemLocationToRestore {
+            performSystemLocation(.restore)
+            return
+        }
         isChangingLocation = true
         locationRefreshWorkItem?.cancel()
         locationRefreshWorkItem = nil
@@ -896,7 +980,6 @@ final class WLocMacMapViewController: NSViewController {
         locationManager.stopUpdatingLocation()
         restoreButton.isEnabled = false
         lockButton.isEnabled = false
-        advancedLockButton.isEnabled = false
         restoreButton.title = "还原中…"
         restoreButton.imagePosition = .imageOnly
 
@@ -905,7 +988,6 @@ final class WLocMacMapViewController: NSViewController {
             self.isChangingLocation = false
             self.restoreButton.isEnabled = true
             self.lockButton.isEnabled = true
-            self.advancedLockButton.isEnabled = true
             if let error {
                 self.restoreButton.title = "重试恢复"
                 self.restoreButton.imagePosition = .imageOnly
@@ -914,6 +996,34 @@ final class WLocMacMapViewController: NSViewController {
                 self.restoreButton.title = "还原定位"
                 self.restoreButton.imagePosition = .imageOnly
                 self.showAlert(title: "还原定位", message: "已恢复原代理设置。若连接了 VPN，请先关闭 VPN。然后前往“系统设置 → 隐私与安全性 → 定位服务”，关闭定位服务，等待 2 秒后重新开启，以刷新实际位置。")
+            }
+        }
+    }
+
+    /// 执行本机定位操作，系统服务就绪后提示应用重新取定位。
+    private func performSystemLocation(_ operation: AppWLocPACManager.SystemLocationOperation) {
+        isChangingLocation = true
+        locationRefreshWorkItem?.cancel()
+        locationRefreshWorkItem = nil
+        shouldSelectNextLocationUpdate = false
+        isRefreshingLocationAfterLock = false
+        locationManager.stopUpdatingLocation()
+        lockButton.isEnabled = false
+        restoreButton.isEnabled = false
+        lockButton.title = "正在刷新定位…"
+        pacManager.performSystemLocation(operation) { [weak self] active, error in
+            guard let self else { return }
+            if let active { self.hasSystemLocationToRestore = active }
+            self.isChangingLocation = false
+            self.lockButton.title = "锁定位置"
+            self.lockButton.isEnabled = true
+            self.restoreButton.isEnabled = true
+            if let error {
+                self.showAlert(title: "虚拟定位操作失败", message: error.localizedDescription)
+            } else if active == true {
+                self.showAlert(title: "虚拟位置已设置", message: "定位服务已刷新，请在 Apple 地图或目标应用中重新获取当前位置。")
+            } else {
+                self.showAlert(title: "虚拟定位已还原", message: "请在目标应用中重新获取当前位置。")
             }
         }
     }
@@ -942,6 +1052,7 @@ final class WLocMacMapViewController: NSViewController {
         reverseGeocodeWorkItem?.cancel()
         geocoder.cancelGeocode()
         moveMap(to: place)
+        guard locationMode == .wloc else { return }
         lock(place, successMessage: "已通过外部链接保存目标位置并启用 PAC 代理。")
     }
 
@@ -972,6 +1083,7 @@ final class WLocMacMapViewController: NSViewController {
     }
 
     @objc func openTutorial() {
+        guard showsCertificateTutorial else { return }
         let controller = WLocMacTutorialWindowController()
         tutorialWindow = controller
         controller.showWindow(self)
@@ -1122,7 +1234,7 @@ final class WLocMacMapViewController: NSViewController {
         alert.messageText = "发现新版本 v\(update.version)"
         let hasPackage = update.assetName?.lowercased().hasSuffix(".dmg") == true
         alert.informativeText = "当前版本：\(AppWLocConfig.currentVersion)\n\n" + (hasPackage
-            ? "将从 GitHub 下载并安装新版本，完成后自动重启应用。更新会停止当前定位修改。"
+            ? "将从 GitHub 下载并安装新版本，完成后自动重启应用。更新会先恢复 WLoc 的代理设置。"
             : "该版本尚未提供 macOS 安装包，请前往发布页查看。")
         alert.addButton(withTitle: hasPackage ? "下载并安装" : "查看发布页")
         alert.addButton(withTitle: "稍后")
@@ -1145,7 +1257,7 @@ final class WLocMacMapViewController: NSViewController {
             updateInstaller = installer
             isUpdating = true
             isChangingLocation = true
-            [lockButton, advancedLockButton, restoreButton, updateButton].forEach { $0.isEnabled = false }
+            [lockButton, restoreButton, updateButton].forEach { $0.isEnabled = false }
             let alert = NSAlert()
             alert.messageText = "更新 v\(update.version)"
             alert.informativeText = "正在连接下载服务…"
@@ -1172,7 +1284,7 @@ final class WLocMacMapViewController: NSViewController {
                 case .success:
                     self.isInstallingUpdate = true
                     self.updateProgressAlert?.buttons.first?.isEnabled = false
-                    self.updateProgressAlert?.informativeText = "正在停止定位修改并准备安装…"
+                    self.updateProgressAlert?.informativeText = "正在恢复 WLoc 代理设置并准备安装…"
                     // 先恢复代理再退出，避免更新重启后系统继续使用已停止的定位代理。
                     self.pacManager.stop(clearState: true) { [weak self] error in
                         guard let self else { return }
@@ -1202,7 +1314,7 @@ final class WLocMacMapViewController: NSViewController {
         isUpdating = false
         isInstallingUpdate = false
         isChangingLocation = false
-        [lockButton, advancedLockButton, restoreButton, updateButton].forEach { $0.isEnabled = true }
+        [lockButton, restoreButton, updateButton].forEach { $0.isEnabled = true }
         if shouldQuitAfterUpdateCancellation {
             shouldQuitAfterUpdateCancellation = false
             NSApp.terminate(nil)
@@ -1417,6 +1529,7 @@ final class WLocMacMapViewController: NSViewController {
 
 private final class WLocMacAdvancedLockViewController: NSViewController {
     private let place: AppWLocPlace
+    private let initialParameters: AppWLocLockParameters
     private let onLock: (AppWLocLockParameters) -> Void
     private let altitudeField = NSTextField()
     private let horizontalField = NSTextField()
@@ -1425,8 +1538,9 @@ private final class WLocMacAdvancedLockViewController: NSViewController {
     private let statusLabel = NSTextField.wlocWrappingLabel("")
     private var elevationTask: URLSessionDataTask?
 
-    init(place: AppWLocPlace, onLock: @escaping (AppWLocLockParameters) -> Void) {
+    init(place: AppWLocPlace, initialParameters: AppWLocLockParameters, onLock: @escaping (AppWLocLockParameters) -> Void) {
         self.place = place
+        self.initialParameters = initialParameters
         self.onLock = onLock
         super.init(nibName: nil, bundle: nil)
     }
@@ -1442,10 +1556,9 @@ private final class WLocMacAdvancedLockViewController: NSViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         // 表单固定使用打开时选中的位置，避免查询和锁定落在不同的坐标上。
-        let parameters = AppWLocLockParameters(state: AppWLocStateStore.shared.load())
-        altitudeField.stringValue = NSNumber(value: parameters.altitude).stringValue
-        horizontalField.stringValue = String(parameters.horizontalAccuracy)
-        verticalField.stringValue = String(parameters.verticalAccuracy)
+        altitudeField.stringValue = NSNumber(value: initialParameters.altitude).stringValue
+        horizontalField.stringValue = String(initialParameters.horizontalAccuracy)
+        verticalField.stringValue = String(initialParameters.verticalAccuracy)
 
         let heading = NSTextField.wlocLabel("高级锁定")
         heading.font = .systemFont(ofSize: 21, weight: .semibold)

@@ -1,8 +1,9 @@
 import AppKit
 
-final class AppDelegate: NSObject, NSApplicationDelegate {
+final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     private var windowController: NSWindowController?
     private var mapController: WLocMacMapViewController?
+    private var tutorialMenuItem: NSMenuItem?
     private var pendingURLs: [URL] = []
     private let windowSize = NSSize(width: 1180, height: 760)
     private let minimumWindowSize = NSSize(width: 900, height: 620)
@@ -200,13 +201,21 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         NSApp.windowsMenu = windowMenu
 
         let helpMenu = addMenu("帮助", to: mainMenu)
-        helpMenu.addItem(menuItem("教程与证书", action: #selector(showTutorial)))
+        let tutorial = menuItem("教程与证书", action: #selector(showTutorial))
+        tutorialMenuItem = tutorial
+        helpMenu.addItem(tutorial)
         helpMenu.addItem(menuItem("查看日志…", action: #selector(showDebugLog)))
         helpMenu.addItem(menuItem("检查更新…", action: #selector(checkForUpdates)))
         helpMenu.addItem(.separator())
         helpMenu.addItem(menuItem("在 GitHub 上查看", action: #selector(openGitHub)))
         helpMenu.addItem(menuItem("加入 Telegram", action: #selector(openTelegram)))
+        helpMenu.delegate = self
         NSApp.helpMenu = helpMenu
+    }
+
+    /// 帮助菜单和侧栏按同一种定位方式显示证书教程。
+    func menuNeedsUpdate(_ menu: NSMenu) {
+        tutorialMenuItem?.isHidden = mapController?.showsCertificateTutorial != true
     }
 
     private func addMenu(_ title: String, to mainMenu: NSMenu) -> NSMenu {

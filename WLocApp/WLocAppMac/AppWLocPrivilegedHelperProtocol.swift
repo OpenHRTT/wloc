@@ -82,4 +82,8 @@ struct AppWLocPACNetworkSetting: Codable {
 @objc protocol AppWLocPrivilegedHelperProtocol {
     func ping(withReply reply: @escaping (String?) -> Void)
     func applyPACSettings(_ data: Data, withReply reply: @escaping (String?) -> Void)
+    func systemLocationStatus(withReply reply: @escaping (Bool, String?) -> Void)
+    func lockSystemLocation(latitude: Double, longitude: Double, altitude: NSNumber?, horizontalAccuracy: Double,
+                            verticalAccuracy: NSNumber?, withReply reply: @escaping (Bool, String?) -> Void)
+    func restoreSystemLocation(withReply reply: @escaping (Bool, String?) -> Void)
 }

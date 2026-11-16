@@ -13,6 +13,7 @@ enum AppWLocPACError: Error, LocalizedError {
     case pacServerUnavailable
     case invalidPACPort
     case invalidPACURL
+    case systemLocation(String)
 
     /// 把服务启动和代理配置失败转换成可直接展示的提示。
     var errorDescription: String? {
@@ -33,12 +34,28 @@ enum AppWLocPACError: Error, LocalizedError {
             return "本地 PAC 服务的监听端口无效"
         case .invalidPACURL:
             return "无法生成有效的本地 PAC URL"
+        case .systemLocation(let message):
+            return message
         }
     }
 }
 
 /// macOS PAC 模式：只让 Apple 定位域名经过应用内 HTTPS 代理。
 final class AppWLocPACManager {
+    enum SystemLocationOperation {
+        case status
+        case lock(latitude: Double, longitude: Double, parameters: AppWLocLockParameters?)
+        case restore
+
+        var title: String {
+            switch self {
+            case .status: return "查询状态"
+            case .lock: return "锁定"
+            case .restore: return "还原"
+            }
+        }
+    }
+
     private struct SavedPACSetting: Codable {
         let url: String?
         let enabled: Bool
@@ -49,9 +66,55 @@ final class AppWLocPACManager {
     private let pacServer = GCDWebServer()
     private let savedSettingsKey = "AppWLoc.macOS.previousPACSettings.v1"
     private let registeredHelperSignatureKey = "AppWLoc.macOS.registeredHelperSignature.v2"
+    // 系统冷启动 Helper（包括 Rosetta 转译和签名校验）可能需要几秒。
+    private let helperStartupTimeout: TimeInterval = 10
     private var previousSettings: [String: SavedPACSetting] = [:]
     private var fallbackPACReturn = "DIRECT"
     private var isRunning = false
+
+    var hasPACToRestore: Bool {
+        UserDefaults.standard.data(forKey: savedSettingsKey) != nil
+    }
+
+    /// 使用和 WLoc 相同的 Helper，只有锁定和还原才需要检查管理员授权。
+    func performSystemLocation(_ operation: SystemLocationOperation, completion: @escaping (Bool?, Error?) -> Void) {
+        queue.async {
+            let reply: (active: Bool?, error: Error?)
+            do {
+                switch operation {
+                case .status:
+                    let service = SMAppService.daemon(plistName: AppWLocPrivilegedHelperConstants.launchDaemonPlistName)
+                    guard service.status == .enabled else {
+                        AppWLocUtils.debugLog("虚拟定位跳过状态查询：Helper 未启用（状态 \(service.status.rawValue)）")
+                        DispatchQueue.main.async { completion(nil, nil) }
+                        return
+                    }
+                case .lock(let latitude, let longitude, let parameters):
+                    let details = parameters.map { "，海拔=\($0.altitude)，水平精度=\($0.horizontalAccuracy)，垂直精度=\($0.verticalAccuracy)" } ?? ""
+                    AppWLocUtils.debugLog("虚拟定位开始锁定：lat=\(latitude)，lng=\(longitude)\(details)")
+                    try self.loadSavedSettings()
+                    guard !self.isRunning, self.previousSettings.isEmpty else {
+                        throw AppWLocPACError.systemLocation("请先还原 WLoc 定位，再使用虚拟定位。")
+                    }
+                    try self.ensureHelper()
+                case .restore:
+                    AppWLocUtils.debugLog("虚拟定位开始还原")
+                    try self.ensureHelper()
+                }
+                let response = try self.requestSystemLocation(operation)
+                reply = (response.active, response.error)
+            } catch {
+                reply = (nil, error)
+            }
+            if let error = reply.error {
+                AppWLocUtils.debugLog("虚拟定位\(operation.title)失败：\(error.localizedDescription)")
+            } else {
+                let status = reply.active == true ? "保留原设置备份" : "没有待还原的设置"
+                AppWLocUtils.debugLog("虚拟定位\(operation.title)完成：\(status)")
+            }
+            DispatchQueue.main.async { completion(reply.active, reply.error) }
+        }
+    }
 
     /// 只读取当前环境，不启动 Helper，也不修改系统代理。
     func logDiagnostics(completion: @escaping () -> Void) {
@@ -132,6 +195,11 @@ final class AppWLocPACManager {
         logProxySettings()
         AppWLocCertificateStore.shared.logMacCertificateDiagnostics()
         try ensureHelper()
+        let systemLocation = try requestSystemLocation(.status)
+        if let error = systemLocation.error { throw error }
+        guard !systemLocation.active else {
+            throw AppWLocPACError.systemLocation("请先还原虚拟定位，再开启 WLoc。")
+        }
 
         let defaults = UserDefaults.standard
         try loadSavedSettings()
@@ -300,11 +368,11 @@ final class AppWLocPACManager {
 
         switch status {
         case .enabled:
-            if !waitForHelperLoaded(timeout: 3) || !pingHelper(timeout: 3) {
+            if !waitForHelperLoaded(timeout: 3) || !pingHelper(timeout: helperStartupTimeout) {
                 defaults.removeObject(forKey: registeredHelperSignatureKey)
                 try unregisterHelper(service)
                 try registerHelper(service)
-                guard waitForHelperLoaded(timeout: 3), pingHelper(timeout: 3) else {
+                guard waitForHelperLoaded(timeout: 3), pingHelper(timeout: helperStartupTimeout) else {
                     throw AppWLocPACError.helperFailed("launchd 已注册但 Privileged Helper 无法启动")
                 }
             }
@@ -397,12 +465,7 @@ final class AppWLocPACManager {
     }
 
     private func pingHelper(timeout: TimeInterval) -> Bool {
-        let connection = NSXPCConnection(
-            machServiceName: AppWLocPrivilegedHelperConstants.machServiceName,
-            options: .privileged
-        )
-        connection.remoteObjectInterface = NSXPCInterface(with: AppWLocPrivilegedHelperProtocol.self)
-        connection.setCodeSigningRequirement(AppWLocPrivilegedHelperConstants.helperCodeSigningRequirement)
+        let connection = helperConnection()
         
         let semaphore = DispatchSemaphore(value: 0)
         let lock = NSLock()
@@ -454,12 +517,7 @@ final class AppWLocPACManager {
         let settings = try settings.map { try $0.validated() }
         let payload = try JSONEncoder().encode(settings)
         AppWLocUtils.debugLog("通过 Helper 设置 PAC：\(String(decoding: payload, as: UTF8.self))")
-        let connection = NSXPCConnection(
-            machServiceName: AppWLocPrivilegedHelperConstants.machServiceName,
-            options: .privileged
-        )
-        connection.remoteObjectInterface = NSXPCInterface(with: AppWLocPrivilegedHelperProtocol.self)
-        connection.setCodeSigningRequirement(AppWLocPrivilegedHelperConstants.helperCodeSigningRequirement)
+        let connection = helperConnection()
 
         let semaphore = DispatchSemaphore(value: 0)
         let lock = NSLock()
@@ -492,6 +550,55 @@ final class AppWLocPACManager {
             throw AppWLocPACError.commandFailed(message)
         }
         AppWLocUtils.debugLog("Helper 设置 PAC 完成")
+    }
+
+    /// 向 Helper 请求本机定位，返回是否仍有需要还原的配置。
+    private func requestSystemLocation(_ operation: SystemLocationOperation) throws -> (active: Bool, error: Error?) {
+        let connection = helperConnection()
+        defer { connection.invalidate() }
+        let semaphore = DispatchSemaphore(value: 0)
+        let lock = NSLock()
+        var result: (active: Bool, error: Error?)?
+        let finish: (Bool, Error?) -> Void = { active, error in
+            lock.lock()
+            defer { lock.unlock() }
+            guard result == nil else { return }
+            result = (active, error)
+            semaphore.signal()
+        }
+        connection.activate()
+        guard let helper = connection.remoteObjectProxyWithErrorHandler({ finish(false, $0) }) as? AppWLocPrivilegedHelperProtocol else {
+            throw AppWLocPACError.helperFailed("")
+        }
+        let reply: (Bool, String?) -> Void = { active, message in
+            finish(active, message.map(AppWLocPACError.systemLocation))
+        }
+        let timeout: TimeInterval
+        switch operation {
+        case .status:
+            timeout = helperStartupTimeout
+            helper.systemLocationStatus(withReply: reply)
+        case .lock(let latitude, let longitude, let parameters):
+            timeout = 30
+            helper.lockSystemLocation(latitude: latitude, longitude: longitude, altitude: parameters.map { NSNumber(value: $0.altitude) },
+                                      horizontalAccuracy: Double(parameters?.horizontalAccuracy ?? 5),
+                                      verticalAccuracy: parameters.map { NSNumber(value: $0.verticalAccuracy) }, withReply: reply)
+        case .restore:
+            timeout = 30
+            helper.restoreSystemLocation(withReply: reply)
+        }
+        guard semaphore.wait(timeout: .now() + timeout) == .success, let result else {
+            throw AppWLocPACError.helperFailed("本机定位操作响应超时")
+        }
+        return result
+    }
+
+    /// 两种定位方式共用签名校验和 XPC 接口。
+    private func helperConnection() -> NSXPCConnection {
+        let connection = NSXPCConnection(machServiceName: AppWLocPrivilegedHelperConstants.machServiceName, options: .privileged)
+        connection.remoteObjectInterface = NSXPCInterface(with: AppWLocPrivilegedHelperProtocol.self)
+        connection.setCodeSigningRequirement(AppWLocPrivilegedHelperConstants.helperCodeSigningRequirement)
+        return connection
     }
 
     private func activeNetworkServices() throws -> [String] {

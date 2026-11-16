@@ -59,6 +59,7 @@
 		A50000000000000000000003 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = A50000000000000000000012 /* main.swift */; };
 		A50000000000000000000004 /* WLocPrivilegedHelper in Embed Privileged Helper */ = {isa = PBXBuildFile; fileRef = A50000000000000000000013 /* WLocPrivilegedHelper */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		A50000000000000000000005 /* com.hrtt.applocmac.helper.plist in Embed LaunchDaemon */ = {isa = PBXBuildFile; fileRef = A50000000000000000000014 /* com.hrtt.applocmac.helper.plist */; };
+		A50000000000000000000006 /* AppWLocSystemLocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = A50000000000000000000016 /* AppWLocSystemLocation.swift */; };
 		A557476A60AAAEEAF35216B1 /* WLocTunnel-iOS.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 6D7E280FA03E627C6F6F19EE /* WLocTunnel-iOS.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		A60000000000000000000001 /* WLocMacUpdateInstaller.swift in Sources */ = {isa = PBXBuildFile; fileRef = A60000000000000000000002 /* WLocMacUpdateInstaller.swift */; };
 		A70000000000000000000001 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A70000000000000000000011 /* LaunchScreen.storyboard */; };
@@ -69,6 +70,7 @@
 		BFE3F17AEE9D306486BE67F8 /* AppWLocCertificateStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = F23918D60953FAF2578AE646 /* AppWLocCertificateStore.swift */; };
 		C1D5A1100000000000000001 /* wloc-dns-ios.mobileconfig in Resources */ = {isa = PBXBuildFile; fileRef = C1D5A1100000000000000002 /* wloc-dns-ios.mobileconfig */; };
 		C1D5A1100000000000000003 /* wloc-dns-mac.mobileconfig in Resources */ = {isa = PBXBuildFile; fileRef = C1D5A1100000000000000004 /* wloc-dns-mac.mobileconfig */; };
+		C1D5A1100000000000000005 /* mainland-china-boundary.json in Resources */ = {isa = PBXBuildFile; fileRef = C1D5A1100000000000000006 /* mainland-china-boundary.json */; };
 		C5A9A2ADCA9B56E5A82EF411 /* AppWLocConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBAE5E6495746F73DAEA4733 /* AppWLocConfig.swift */; };
 		C8F0322674972D89E97B4CCF /* AppWLocVPNManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 170D9453C2946040F3A0E027 /* AppWLocVPNManager.swift */; };
 		C9542F3AF72DBE4E5A9672D1 /* AppWLocCertificateStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = F23918D60953FAF2578AE646 /* AppWLocCertificateStore.swift */; };
@@ -177,6 +179,7 @@
 		A50000000000000000000013 /* WLocPrivilegedHelper */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = WLocPrivilegedHelper; sourceTree = BUILT_PRODUCTS_DIR; };
 		A50000000000000000000014 /* com.hrtt.applocmac.helper.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = com.hrtt.applocmac.helper.plist; sourceTree = "<group>"; };
 		A50000000000000000000015 /* WLocPrivilegedHelper-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "WLocPrivilegedHelper-Info.plist"; sourceTree = "<group>"; };
+		A50000000000000000000016 /* AppWLocSystemLocation.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AppWLocSystemLocation.swift; sourceTree = "<group>"; };
 		A60000000000000000000002 /* WLocMacUpdateInstaller.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WLocMacUpdateInstaller.swift; sourceTree = "<group>"; };
 		A70000000000000000000011 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
 		A70000000000000000000012 /* LaunchAssets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = LaunchAssets.xcassets; sourceTree = "<group>"; };
@@ -192,6 +195,7 @@
 		BEFD4A4BDBF29EAD357BB82C /* WLocApp-iOS.entitlements */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.entitlements; path = "WLocApp-iOS.entitlements"; sourceTree = "<group>"; };
 		C1D5A1100000000000000002 /* wloc-dns-ios.mobileconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "wloc-dns-ios.mobileconfig"; sourceTree = "<group>"; };
 		C1D5A1100000000000000004 /* wloc-dns-mac.mobileconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "wloc-dns-mac.mobileconfig"; sourceTree = "<group>"; };
+		C1D5A1100000000000000006 /* mainland-china-boundary.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "mainland-china-boundary.json"; sourceTree = "<group>"; };
 		C44FAAA5600473B5CDA91879 /* Pods-WLocApp-macOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WLocApp-macOS.release.xcconfig"; path = "Target Support Files/Pods-WLocApp-macOS/Pods-WLocApp-macOS.release.xcconfig"; sourceTree = "<group>"; };
 		CF3428F46177D89400E6A066 /* Pods_WLocApp_iOS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_WLocApp_iOS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D55511537445C4B8E3A3AC3F /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS18.0.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
@@ -379,6 +383,7 @@
 			isa = PBXGroup;
 			children = (
 				A50000000000000000000012 /* main.swift */,
+				A50000000000000000000016 /* AppWLocSystemLocation.swift */,
 			);
 			path = WLocPrivilegedHelper;
 			sourceTree = "<group>";
@@ -414,6 +419,7 @@
 			isa = PBXGroup;
 			children = (
 				C1D5A1100000000000000004 /* wloc-dns-mac.mobileconfig */,
+				C1D5A1100000000000000006 /* mainland-china-boundary.json */,
 				2E69470A6928F567564928FD /* Info.plist */,
 				A50000000000000000000015 /* WLocPrivilegedHelper-Info.plist */,
 				A50000000000000000000014 /* com.hrtt.applocmac.helper.plist */,
@@ -588,6 +594,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				C1D5A1100000000000000003 /* wloc-dns-mac.mobileconfig in Resources */,
+				C1D5A1100000000000000005 /* mainland-china-boundary.json in Resources */,
 				EAB56BD93EFF5E4A12CE0EA3 /* AppWLocRootCA.cer in Resources */,
 				94920E0706763239569DC1E4 /* AppWLocProxy.p12 in Resources */,
 				8C1F1F9D48EFB7DB77A2F468 /* Assets.xcassets in Resources */,
@@ -744,6 +751,7 @@
 			files = (
 				A50000000000000000000003 /* main.swift in Sources */,
 				A50000000000000000000002 /* AppWLocPrivilegedHelperProtocol.swift in Sources */,
+				A50000000000000000000006 /* AppWLocSystemLocation.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -830,7 +838,7 @@
 				INFOPLIST_KEY_CFBundleDisplayName = WLoc8.com;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				MARKETING_VERSION = 1.2;
+				MARKETING_VERSION = 1.3;
 				PRODUCT_BUNDLE_IDENTIFIER = com.hrtt.apploc;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = apploc_dev;
@@ -859,7 +867,7 @@
 				INFOPLIST_KEY_CFBundleDisplayName = WLoc8.com;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 13.0;
-				MARKETING_VERSION = 1.2;
+				MARKETING_VERSION = 1.3;
 				PRODUCT_BUNDLE_IDENTIFIER = com.hrtt.applocmac;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = apploc_mac_dis;
@@ -975,7 +983,7 @@
 				INFOPLIST_KEY_CFBundleDisplayName = WLoc8.com;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 13.0;
-				MARKETING_VERSION = 1.2;
+				MARKETING_VERSION = 1.3;
 				PRODUCT_BUNDLE_IDENTIFIER = com.hrtt.applocmac;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = apploc_mac_dev;
@@ -1129,7 +1137,7 @@
 				INFOPLIST_KEY_CFBundleDisplayName = WLoc8.com;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				MARKETING_VERSION = 1.2;
+				MARKETING_VERSION = 1.3;
 				PRODUCT_BUNDLE_IDENTIFIER = com.hrtt.apploc;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = apploc_dev;
